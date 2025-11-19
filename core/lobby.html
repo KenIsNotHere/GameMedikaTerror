@@ -11,9 +11,15 @@
         margin: 0;
         box-sizing: border-box;
     }
+    @media (aspect-ratio: 16/9) {
+        body{
+            background-color: black;
+            overflow: hidden;
+            transition: 0.1s;
+        }
+    }
     body{
         background-color: black;
-        /* overflow: hidden; */
         transition: 0.1s;
     }
     #mainvlob{
