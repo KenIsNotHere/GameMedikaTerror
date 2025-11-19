@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xenogame Launcher</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+      /* --- Pengaturan Global --- */
+      body{
+          background-color: #121212; /* Latar belakang sangat gelap */
+
+      }
+#baseLauncher {
+    background-color: #121212; /* Latar belakang sangat gelap */
+    color: #f0f0f0; /* Teks terang (putih pudar) */
+    font-family: 'Nunito', sans-serif; /* Font elegan dan modern */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* --- Kontainer Launcher Utama --- */
+.game-launcher {
+    background-color: #1e1e1e; /* Latar belakang launcher (sedikit lebih terang) */
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7); /* Bayangan untuk efek 'mengambang' */
+    max-width: 700px;
+    width: 100%;
+    overflow: hidden; /* Memastikan gambar tidak keluar dari sudut rounded */
+    border: 1px solid #333; /* Garis batas halus */
+}
+
+/* --- Header: Judul & Subjudul --- */
+.game-header {
+    padding: 25px 30px;
+    text-align: center;
+    border-bottom: 1px solid #333;
+}
+
+#game-title {
+    margin: 0;
+    font-size: 2.5rem; /* 40px */
+    font-weight: 900; /* Sangat tebal */
+    color: #ffffff;
+    letter-spacing: 1px;
+    animation: animateglow 3s infinite alternate;
+}
+
+@keyframes animateglow {
+    0%{text-shadow: 0 0 0vw;}
+    100%{text-shadow: 0 0 1vw;}
+}
+#game-subtitle {
+    margin: 5px 0 0;
+    font-size: 1.1rem; /* 17.6px */
+    color: #aaa; /* Abu-abu untuk subjudul */
+    font-weight: 400;
+}
+
+/* --- Media: Gambar & Tombol Play --- */
+.game-media {
+    text-align: center; /* Memusatkan tombol play */
+    padding: 20px;
+    background-color: #252525; /* Latar belakang area media */
+}
+
+#game-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px; /* Sudut rounded untuk gambar */
+    border: 1px solid #444;
+    transition: transform 0.3s ease; /* Efek transisi halus */
+}
+
+#game-image:hover {
+    transform: scale(1.02); /* Sedikit membesar saat disentuh mouse */
+}
+
+#play-button {
+    background-color: #007bff; /* Aksen warna biru cerah */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 60px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 20px; /* Jarak dari gambar */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: inline-flex; /* Agar ikon dan teks sejajar */
+    align-items: center;
+    gap: 8px; /* Jarak antara ikon dan teks */
+    transition: 1s;
+}
+
+#play-button:hover {
+    background-color: #0056b3; /* Warna lebih gelap saat disentuh */
+    transform: scale(1.03); /* Sedikit membesar */
+    transition: 1s;
+    letter-spacing:0.5vw;
+    box-shadow: #1056a1 0 0 1vw; text-shadow: 0 0 3vw;
+}
+#play-button:active {
+    background-color: #001f40; /* Warna lebih gelap saat disentuh */
+}
+
+/* --- Detail: Deskripsi & Catatan --- */
+.game-details {
+    padding: 20px 30px 30px;
+}
+
+.game-details h3 {
+    color: #007bff; /* Judul bagian menggunakan warna aksen */
+    font-size: 1.3rem;
+    border-bottom: 2px solid #333;
+    padding-bottom: 5px;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.game-details p, .game-details blockquote {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #ccc;
+}
+
+#developer-note {
+    background-color: #2a2a2a; /* Latar belakang berbeda untuk catatan */
+    border-left: 5px solid #007bff; /* Garis aksen di kiri */
+    padding: 15px;
+    margin: 15px 0 0;
+    font-style: italic;
+    color: #b0b0b0;
+}
+#patch-note {
+    background-color: #2a2a2a; /* Latar belakang berbeda untuk catatan */
+    border-left: 5px solid #6aff6f; /* Garis aksen di kiri */
+    padding: 15px;
+    margin: 15px 0 0;
+    font-style: italic;
+    color: #b0b0b0;
+}#gamecutsceneLauncher{display: none;}#introVideo{
+    width: 100vw;
+    position: absolute;
+}
+#logoGame{
+    width: 25rem;
+}
+    </style>
+</head>
+<body>
+    <div id="gamecutsceneLauncher">
+    <video id="introVideo" muted src="./res/openingXenov.mp4"></video>
+</div>
+    <div id="baseLauncher">
+        <div class="game-launcher">
+        
+        <div class="game-header">
+            <h2 id="game-title">Xeno<span id="g">game</span> Laun<span id="g">cher</span></h2>
+            <p id="game-subtitle">MedikaTerror 2026</p>
+        </div>
+        
+        <div class="game-media">
+            <img id="game-image" src="./res/lobby.png">
+            <div id="version"></div>
+            <button id="play-button">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                    <path d="M8 5.14v13.72L19.25 12 8 5.14z"/>
+                </svg>
+                Run Game
+            </button>
+            <img src="./res/logoGame.png" id="logoGame">
+        </div>
+
+        
+        <div class="game-details">
+            <h3><span id="b">Deskripsi Game</span></h3>
+            <p id="game-description">
+                ada sebuah sekolah yang bernama smk medikacom,
+                pada tanggal 13 Januari 2026, tersebut <span id="h">banyak siswa yang dilaporkan
+                menghilang termasuk guru-guru dan staf sekolah</span> lainnya
+                secara misterius di waktu sore hari, polisi sudah melakukan investigasi besar-besaran
+                selama 48 jam non-stop, namun tidak ditemukan kejanggalan apapun
+                benar-benar seperti tidak ada jejak sama sekali <br><br>
+
+                disini kamu adalah seorang siswa bernama keni yang mana ia tidak hadir
+                di hari tersebut dengan temannya bernama kevin yang melakukan investigasi
+                secara diam-diam di tanggal 17 Januari 2025, jam 5 sore <br> <br>
+
+                setelah kamu berkompromi dengan kevin, kevin akan menunggu memonitoring di
+                dalam post office dan keni akan masuk kesekolah tersebut
+                mengungkap apa yang sebenarnya terjadi
+            </p>
+            
+            <h3><span id="b">Catatan Developer</span></h3>
+            <blockquote id="developer-note">
+                Terima kasih telah mendukung saya! Ini adalah rilis v1.0. Kami sedang bekerja keras untuk patch berikutnya, 
+                Nantikan pembaruan lainnya! <br> (*￣▽￣*)
+                <br><br><hr>
+                kirim masukan anda di email saya 
+                <div id="emp">kennichiofficial@gmail.com</div> <br>
+                - Dev Xenowaskyy (kenny) \(￣︶￣*\)
+            </blockquote>
+            <br><br>
+            <h3><span id="gr">Patch-Note</span></h3>
+            <blockquote id="patch-note">
+                <ul>
+                    <li>Menambahkan Fitur game dasar</li>
+                    <li>Menambahkan auido game dasar</li>
+                    <li>Menambahkan animasi dasar </li>
+                    <li>Menambahkan level Malam 1 </li>
+<hr>
+                    <li>Memperbaiki beberapa bug </li>
+                    <li>Melakukan Optimisasi dasar </li>
+                </ul>
+            </blockquote>
+        </div>
+
+    </div>
+</div>
+
+    <style>
+        #h{color: rgb(214, 22, 61);}#b{color: #5aaaff;}#g{color: #aaa;}#gr{color:rgb(116, 222, 108);}#emp{color: rgb(255, 201, 92); font-weight: 500; font-style: italic; cursor: pointer;}
+        #emp:hover,#h:hover{text-decoration: underline;}
+    </style>
+
+</body>
+<script type="module">
+    import versionData from '../config/config.js'
+    document.getElementById("version").innerHTML = versionData
+    document.getElementById("gr").innerHTML = `Patch Note: ${versionData}`
+</script>
+    <script>
+        let baseLauncher = document.getElementById('baseLauncher');
+        let gamecutsceneLauncher = document.getElementById('gamecutsceneLauncher');
+        let introVideo = document.getElementById('introVideo');
+document.addEventListener('DOMContentLoaded', () => {
+    const playButton = document.getElementById('play-button');
+
+    playButton.addEventListener('click', () => {
+        console.log(`Tombol play untuk ditekan.`);
+        baseLauncher.style.display ="none"
+        gamecutsceneLauncher.style.display ="inline"
+        document.documentElement.requestFullscreen()
+        document.body.style.overflow="hidden"
+        introVideo.play()
+        setTimeout(() => {
+            window.location.href = "./core/lobby.html"
+        }, 11500);
+    });
+});
+    </script>
+</html>

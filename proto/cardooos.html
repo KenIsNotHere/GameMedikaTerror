@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animasi Kartu Berdiri</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #926f65;
+            /* Memusatkan semua item di tengah halaman */
+            display: grid;
+            place-items: center;
+            min-height: 100vh;
+            text-align: center;
+            overflow: hidden; /* Mencegah scrollbar yang tidak perlu */
+        }
+
+        /* 1. Tombol Trigger */
+        .btn-show {
+            font-size: 1rem;
+            padding: 12px 24px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-show:hover {
+            background-color: #0056b3;
+            box-shadow: 0 6px 16px rgba(0, 123, 255, 0.4);
+        }
+
+        /* 2. Container 3D (Sangat Penting!) */
+        /* Container ini menciptakan "panggung" 3D */
+        .card-container {
+            width: 550px;
+            height: 450px;
+            margin-top: 50px; /* Jarak dari tombol */
+            
+            /* 'perspective' adalah kuncinya! 
+               Ini menciptakan efek trapezoid yang Anda gambar 
+               saat kartu berotasi. */
+            perspective: 100vw;
+        }
+
+        /* 3. Kartu (Img) */
+        .card {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+            filter: blur(4vw);
+
+            /* --- Status Awal (Tidak Terlihat) --- */
+            
+            /* 1. Opacity 0 membuatnya tidak terlihat */
+            opacity: 1; 
+            
+            /* 2. rotateX(90deg) membuatnya "tertidur" rata di lantai */
+            transform: rotateX(120deg);
+            
+            /* 3. 'transform-origin: bottom' adalah kuncinya!
+               Ini mengatur engsel/pusat rotasi di bagian bawah kartu. */
+            transform-origin: bottom;
+            
+            /* 4. Ini adalah transisi animasinya */
+            transition:  
+            /* cubic-bezier(1, 1, 1, 1),  */
+                         0.3s 
+                        ;
+                        margin-top: -10vw;
+        }
+
+        /* 4. Status Aktif (Saat di-klik) */
+        /* Class 'show' ini akan ditambahkan oleh JavaScript */
+        .card.show {
+            /* 1. Kartu menjadi terlihat */
+            filter: blur(0vw);
+            opacity: 1; 
+            margin-top: -9vw;
+            
+            /* 2. Kartu "berdiri tegak" ke 0 derajat */
+            transform: rotateX(0deg); 
+        }
+        @keyframes shake {
+            0%{
+                
+            }25%{
+
+            }50%{
+
+            }100%{
+
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <button id="showCardBtn" class="btn-show">Tampilkan Kartu</button>
+
+        <div class="card-container">
+            <img src="../core/assets/image/komp.png" 
+                 alt="Kartu" 
+                 class="card" 
+                 id="myCard">
+        </div>
+    </main><div id="hidden">
+
+    </div>
+    <style>
+        #hidden{
+            width: 100vw;
+            background-color: black;
+            height: 30vw;
+            margin-top: 110vw;
+            position: absolute;
+        }
+    </style>
+
+    <script>
+        // 1. Ambil elemen tombol dan kartu
+        const showButton = document.getElementById('showCardBtn');
+        const card = document.getElementById('myCard');
+
+        // 2. Tambahkan event listener 'click' ke tombol
+        showButton.addEventListener('click', function() {
+            // 3. 'classList.toggle' akan menambah/menghapus kelas 'show'
+            //    saat tombol diklik.
+            card.classList.toggle('show');
+            
+            // Ubah teks tombol
+            if (card.classList.contains('show')) {
+                showButton.textContent = 'Sembunyikan Kartu';
+            } else {
+                showButton.textContent = 'Tampilkan Kartu';
+            }
+        });
+    </script>
+
+</body>
+</html>

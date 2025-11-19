@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lobby</title>
+</head>
+<style>
+    *{
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+    body{
+        background-color: black;
+        overflow: hidden;
+        transition: 0.1s;
+    }
+    #mainvlob{
+        width: 100vw;
+        position: absolute;
+    }
+    #startBtn{
+        margin-top: 25vw;
+    }#optBtn{
+        margin-top: 32vw;
+    }#creditBtn{
+        margin-top: 39vw;
+    }#quitBtn{
+        margin-top: 46vw;
+    }
+    #startBtn, #optBtn, #creditBtn, #quitBtn{
+        position: absolute;
+        color: aliceblue;
+        background-color: rgba(0, 0, 0, 0.352);
+        padding: 2vw;
+        margin-left: 2vw;
+        width: 25vw;
+        font-size: 1.7vw;
+        cursor: pointer;
+        border: 0.2vw rgba(255, 255, 255, 0) solid;
+        transition: 0.5s;
+    }
+    #leaderboard{
+        cursor: pointer;
+        position: absolute;
+        transition: 0.5s;
+        opacity: 0.4;
+        font-size: 1.5vw;
+        padding: 0.6vw; margin-left: 95vw; margin-top: 2vw;
+        background-color: rgba(0, 0, 0, 0.393);
+        border: 0.2vw solid transparent;
+    }
+    #leaderboard:hover{
+        opacity: 1;
+        transition: 0.5s;
+        transform: scale(1.1);
+        border: 0.2vw solid white;
+    }
+    #startBtn:hover, #optBtn:hover, #creditBtn:hover, #quitBtn:hover{
+        transition: 0.5s;
+        margin-left: 4vw;
+        border: 0.2vw white solid;
+    }
+    #startBtn:active, #optBtn:active, #creditBtn:active, #quitBtn:active{
+        background-color: rgba(255, 51, 51, 0.658);
+        color: aliceblue;
+        margin-left: 4vw;
+        border: 0.2vw white solid;
+    }
+    #titlemain{
+        position: absolute;
+        color: aliceblue;
+        margin-top: -3vw;
+        width: 35vw;
+    }
+    #version{
+        position: absolute;
+        font-size: 2vw;
+        color: rgba(255, 255, 255, 0.454);
+        text-align: right;
+        margin-left: 84vw;
+        margin-top: 52vw;
+    }
+      #configEvent{
+        position: absolute;
+        font-size: 2vw;
+        color: aliceblue;
+        padding: 2vw;
+        background-color: rgba(0, 0, 0, 0.701);
+        margin-left: 26vw;
+        margin-top: 30vw;
+        cursor: pointer;
+        font-family:monospace;
+
+        /* display: none; */
+
+    }
+
+    #gen{
+        display: none;
+    }
+
+    #Music{position: absolute;}
+</style>
+<body>
+    <audio id="bsfx" src="./assets/audio/beep.mp3"></audio>
+    <audio id="csfx" src="./assets/audio/Click Sound Effect (HD).mp3"></audio>
+    <audio id="Music" loop src="./assets/audio/Scary Horror Music  - Haunted (Copyright and Royalty Free).mp3"></audio>
+    <video autoplay loop muted src="./assets/video/lobbystart.mp4" id="mainvlob"></video>
+    <div id="configEvent">
+        <h1>ketuk untuk memulai</h1>
+    </div>
+    <div id="warningPage">
+        <style>
+            #warningPage{
+                display: none;
+            }
+            h1#warningTitle{
+                position: absolute;
+                font-size: 2.5vw;
+                margin-top: 2vw;
+                background-color: rgba(8, 8, 8, 0.457);
+                color: rgb(255, 63, 63);
+                padding: 2vw;
+                font-family:monospace;
+            }
+            #warningText{
+                position: absolute;
+                font-size: 1.6vw;
+                background-color: rgba(8, 8, 8, 0.708);
+                color: rgb(255, 63, 63);
+                padding: 2vw;
+                font-family:monospace;
+                margin-top: 10vw;
+            }
+            #warningBtn{
+                position: absolute;
+                font-size: 1.6vw;
+                background-color: rgba(8, 8, 8, 0.84);
+                color: rgb(255, 63, 63);
+                padding: 2vw;
+                width: 25vw;
+                font-family:monospace;
+                margin-top: 37vw;
+                cursor: pointer;
+            }
+            
+        </style>
+        <h1 id="warningTitle">⛔ PERINGATAN KERAS <hr></h1>
+        <div id="warningText">GAME INI DIPENUHI OLEH JUMPSCARE DAN KEDIPAN CAHAYA CEPAT <br>
+        GAME INI SANGAT TIDAK DIREKOMENDASIKAN JIKA ANDA MEMILIKI RIWAYAT PENYAKIT EPILEPSI, <br>
+            PENYAKIT JANTUNG, DAN SEJENISNYA <br><br>
+            GAME INI DIPENUHI OLEH SUARA KERAS YANG MENDADAK, SAYA HARAP, ANDA <br>
+            DAPAT MENGERTI MENGENAI REGULASI KAMI, DAN JIKA KALIAN SUDAH BENAR-BENAR <br>
+            SIAP, SAYA REKOMENDASIKAN UNTUK MENGGUNAKAN HEADSET DAN SEJENISNYA <br><br>
+            DAN PERLU DI INGAT, SEMUA CERITA INI BERSIFAT FIKSI <br><br>
+            SALAM HANGAT DEV XENOWASKYY, TERIMAKASIH
+    </div>
+        <div id="warningBtn">Tunggu 10 detik</div>
+    </div>
+    <div id="gen">
+        <img id="titlemain" src="../res/logoGame.png">
+        <div id="startBtn">▶ Mulai Investigasi</div>
+        <div id="optBtn">⚙ Pengaturan</div>
+        <div id="creditBtn">☁ Credit</div>
+        <div id="quitBtn">🟥 Keluar game</div>
+        <div id="leaderboard">🏆</div>
+        <div id="fieldMenu">
+            <div id="menulevel" >
+                <div id="menulevelTitle"></div>
+                <img src="" alt="" id="menulevelImg">
+                <div id="menulevelLocation"></div>
+                <div id="menulevelDesc"></div>
+            </div>
+            <div id="menulevelbtns">
+                <!-- <img src="" id="imgMinlevel">
+                <img src="" id="imgMinlevel"> -->
+            </div>
+            <div id="mulaigame">Mulai</div>
+        </div>
+        <div id="fieldSettings">
+            <div id="Operator">
+                🎵 Musik
+                <input id="inpVmusic" type="range" min="0" max="1" step="0.1" value="1">
+                🔊 Sound Effect
+                <input id="inpVsfx" type="range" min="0" max="1" step="0.1" value="1">
+                📃 Bahasa
+                <select name="" id="" style="font-size: 2vw;">
+                    <option value="">Bahasa Indonesia</option>
+                </select>
+            </div>
+            <div id="creditTab" style="color: aliceblue;">
+                <h1 style="font-size: 2.5vw;">
+                    <span id="h">Lead Dev:</span> Kenny Richie Nergiva <br>
+                    <span id="h">Illust Team:</span> Kenny Richie Nergiva <br>
+                    <span id="h">Music Team:</span> Kenny Richie Nergiva <br>
+                    <span id="h">UI/UX Team:</span> Kenny Richie Nergiva <br>
+                    <span id="h">Programmer Dev:</span> Kenny Richie Nergiva <br>
+                    <span id="h">Writer:</span> Kenny Richie Nergiva <br>
+                    <span id="h">Quality Control:</span> Kenny Richie Nergiva <br>
+                </h1>
+            </div>
+            <div id="leaderboardTab">
+               <table border="1">
+                    <tr>
+                        <td>ha</td>
+                        <td>ha</td>
+                        <td>ha</td>
+                    </tr>
+               </table>
+            </div>
+        </div>
+    </div>
+    <style>
+        #h{
+            color: gold;
+        }
+        #Operator{
+            color: white; font-size: 2.5vw;
+            display: none;
+        }#leaderboardTab{ color: rgb(255, 255, 255); font-size: 1.7vw; display: none;}
+        #imgMinlevel{
+            /* border-left: 0.4vw solid rgb(191, 9, 46); */
+            width: 100%; transition: 0.5s;cursor: pointer;
+        }
+        #imgMinlevel:hover{
+            border: 0.1vw solid rgb(255, 255, 255);
+            width: 100%; transition: 0.5s; transform: scale(1.1);
+        }
+        #imgMinlevel:active{
+            border: 0.1vw solid rgb(30, 91, 164);
+        }
+        
+        #Operator input,#Operator select{
+            width: 100%;
+        }
+        #mulaigame{
+            position: absolute;
+            color: white;
+            font-size: 2.5vw;
+            width: 37vw;
+            text-align: center;
+            margin-top: 33.5vw;
+            cursor: pointer;
+            border-bottom-left-radius: 1.4vw;
+            border-bottom-right-radius: 1.4vw;
+            background-color: crimson;
+            transition: 0.2s;
+        }
+        #mulaigame:hover{
+            transition: 0.2s;
+            background-color: rgb(176, 17, 49);
+        }
+        #mulaigame:active{
+            background-color: rgb(88, 9, 25);
+        }
+        #menulevelLocation{
+            position: absolute;
+            margin-top: -3vw; 
+        }#menulevelDesc{opacity: 0.6;color: white;
+            font-size: 1.4vw;}
+        #menulevelTitle, #menulevelLocation{
+            color: white;
+            font-size: 2.1vw;
+        }
+        #menulevelImg{
+            width: 100%;
+        }
+        #fieldMenu{
+            margin-top: 62vw;
+            opacity: 0;
+            /* margin-top: 12vw;
+            opacity: 1; */
+            overflow: hidden;
+        }
+        #fieldSettings{
+            margin-top: 12vw;
+            display: none;
+        }
+        #fieldMenu,#fieldSettings{
+            border-radius: 1.5vw;
+            border-left: 0.4vw solid rgb(191, 9, 46);
+    
+                position: absolute;
+                width: 58vw;
+                padding: 2vw;
+                height: 40vw;
+                transition: 1.5s;
+                backdrop-filter: blur(0.2vw);
+                margin-left: 24vw;
+                background-color: rgba(0, 0, 0, 0.441);
+        }
+        #menulevel{
+            position: absolute;
+            padding: 1.4vw;
+            border: 0.1vw solid rgba(255, 255, 255, 0.756);
+            border-radius: 2vw;
+            width: 37vw;
+            height: 36vw;
+            background-color: rgba(0, 0, 0, 0.747);
+        }
+        #menulevelbtns{
+            position: absolute;
+            width: 15vw;
+            padding: 0.8vw;
+            height: 36vw;
+            margin-left: 39vw;
+            background-color: rgba(0, 0, 0, 0.747);
+        }
+        @keyframes muncul {
+            0%{opacity: 0; transform: translateX(-18vw);}
+            100%{opacity: 1; transform: translateX(0vw);}
+        }
+        .munculpop{
+            animation: muncul 1s;
+        }
+    </style>
+    
+    <div id="version"></div>
+</body>
+<script type="module">
+    import versionData from '../config/config.js'
+    document.getElementById("version").innerHTML = versionData
+</script>
+<script>
+    const LEVEL = [
+        {
+            img:"./assets/image/malam1.png",
+            title:`Malam 1 - "Mari kita ungkap"`,
+            location:"Lokasi : lingkungan Sekolah - keni",
+            desc:`kamu bermain sebagai siswa bernama 
+            keni yang akan menyelidiki secara langsung
+            ke dalam sekolah, sedangkan temannya bernama
+            kevin akan menunggu di post office untuk jaga-jaga`,
+            status:"unlock"
+        },
+        {
+            img:"./assets/image/malam2.png",
+            title:`Malam 2A - "Semakin aneh..."`,
+            location:"Lokasi : Post Office - kevin",
+            desc:`kamu bermain sebagai siswa bernama 
+            kevin yang akan memonitoring kejadian anomali yang
+            di laporkan oleh keni`,
+            status:"lock"
+        }
+    ]
+    let configEvent = document.getElementById('configEvent');
+    let gen = document.getElementById('gen');
+    let startBtn = document.getElementById('startBtn');
+    let optBtn = document.getElementById('optBtn');
+    let creditBtn = document.getElementById('creditBtn');
+    let quitBtn = document.getElementById('quitBtn');
+    let csfx = document.getElementById('csfx');
+    let warningPage = document.getElementById('warningPage');
+    let fieldMenu = document.getElementById('fieldMenu');
+    let menulevel = document.getElementById('menulevel');
+    let fieldSettings = document.getElementById('fieldSettings');
+    let inpVmusic = document.getElementById('inpVmusic');
+    let mainvlob = document.getElementById('mainvlob');
+    let Music = document.getElementById('Music');
+    let Operator = document.getElementById('Operator');
+    let creditTab = document.getElementById('creditTab');
+    let togglefieldmenu = false
+    let cdwarnValue = 10
+    let warnValidation = false
+    let warningBtn = document.getElementById('warningBtn');
+    let menulevelTitle = document.getElementById('menulevelTitle');
+    let menulevelImg = document.getElementById('menulevelImg');
+    let menulevelLocation = document.getElementById('menulevelLocation');
+    let menulevelbtns = document.getElementById('menulevelbtns');
+    let mulaigame = document.getElementById('mulaigame');
+    let bsfx = document.getElementById('bsfx');
+    let leaderboard = document.getElementById('leaderboard');
+    let leaderboardTab = document.getElementById('leaderboardTab');
+    let menulevelActive = 0
+    let bisaMain = true
+
+    LEVEL.forEach((element,index) => {
+        menulevelbtns.innerHTML+=`<img src="${element.img}" id="imgMinlevel">`
+    });
+
+    let renderLevel = ()=>{
+        menulevelTitle.innerHTML =`${LEVEL[menulevelActive].title}`
+        menulevelLocation.innerHTML =`${LEVEL[menulevelActive].location}`
+        menulevelDesc.innerHTML =`${LEVEL[menulevelActive].desc}`
+        menulevelImg.src =`${LEVEL[menulevelActive].img}`
+        if(LEVEL[menulevelActive].status=="lock"){
+            mulaigame.style.backgroundColor = "rgba(35, 35, 35)"
+            mulaigame.innerHTML ="Terkunci 🔒"
+            bisaMain = false
+        }else{
+            mulaigame.style.backgroundColor = "crimson"
+            mulaigame.innerHTML ="Mulai"
+            bisaMain = true
+        }
+        
+        for (let inx = 0; inx < imgMinlevel.length; inx++) {
+            imgMinlevel[inx].style.borderLeft = "0.4vw solid rgb(191, 9, 46, 0)"
+        }
+        imgMinlevel[menulevelActive].style.borderLeft = "0.4vw solid rgb(191, 9, 46)"
+    } 
+    renderLevel()
+    imgMinlevel = document.querySelectorAll('#imgMinlevel');
+    imgMinlevel.forEach((element,index) => {
+        element.addEventListener("click",()=>{
+            bsfx.play()
+            menulevelActive = index
+            menulevel.classList.remove("munculpop")
+            setTimeout(()=>{
+                menulevel.classList.add("munculpop")
+            },0)
+            renderLevel()
+        })
+    });
+    
+  
+    let MusicloopIntv = setInterval(() => {
+        Music.currentTime = 0
+    }, 70000);
+    configEvent.addEventListener("click",()=>{
+        Music.play()
+        document.documentElement.requestFullscreen()
+warningPage.style.display = "inline"
+        let cdwarn = setInterval(() => {
+            if(cdwarnValue>0){
+                cdwarnValue-=1
+                warningBtn.innerHTML = `Tunggu ${cdwarnValue} detik`
+            }else{
+                warnValidation = true
+                warningBtn.innerHTML = `Lanjutkan`
+                clearInterval(cdwarn)
+            }
+        }, 1000);
+configEvent.style.display = "none"
+    })
+
+csfx.addEventListener("play",()=>{
+    let latencyCSFX = 0.65
+    if(csfx.currentTime < latencyCSFX){
+        csfx.currentTime=latencyCSFX
+    }
+})
+    warningBtn.addEventListener("click",()=>{
+        if(warnValidation){
+            csfx.play()
+            warningPage.style.display = "none"
+            gen.style.display = "inline"
+        }
+    })
+
+    startBtn.addEventListener("click",()=>{
+        csfx.play()
+        togglefieldmenu = !togglefieldmenu
+        fieldSettings.style.display="none"
+        toggleOpr = false
+        if(togglefieldmenu){
+            fieldMenu.style.marginTop = "12vw" 
+            fieldMenu.style.opacity = "1"
+        }else{
+            fieldMenu.style.marginTop = "62vw"
+            fieldMenu.style.opacity = "0"
+        }
+    })
+    mulaigame.addEventListener("click",()=>{
+       if(bisaMain){
+            clearInterval(MusicloopIntv)
+            Music.currentTime = 72.5
+            csfx.play()
+            document.body.style.opacity="0"
+                gen.style.display = "none"
+            setTimeout(() => {
+                document.body.style.opacity="1"
+                mainvlob.src="./assets/video/OPnight1.mp4"
+            }, 4000);
+            setTimeout(() => {
+                mainvlob.src=""
+            }, 20000);
+       }
+    })
+    let toggleOpr = false
+    const toggleBtnsystem= ()=>{
+        if(toggleOpr){
+            fieldSettings.style.display="none"
+            toggleOpr = false
+        }else{
+            fieldSettings.style.display="inline"
+            toggleOpr = true
+        }
+    }
+    optBtn.addEventListener("click",()=>{
+        csfx.play()
+        Operator.style.display="inline"
+        leaderboardTab.style.display="none"
+        creditTab.style.display="none"
+        toggleBtnsystem()
+    })
+    creditBtn.addEventListener("click",()=>{
+        csfx.play()
+        Operator.style.display="none"
+        leaderboardTab.style.display="none"
+        creditTab.style.display="inline"
+        toggleBtnsystem()
+    })
+    leaderboard.addEventListener("click",()=>{
+        csfx.play()
+        Operator.style.display="none"
+        leaderboardTab.style.display="inline"
+        creditTab.style.display="none"
+        toggleBtnsystem()
+    })
+
+    inpVmusic.addEventListener("input",(e)=>{
+        let vol = e.target.value
+        Music.volume = vol
+    })
+    quitBtn.addEventListener("click",()=>{
+        window.location.href ="../LauncerMedter.html"
+    })
+</script>
+</html>
