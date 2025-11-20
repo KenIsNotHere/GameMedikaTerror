@@ -16,11 +16,13 @@
             background-color: black;
             overflow: hidden;
             transition: 0.1s;
+            height: 100%;
         }
-    }
+}
     body{
-        background-color: black;
+        background-color: rgb(0, 0, 0);
         transition: 0.1s;
+        height: 100%;
     }
     #mainvlob{
         width: 100vw;
@@ -479,10 +481,10 @@ csfx.addEventListener("play",()=>{
                 document.body.style.opacity="1"
                 mainvlob.src="./assets/video/OPnight1.mp4"
             }, 4000);
-            setTimeout(() => {
-                mainvlob.src=""
-            }, 20000);
        }
+    })
+    mainvlob.addEventListener('ended',()=>{
+        window.location.href = "./malam1.html"
     })
     let toggleOpr = false
     const toggleBtnsystem= ()=>{
