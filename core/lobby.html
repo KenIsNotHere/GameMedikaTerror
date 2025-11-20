@@ -479,14 +479,15 @@ csfx.addEventListener("play",()=>{
                 gen.style.display = "none"
             setTimeout(() => {
                 document.body.style.opacity="1"
-                mainvlob.src="./assets/video/OPnight1.mp4"
                 mainvlob.removeAttribute("loop")
+                mainvlob.src="./assets/video/OPnight1.mp4"
+                mainvlob.addEventListener('ended',()=>{
+        window.location.href = "./malam1.html"
+    })
             }, 4000);
        }
     })
-    mainvlob.addEventListener('ended',()=>{
-        window.location.href = "./malam1.html"
-    })
+    
     let toggleOpr = false
     const toggleBtnsystem= ()=>{
         if(toggleOpr){
