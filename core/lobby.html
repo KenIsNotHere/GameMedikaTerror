@@ -479,12 +479,11 @@ csfx.addEventListener("play",()=>{
                 gen.style.display = "none"
             setTimeout(() => {
                 document.body.style.opacity="1"
-                mainvlob.removeAttribute("loop")
                 mainvlob.src="./assets/video/OPnight1.mp4"
-                mainvlob.addEventListener('ended',()=>{
-        window.location.href = "./malam1.html"
-    })
             }, 4000);
+            setTimeout(()=>{
+                window.location.href = "./malam1.html"
+            },24000)
        }
     })
     
