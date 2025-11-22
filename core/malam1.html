@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Malam 1 - Mari kita ungkap</title>
+    <!-- <title>Malam 1 - Time System</title> -->
+    <title>Malam 1 - Mari Kita Ungkap</title>
     <style>
         /* --- RESET & SYSTEM --- */
         * { padding: 0; margin: 0; box-sizing: border-box; user-select: none; }
@@ -15,226 +16,245 @@
             display: flex; justify-content: center; align-items: center;
         }
 
-        /* --- VIEWPORT RESPONSIVE (Rasio 16:9) --- */
+        /* --- VIEWPORT --- */
         #viewport {
             position: relative;
-            background-color: #111; /* Warna Abu-abu Gelap dasar */
+            background-color: #111;
             overflow: hidden;
             box-shadow: 0 0 50px rgba(0,0,0,0.5);
-
-            /* --- ANIMASI BERNAFAS --- */
-            /* Aktifkan animasi bernafas di sini */
             animation: breathingView 4s infinite ease-in-out, animasiLampuRedup 5s infinite alternate;
-            transform-origin: center center; /* Penting untuk scaling */
+            transform-origin: center center;
         }
 
-        /* Keyframes untuk Animasi Bernafas */
         @keyframes breathingView {
-            0% {
-                transform: translateY(0px) scale(1);
-            }
-            50% {
-                /* Sedikit naik dan scale/zoom kecil untuk efek "menjauh" */
-                transform: translateY(-0.5%) scale(1.005); 
-            }
-            100% {
-                transform: translateY(0px) scale(1);
-            }
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-0.5%) scale(1.005); }
         }
-
         @keyframes animasiLampuRedup {
-            0%{
-                filter: brightness(0.8);
-            }
-            100%{
-                filter: brightness(1);
-            }
+            0% { filter: brightness(0.8); }
+            100% { filter: brightness(1); }
         }
 
-        /* Layar Lebar (Desktop) */
         @media (min-aspect-ratio: 16/9) {
             #viewport { height: 100vh; width: 177.78vh; }
             html { font-size: 2vh; } 
         }
-
-        /* Layar Sempit (Mobile/Tablet) */
         @media (max-aspect-ratio: 16/9) {
             #viewport { width: 100vw; height: 56.25vw; }
             html { font-size: 2vw; }
         }
 
-        /* --- GAME WORLD LAYERS --- */
-        
-        /* Interface Layer */
-        #interface {
-            width: 100%; height: 100%;
-            position: absolute; top: 0; left: 0;
-            pointer-events: none; /* Agar tembus ke trigger box */
+        /* --- TRANSITION OVERLAY (LAYAR HITAM) --- */
+        #transitionOverlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: black;
+            z-index: 100; /* Paling atas */
+            opacity: 0;   /* Default tidak terlihat */
+            pointer-events: none; /* Agar bisa klik tembus saat transparan */
+            transition: opacity 1s ease-in-out; /* Animasi Fade 1 Detik */
         }
 
-        /* --- SYSTEM PANORAMA (INTI PERBAIKAN) --- */
+        /* --- PANORAMA --- */
         #main {
-            display: flex;              /* Susun ke samping */
-            width: 300%;               /* WAJIB 300% (3 x Lebar Layar) */
-            height: 100%;
-            position: absolute;
-            top: 0; left: 0;
-            will-change: transform;
-            filter: brightness(1.5);
+            display: flex; width: 300%; height: 100%;
+            position: absolute; top: 0; left: 0; will-change: transform;
         }
+        .main-img { width: 33.3333%; height: 100%; object-fit: cover; display: block; }
 
-        .main-img {
-            width: 33.3333%;           /* WAJIB 1/3 dari #main */
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        /* DEBUG COLORS: Jika gambar rusak, warna ini akan muncul */
-        #mainImg1 { background-color: #550000; } /* Merah Tua (Kiri) */
-        #mainImg2 { background-color: #005500; } /* Hijau Tua (Tengah) */
-        #mainImg3 { background-color: #000055; } /* Biru Tua (Kanan) */
-
-        /* --- TRIGGERS & UI --- */
-        
-        /* Trigger Area Kiri/Kanan */
-        .viewSide {
-            position: absolute;
-            width: 15%; height: 100%;
-            z-index: 50; /* Harus tinggi agar kena mouse */
-            top: 0;
-            cursor: w-resize;
-        }
-        #viewLeftBox { left: 0; }
-        #viewRightBox { right: 0; }
-
-        /* Layer UI Atas */
-        #UI {
-            position: absolute; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 60;
-        }
-
-        /* Tombol CCTV */
-        #cctvBtn {
-            pointer-events: auto;
-            position: absolute;
-            bottom: 5%; left: 50%;
-            transform: translateX(-50%);
-            width: 50%; padding: 0.5%;
-            background-color: rgba(0, 128, 0, 0.2);
-            backdrop-filter: blur(5px);
-            color: rgba(255, 255, 255, 0.463); text-align: center;
-            font-size: 1.2rem;
-            cursor: pointer; border: 1px solid rgba(255,255,255,0.1);
-            transition: 0.2s;
-        }
-        #cctvBtn:hover { background-color: rgba(0, 128, 0, 0.5); }
-
-        /* CCTV Animation */
-        #cctvContainer {
-            position: absolute; width: 100%; height: 100%;
-            perspective: 1000px;
-            display: flex; justify-content: center;
-            pointer-events: none; overflow: hidden;
-        }
-
-        #cctv {
-            width: 65%; position: absolute; bottom: 0;
-            transform-origin: bottom center;
-            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .hideCctv {
-            transform: rotateX(110deg) translateY(20%);
-            filter: blur(20px) brightness(0); opacity: 0;
-        }
-        .showCctv {
-            transform: rotateX(0deg) translateY(-10%);
-            filter: blur(0px) brightness(0.7); opacity: 1;
-        }
-
-        /* Start Screen */
-        #startBtn {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.082);
-            backdrop-filter: blur(5px);
-            z-index: 99;
-            display: flex; justify-content: center; align-items: center;
-            color: white; font-size: 2.5rem;
-            cursor: pointer; text-transform: uppercase; letter-spacing: 2px;
-        }
-
-        /* --- ENTITIES LAYER --- */
+        /* --- ENTITIES --- */
         #entities {
-            position: absolute;
-            top: 0;
-            
-            /* Ukurannya harus 1/3 dari #main agar proporsional dengan 1 layar */
-            width: 33.3333%; 
-            height: 100%;
-            
-            /* PENTING: Z-Index agar di atas background tapi di bawah Static/UI */
-            z-index: 5; 
-            
-            /* Flexbox untuk mengatur posisi hantu di dalam ruangan (tengah/bawah) */
-            display: flex;
-            justify-content: center; /* Tengah Horizontal */
-            align-items: flex-end;   /* Berdiri di Lantai (Bawah) */
-            pointer-events: none;    /* Agar klik tembus (kecuali mau di-klik) */
-            
-            /* POSISI RUANGAN (Ganti nilai left ini untuk memindah hantu) */
-            /* left: 0%;       -> Ada di Ruang Kiri */
-            /* left: 33.333%;  -> Ada di Ruang Tengah */
-            /* left: 66.666%;  -> Ada di Ruang Kanan */
-            left: 20%; 
+            position: absolute; top: 0; width: 33.3333%; height: 100%; z-index: 5;
+            display: flex; justify-content: center; align-items: flex-end;
+            pointer-events: none; left: 20%; 
         }
-
         #entityIMG {
-            /* Ukuran hantu relatif terhadap layar */
-            width: auto;  
-            height: 60%;
-            margin-bottom: 10%; /* Jarak dari bawah layar */
-            
-            /* Agar hantu bisa di klik (misal senter) */
-            pointer-events: auto; 
-            
-            /* Animasi breathing sedikit biar seram */
+            width: auto; height: 60%; margin-bottom: 10%; pointer-events: auto;
             animation: breathing 3s infinite ease-in-out;
         }
-
         @keyframes breathing {
             0%, 100% { transform: scale(1); filter: brightness(0.8); }
             50% { transform: scale(1.02); filter: brightness(1); }
         }
+
+        /* --- NAVIGATION BUTTON (BIRU TRANSPARAN) --- */
+        #moveBtn {
+            position: absolute;
+            z-index: 10;
+            padding: 0.3% 0.45%;
+            background-color: rgba(0, 150, 255, 0.15);
+            border : 0.2vh solid rgba(0, 149, 255, 0);
+            color: rgba(200, 230, 255, 0.306);
+            box-shadow: 0 0 15px rgba(0, 150, 255, 0.3);
+            backdrop-filter: blur(2px);
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 70%;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            
+            /* Posisi Default */
+            top: 40%; left: 51%; 
+            transform: translate(-50%, -50%);
+        }
         
+        #moveBtn:hover {
+            background-color: rgba(0, 149, 255, 0.349);
+            box-shadow: 0 0 25px rgba(0, 150, 255, 0.6);
+            border : 0.2vh solid rgba(0, 149, 255, 0.459);
+            color: white;
+        }
+
+        /* --- TRIGGERS --- */
+        .viewSide { position: absolute; width: 15%; height: 100%; z-index: 50; top: 0; cursor: w-resize; }
+        #viewLeftBox { left: 0; }
+        #viewRightBox { right: 0; }
+
+        /* --- UI LAYER --- */
+        #UI { position: absolute; width: 100%; height: 100%; pointer-events: none; z-index: 60; }
+
+        /* TOMBOL CCTV UTAMA */
+        #cctvBtn {
+            pointer-events: auto; position: absolute; bottom: 5%; left: 50%;
+            transform: translateX(-50%); width: 50%; padding: 0.5%;
+            background-color: rgba(0, 128, 0, 0.2); backdrop-filter: blur(5px);
+            color: rgba(255, 255, 255, 0.8); text-align: center; font-size: 1.2rem; font-weight: bold;
+            cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: all 0.2s ease;
+        }
+        #cctvBtn:hover { background-color: rgba(0, 128, 0, 0.5); }
+        #cctvBtn.btn-red { background-color: rgba(200, 0, 0, 0.6) !important; border-color: red; color: white; }
+        #cctvBtn.btn-red:hover { background-color: rgba(200, 0, 0, 0.9) !important; }
+
+        /* MONITOR CONTAINER */
+        #cctvContainer {
+            position: absolute; width: 100%; height: 100%;
+            perspective: 1000px; display: flex; justify-content: center; pointer-events: none; overflow: hidden;
+        }
+        #monitorWrapper {
+            width: 65%; position: absolute; bottom: 0; transform-origin: bottom center;
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); pointer-events: auto; cursor: pointer; 
+        }
+        #cctvFrame { width: 100%; display: block; position: relative; z-index: 1; transition: filter 0.2s; }
+        #cctvScreen {
+            position: absolute; z-index: 2; width: 65%; left: 16.6%; top: 15%; aspect-ratio: 4/3; 
+            object-fit: cover; display: none; box-shadow: 0 0 20vw rgba(255, 126, 51, 0.148);
+        }
+
+        /* --- CCTV UI (MAP & CONTROLS) --- */
+        #cctvUiLayer {
+            position: absolute; z-index: 3; width: 65%; left: 16.6%; top: 15%; aspect-ratio: 4/3;
+            pointer-events: none; display: none;
+        }
+
+        /* NAVBAR JAM */
+        #cctvNavbar{
+            position: absolute; background-color: rgb(0, 0, 0); border-bottom: 0.3vw solid rgb(39, 88, 13);
+            width: 100%; height: 5%; top: -5%; font-size: 60%; color: white;
+            display: flex; align-items: center; padding-left: 2%; /* Agar teks tidak mepet */
+            font-family: 'Courier New', Courier, monospace; font-weight: bold;
+        }
+
+        #mapContainer {
+            position: absolute; bottom: 5%; right: 5%; width: 35%; height: auto;
+        }
+
+        #floorPlan {
+            width: 100%; height: auto; opacity: 0.8; border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        #posisiAnda {
+            position: absolute; width: 10%; height: auto; z-index: 10;
+            animation: blink 1s infinite; display: none; filter: brightness(1.5) contrast(1.5);
+        }
+
+        /* FLOOR BUTTONS */
+        .floor-controls {
+            position: absolute; left: -170%; bottom: 0; 
+            display: flex; flex-direction: column; gap: 0.5vh;
+            pointer-events: auto;
+        }
+
+        .floor-btn {
+            background-color: rgba(0, 255, 0, 0.15);
+            border: 0.3vh solid rgba(0, 255, 0, 0.3);
+            color: rgba(255, 255, 255, 0.9);
+            padding: 0.5% 1%; font-size: 4%;
+            font-family: 'Courier New', Courier, monospace; font-weight: bold; font-size: 0.9rem;
+            cursor: pointer; text-align: center; width: 120%; transition: 0.2s;
+        }
+        .floor-btn:hover { background-color: rgba(0, 255, 0, 0.3); }
+        .floor-btn.active-floor {
+            border: 0.3vh solid #00ff00; background-color: rgba(0, 255, 0, 0.25);
+            text-shadow: 0 0 5px #00ff00; box-shadow: 0 0 10px rgba(0, 255, 0, 0.1);
+        }
+
+        /* CAMERA BUTTONS */
+        .cam-group { display: none; }
+        .cam-group.show-group { display: block; } 
+
+        .cam-btn {
+            position: absolute; pointer-events: auto; 
+            background-color: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.6);
+            color: rgba(255, 255, 255, 0.8); padding: 2% 4%;
+            font-family: 'Courier New', Courier, monospace; font-weight: bold; font-size: 0.6rem;
+            cursor: pointer; text-transform: uppercase; text-shadow: 0 0 2px white;
+            text-align: center; width: 37%;
+        }
+        .cam-btn:hover { background-color: rgba(255, 255, 255, 0.3); }
+        .cam-btn.active {
+            background-color: rgba(255, 255, 0, 0.3); border-color: rgba(255, 255, 0, 0.8);
+            color: #ffff00; text-shadow: 0 0 5px yellow; box-shadow: 0 0 10px rgba(255, 255, 0, 0.2);
+        }
+
+        /* POSISI KAMERA LANTAI 3 */
+        #camA { top: 70%; left: 10%; }
+        #camB { top: 20%; left: 10%; }
+        #camC { top: 20%; left: 70%; }
+        /* POSISI KAMERA LANTAI 2 */
+        #camD { top: 70%; left: 10%; } 
+        #camE { top: 10%; left: 10%; } 
+        #camF { top: 10%; left: 70%; } 
+        /* POSISI KAMERA LANTAI 1 */
+        #camG { top: 80%; left: 20%; }
+        #camH { top: 15%; left: 15%; }
+        #camI { top: 15%; left: 75%; }
+        #camJ { top: 70%; left: 70%; }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        .hideCctv { transform: rotateX(110deg) translateY(20%); filter: blur(20px) brightness(0); opacity: 0; pointer-events: none; }
+        .showCctv { transform: rotateX(0deg) translateY(-10%); filter: blur(0px) brightness(0.7); opacity: 1; }
+
+        #startBtn {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.185); backdrop-filter: blur(5px); z-index: 99;
+            display: flex; justify-content: center; align-items: center;
+            color: white; font-size: 2.5rem; cursor: pointer; text-transform: uppercase; letter-spacing: 2px;
+        }
     </style>
 </head>
 <body>
 
-    <audio id="bgAudio" loop>
-        <source src="./assets/audio/MainBgmHorror.mp3" type="audio/mpeg">
-    </audio>
-
-    <audio id="btnSfx">
-        <source src="./assets/audio/mechanicalswish.mp3" type="audio/mpeg">
-    </audio>
-
-    <audio id="cctvStatic" loop>
-        <source src="./assets/audio/ConstantStaticTv.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="bgAudio" loop><source src="./assets/audio/MainBgmHorror.mp3" type="audio/mpeg"></audio>
+    <audio id="btnSfx"><source src="./assets/audio/mechanicalswish.mp3" type="audio/mpeg"></audio>
+    <audio id="cctvStatic" loop><source src="./assets/audio/ConstantStaticTv.mp3" type="audio/mpeg"></audio>
+    <audio id="monitorOnSfx"><source src="./assets/audio/cassette-sfx.mp3" type="audio/mpeg"></audio>
+    <audio id="camSwitchSfx"><source src="./assets/audio/beep.mp3" type="audio/mpeg"></audio>
+    <audio id="footstepPlayerSfx"><source src="./assets/audio/PlayerRunSfx.mp3" type="audio/mpeg"></audio>
+    <audio id="newAreaSfx"><source src="./assets/audio/sfxNewArea.mp3" type="audio/mpeg"></audio>
 
     <div id="viewport">
+        <div id="transitionOverlay"></div>
+
         <div id="main">
-            <img src="./assets/image/M1/ss.png" id="mainImg1" class="main-img">
-            <img src="./assets/image/M1/sd.png" id="mainImg2" class="main-img">
-            <img src="./assets/image/M1/st.png" id="mainImg3" class="main-img">
+            <img src="./assets/image/M1/panoramaSectionA1.png" id="mainImg1" class="main-img">
+            <img src="./assets/image/M1/panoramaSectionA2.png" id="mainImg2" class="main-img">
+            <img src="./assets/image/M1/panoramaSectionA3.png" id="mainImg3" class="main-img">
+            
+            <div id="moveBtn">B</div>
 
             <div id="entities">
-                <img src="./assets/image/animatronic.png" id="entityIMG" 
-                     style="border: 2px dashed red; min-height: 200px;" 
-                     alt="Entity">
+                <img src="" id="entityIMG" style="border: 2px dashed rgba(255,0,0,0); min-height: 200px;">
             </div>
         </div>
 
@@ -243,7 +263,42 @@
 
         <div id="UI">
             <div id="cctvContainer">
-                <img src="./assets/image/komp.png" class="hideCctv" id="cctv">
+                <div id="monitorWrapper" class="hideCctv">
+                    <img src="./assets/image/komp.png" id="cctvFrame">
+                    <img src="./assets/image/M1/cctv/cameraSectionA.png" id="cctvScreen">
+                    
+                    <div id="cctvUiLayer">
+                        <div id="cctvNavbar">00:00</div> 
+                        
+                        <div id="mapContainer">
+                            <img src="./assets/image/M1/cctv/DenahLantai3.png" id="floorPlan">
+                            <img src="./assets/image/M1/cctv/PosisiAnda.png" id="posisiAnda">
+                            
+                            <div id="floor3Group" class="cam-group show-group">
+                                <div id="camA" class="cam-btn active" data-cam="A">CAM A</div>
+                                <div id="camB" class="cam-btn" data-cam="B">CAM B</div>
+                                <div id="camC" class="cam-btn" data-cam="C">CAM C</div>
+                            </div>
+                            <div id="floor2Group" class="cam-group">
+                                <div id="camD" class="cam-btn" data-cam="D">CAM D</div>
+                                <div id="camE" class="cam-btn" data-cam="E">CAM E</div>
+                                <div id="camF" class="cam-btn" data-cam="F">CAM F</div>
+                            </div>
+                            <div id="floor1Group" class="cam-group">
+                                <div id="camG" class="cam-btn" data-cam="G">CAM G</div>
+                                <div id="camH" class="cam-btn" data-cam="H">CAM H</div>
+                                <div id="camI" class="cam-btn" data-cam="I">CAM I</div>
+                                <div id="camJ" class="cam-btn" data-cam="J">CAM J</div>
+                            </div>
+
+                            <div class="floor-controls">
+                                <div class="floor-btn active-floor" data-floor="3">FLOOR 3</div>
+                                <div class="floor-btn" data-floor="2">FLOOR 2</div>
+                                <div class="floor-btn" data-floor="1">FLOOR 1</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div id="cctvBtn">▲</div>
         </div>
@@ -252,29 +307,324 @@
     </div>
 
     <script>
+        // --- ELEMENTS ---
         const startBtn = document.getElementById('startBtn');
         const cctvBtn = document.getElementById('cctvBtn');
-        const cctv = document.getElementById('cctv');
+        const monitorWrapper = document.getElementById('monitorWrapper'); 
+        const cctvScreen = document.getElementById('cctvScreen');         
+        const cctvFrame = document.getElementById('cctvFrame');
+        const cctvUiLayer = document.getElementById('cctvUiLayer'); 
+        const cctvNavbar = document.getElementById('cctvNavbar'); // Elements Navbar
         const mainContainer = document.getElementById('main');
         const leftZone = document.getElementById('viewLeftBox');
         const rightZone = document.getElementById('viewRightBox');
+        const floorPlan = document.getElementById('floorPlan');
+        const posisiAnda = document.getElementById('posisiAnda');
+        const moveBtn = document.getElementById('moveBtn');
+        const transitionOverlay = document.getElementById('transitionOverlay');
+        
+        const mainImg1 = document.getElementById('mainImg1');
+        const mainImg2 = document.getElementById('mainImg2');
+        const mainImg3 = document.getElementById('mainImg3');
 
-        // --- AUDIO ELEMENTS ---
-    const bgAudio = document.getElementById('bgAudio');
-    const btnSfx = document.getElementById('btnSfx');
-    const cctvStatic = document.getElementById('cctvStatic');
+        const camBtns = document.querySelectorAll('.cam-btn');
+        const floorBtns = document.querySelectorAll('.floor-btn');
+        const camGroups = {
+            3: document.getElementById('floor3Group'),
+            2: document.getElementById('floor2Group'),
+            1: document.getElementById('floor1Group')
+        };
 
-    // Set Volume Awal (Opsional: Biar gak kaget)
-    bgAudio.volume = 0.7;    // 70% Volume
-    btnSfx.volume = 1.0;     // 100% Volume
-    cctvStatic.volume = 0.5; // 50% Volume 
-        let isCctvActive = false;
+        // --- AUDIO ---
+        const bgAudio = document.getElementById('bgAudio');
+        const btnSfx = document.getElementById('btnSfx');
+        const cctvStatic = document.getElementById('cctvStatic');
+        const monitorOnSfx = document.getElementById('monitorOnSfx');
+        const camSwitchSfx = document.getElementById('camSwitchSfx');
+        const footstepPlayerSfx = document.getElementById('footstepPlayerSfx');
+        const newAreaSfx = document.getElementById('newAreaSfx');
+
+        bgAudio.volume = 0.8; btnSfx.volume = 0.8; cctvStatic.volume = 0.5; monitorOnSfx.volume = 1.0;
+        footstepPlayerSfx.volume = 1.0; newAreaSfx.volume = 1.0; camSwitchSfx.volume = 0.3;
+
+        // --- DATABASE CONFIG ---
+        
+        const cameraData = {
+            'A': './assets/image/M1/cctv/cameraSectionA.png',
+            'B': './assets/image/M1/cctv/cameraSectionB.png', 
+            'C': './assets/image/M1/cctv/cameraSectionC.png',
+            'D': './assets/image/M1/cctv/cameraSectionD.png',
+            'E': './assets/image/M1/cctv/cameraSectionE.png',
+            'F': './assets/image/M1/cctv/cameraSectionF.png',
+            'G': './assets/image/M1/cctv/cameraSectionG.png',
+            'H': './assets/image/M1/cctv/cameraSectionH.png',
+            'I': './assets/image/M1/cctv/cameraSectionI.png',
+            'J': './assets/image/M1/cctv/cameraSectionJ.png'
+        };
+
+        const floorData = {
+            3: './assets/image/M1/cctv/DenahLantai3.png',
+            2: './assets/image/M1/cctv/DenahLantai2.png', 
+            1: './assets/image/M1/cctv/DenahLantai1.png'  
+        };
+
+        // DATA PANORAMA (TITIK LOKASI)
+        const locationData = {
+            'A': {
+                images: [
+                    './assets/image/M1/panoramaSectionA1.png',
+                    './assets/image/M1/panoramaSectionA2.png',
+                    './assets/image/M1/panoramaSectionA3.png'
+                ],
+                btnTarget: 'B', 
+                btnText: 'B',
+                btnPos: { left: '51%', top: '40%' }, 
+                playerData: { floor: 3, cam: 'A', mapCss: { top: '75%', left: '22%' } }
+            },
+            'B': {
+                images: [
+                    './assets/image/M1/panoramaSectionB1.png',
+                    './assets/image/M1/panoramaSectionB2.png',
+                    './assets/image/M1/panoramaSectionB3.png'
+                ],
+                btnTarget: 'A', 
+                btnText: 'A',
+                btnPos: { left: '9%', top: '40%' }, 
+                playerData: { floor: 3, cam: 'B', mapCss: { top: '20%', left: '22%' } }
+            }
+        };
+
+        // --- TIME SYSTEM CONFIG (BARU) ---
+        let gameHour = 18;      // Mulai jam 00:00 (Default)
+        let gameMinute = 0;
+        const realSecondsPerGameMinute = 2; // 1 menit game = 6 detik asli
+        let clockInterval; 
+
+        // --- GAME STATE ---
+        let isMonitorUp = false; 
+        let isScreenOn = false;  
+        let isMoving = false; 
         let currentPan = 50;
         let panSpeed = 0.8;
         let moveDirection = 0;
+        
+        let currentLocation = 'A'; 
+        let currentCamera = 'A';  
+        let currentViewFloor = 3; 
 
+        // Variable Player (Dinamis)
+        let playerData = locationData['A'].playerData;
+
+
+        // --- TIME SYSTEM LOGIC ---
+        function updateGameTime() {
+            gameMinute++;
+
+            if (gameMinute >= 60) {
+                gameMinute = 0;
+                gameHour++;
+            }
+
+            if (gameHour >= 24) {
+                gameHour = 0; // Reset ke 00:00 setelah 23:59
+            }
+
+            // Format String: 00:00
+            const formattedHour = gameHour.toString().padStart(2, '0');
+            const formattedMinute = gameMinute.toString().padStart(2, '0');
+            
+            // Update UI
+            cctvNavbar.innerText = `${formattedHour}:${formattedMinute}`;
+        }
+
+        function startClock() {
+            // Update tampilan awal
+            const formattedHour = gameHour.toString().padStart(2, '0');
+            const formattedMinute = gameMinute.toString().padStart(2, '0');
+            cctvNavbar.innerText = `${formattedHour}:${formattedMinute}`;
+
+            // Jalankan timer
+            clockInterval = setInterval(updateGameTime, realSecondsPerGameMinute * 1000);
+        }
+
+
+        // --- MOVEMENT LOGIC ---
+
+        moveBtn.addEventListener('click', () => {
+            if(isMoving || isMonitorUp) return; 
+            
+            const targetLocID = locationData[currentLocation].btnTarget;
+            const targetData = locationData[targetLocID];
+
+            startMovementSequence(targetLocID, targetData);
+        });
+
+        function startMovementSequence(targetLocID, targetData) {
+            isMoving = true;
+            moveBtn.style.pointerEvents = "none"; 
+
+            // 1. FADE OUT
+            transitionOverlay.style.opacity = 1;
+
+            // 2. Jeda 1 Detik 
+            setTimeout(() => {
+                footstepPlayerSfx.currentTime = 0;
+                footstepPlayerSfx.play();
+
+                // 3. Jalan selama 6 Detik
+                setTimeout(() => {
+                    finishMovement(targetLocID, targetData);
+                }, 6000); 
+
+            }, 1000); 
+        }
+
+        function finishMovement(targetLocID, targetData) {
+            footstepPlayerSfx.pause();
+            
+            newAreaSfx.currentTime = 0;
+            newAreaSfx.play();
+
+            currentLocation = targetLocID;
+            
+            mainImg1.src = targetData.images[0];
+            mainImg2.src = targetData.images[1];
+            mainImg3.src = targetData.images[2];
+
+            playerData = targetData.playerData;
+
+            const nextData = locationData[currentLocation];
+            moveBtn.innerText = nextData.btnText;
+            moveBtn.style.left = nextData.btnPos.left;
+            moveBtn.style.top = nextData.btnPos.top;
+
+            updatePlayerMarker();
+
+            transitionOverlay.style.opacity = 0;
+
+            setTimeout(() => {
+                isMoving = false;
+                moveBtn.style.pointerEvents = "auto";
+            }, 1000); 
+        }
+
+
+        // --- CCTV LOGIC ---
+
+        function switchFloor(floorNum) {
+            if (currentViewFloor == floorNum) return;
+            currentViewFloor = parseInt(floorNum);
+            floorPlan.src = floorData[currentViewFloor] || floorData[3];
+
+            for (let f in camGroups) camGroups[f].classList.remove('show-group'); 
+            if (camGroups[currentViewFloor]) camGroups[currentViewFloor].classList.add('show-group'); 
+
+            floorBtns.forEach(btn => {
+                if (parseInt(btn.getAttribute('data-floor')) === currentViewFloor) btn.classList.add('active-floor');
+                else btn.classList.remove('active-floor');
+            });
+
+            updatePlayerMarker();
+            camSwitchSfx.currentTime = 0; camSwitchSfx.play();
+        }
+
+        function updatePlayerMarker() {
+            if (currentViewFloor === playerData.floor) {
+                posisiAnda.style.display = 'block';
+                posisiAnda.style.top = playerData.mapCss.top;
+                posisiAnda.style.left = playerData.mapCss.left;
+            } else {
+                posisiAnda.style.display = 'none';
+            }
+        }
+
+        function switchCamera(camID) {
+            if (currentCamera === camID) return;
+            currentCamera = camID;
+            cctvScreen.src = cameraData[camID] || cameraData['A'];
+            camBtns.forEach(b => {
+                if (b.getAttribute('data-cam') === camID) b.classList.add('active');
+                else b.classList.remove('active');
+            });
+            camSwitchSfx.currentTime = 0; camSwitchSfx.play();
+        }
+
+        // --- EVENT LISTENERS ---
+        floorBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if(!isScreenOn) return;
+                switchFloor(btn.getAttribute('data-floor'));
+            });
+        });
+
+        camBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if(!isScreenOn) return;
+                switchCamera(btn.getAttribute('data-cam'));
+            });
+        });
+
+        const handleCctvBtn = () => {
+            btnSfx.currentTime = 0; btnSfx.play();
+            if (isScreenOn) turnOffScreen();
+            else toggleMonitorPosition();
+        };
+
+        const toggleMonitorPosition = () => {
+            if (!isMonitorUp) {
+                monitorWrapper.classList.replace("hideCctv", "showCctv");
+                cctvBtn.innerHTML = "▼"; isMonitorUp = true;
+            } else {
+                monitorWrapper.classList.replace("showCctv", "hideCctv");
+                cctvBtn.innerHTML = "▲"; isMonitorUp = false;
+            }
+        };
+
+        const turnOnScreen = () => {
+            if (isMonitorUp && !isScreenOn) {
+                monitorOnSfx.currentTime = 0; monitorOnSfx.play(); cctvStatic.play(); 
+                cctvScreen.style.display = "block";
+                cctvUiLayer.style.display = "block"; 
+                cctvFrame.style.filter="brightness(1.4)";
+                cctvBtn.innerHTML = "OFF"; cctvBtn.classList.add("btn-red");
+                updatePlayerMarker();
+                isScreenOn = true;
+            }
+        };
+
+        const turnOffScreen = () => {
+            monitorOnSfx.currentTime = 0; monitorOnSfx.play(); cctvStatic.pause(); cctvStatic.currentTime = 0;
+            cctvScreen.style.display = "none";
+            cctvUiLayer.style.display = "none"; 
+            cctvFrame.style.filter= "brightness(1)";
+            cctvBtn.innerHTML = "▼"; cctvBtn.classList.remove("btn-red");
+            isScreenOn = false;
+        };
+
+        leftZone.addEventListener('mouseenter', () => { moveDirection = -1; });
+        leftZone.addEventListener('mouseleave', () => { if(moveDirection === -1) moveDirection = 0; });
+        rightZone.addEventListener('mouseenter', () => { moveDirection = 1; });
+        rightZone.addEventListener('mouseleave', () => { if(moveDirection === 1) moveDirection = 0; });
+
+        cctvBtn.addEventListener("click", handleCctvBtn);
+        monitorWrapper.addEventListener("click", turnOnScreen);
+
+        // START GAME EVENT
+        startBtn.addEventListener('click', () => {
+            if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+            startBtn.style.display = "none";
+            bgAudio.play();
+            
+            startClock(); // MULAI WAKTU SAAT GAME DIMULAI
+            gameLoop();
+        });
+
+        mainContainer.style.transform = `translateX(-33.333%)`; 
+        
         function gameLoop() {
-            if (moveDirection !== 0 && !isCctvActive) {
+            if (moveDirection !== 0 && !isMonitorUp && !isMoving) {
                 currentPan += moveDirection * panSpeed;
                 if (currentPan < 0) currentPan = 0;
                 if (currentPan > 100) currentPan = 100;
@@ -283,44 +633,6 @@
             mainContainer.style.transform = `translateX(-${percentage}%)`;
             requestAnimationFrame(gameLoop);
         }
-
-        leftZone.addEventListener('mouseenter', () => { moveDirection = -1; });
-        leftZone.addEventListener('mouseleave', () => { if(moveDirection === -1) moveDirection = 0; });
-        rightZone.addEventListener('mouseenter', () => { moveDirection = 1; });
-        rightZone.addEventListener('mouseleave', () => { if(moveDirection === 1) moveDirection = 0; });
-
-        const cctvMode = () => {
-            // 1. Mainkan suara tombol (Set waktu ke 0 biar bisa dipam cepat)
-        btnSfx.currentTime = 0;
-        btnSfx.play();
-
-            if(!isCctvActive){
-                cctv.classList.replace("hideCctv", "showCctv");
-                cctvBtn.innerHTML = "▼"; 
-
-                // Mainkan suara static monitor
-            cctvStatic.play();
-            } else {
-                cctv.classList.replace("showCctv", "hideCctv");
-                cctvBtn.innerHTML = "▲"; 
-
-                cctvStatic.pause();
-            cctvStatic.currentTime = 0; // Reset ke awal
-            }
-            isCctvActive = !isCctvActive;
-        }
-
-        startBtn.addEventListener('click', () => {
-            if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
-            else if (document.documentElement.webkitRequestFullscreen) document.documentElement.webkitRequestFullscreen();
-            startBtn.style.display = "none";
-
-            bgAudio.play();
-            gameLoop();
-        });
-
-        cctvBtn.addEventListener("click", cctvMode);
-        mainContainer.style.transform = `translateX(-33.333%)`; 
     </script>
 </body>
 </html>

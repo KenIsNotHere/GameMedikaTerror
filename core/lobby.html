@@ -47,7 +47,7 @@
         font-size: 1.7vw;
         cursor: pointer;
         border: 0.2vw rgba(255, 255, 255, 0) solid;
-        transition: 0.5s;
+        transition: all 0.5s;
     }
     #leaderboard{
         cursor: pointer;
@@ -66,11 +66,12 @@
         border: 0.2vw solid white;
     }
     #startBtn:hover, #optBtn:hover, #creditBtn:hover, #quitBtn:hover{
-        transition: 0.5s;
+        transition: all 0.5s;
         margin-left: 4vw;
         border: 0.2vw white solid;
     }
     #startBtn:active, #optBtn:active, #creditBtn:active, #quitBtn:active{
+        transition: all 0.1s;
         background-color: rgba(255, 51, 51, 0.658);
         color: aliceblue;
         margin-left: 4vw;
@@ -153,7 +154,50 @@
                 margin-top: 37vw;
                 cursor: pointer;
             }
-            
+            #creditInfoBtn{
+                width: 15vw;
+                padding: 0.5vw;
+                cursor: pointer;
+                text-align: center;
+                font-size: 2vw;
+                color: white;
+                position: absolute;
+                margin-top: 30vw;
+                border: 0.4vw solid rgb(125, 125, 255);
+                background-color: transparent;
+                transform: scale(1);
+                transition: 0.3s;
+            }
+            #creditInfoBtn:hover{
+                transition: 0.3s;
+                background-color: rgba(125, 125, 255, 0.269);
+                transform: scale(1.1);
+            }
+            #creditInfoBtn:active{
+                background-color: rgba(125, 125, 255, 0.489);
+            }
+            #patchnote{
+                width: 40vw;
+                padding: 1.2vw;
+                font-size: 1.9vw;
+                /* color: black; */
+                background-image: linear-gradient(to left, rgba(15, 15, 15, 0), rgb(24, 24, 104));
+                margin: 1vw;
+                border-left: 0.8vw solid rgb(37, 174, 189);
+            }
+            #skipTutorialLabel{
+                position: absolute;
+            }#skipTutorial{width: 2vw;height: 2vw;}
+            #MemberList{
+                padding: 2vw;
+            }#MemberList ol{border: 0.3vw solid; height: 25vw; overflow-y: scroll; scrollbar-width: thin;}
+            #MemberList ol li{
+                margin-top: 1vw;margin-left: 5vw;
+                border: 0.2vw solid rgb(0, 111, 209);
+                width: 35vw;
+                background-image: linear-gradient(to right, rgb(0, 47, 88),rgba(47, 0, 88, 0.676));
+                padding: 1vw;
+            }
         </style>
         <h1 id="warningTitle">⛔ PERINGATAN KERAS <hr></h1>
         <div id="warningText">GAME INI DIPENUHI OLEH JUMPSCARE DAN KEDIPAN CAHAYA CEPAT <br>
@@ -171,7 +215,7 @@
         <img id="titlemain" src="../res/logoGame.png">
         <div id="startBtn">▶ Mulai Investigasi</div>
         <div id="optBtn">⚙ Pengaturan</div>
-        <div id="creditBtn">☁ Credit</div>
+        <div id="creditBtn">☁ Credit <span id="h">(new)</span></div>
         <div id="quitBtn">🟥 Keluar game</div>
         <div id="leaderboard">🏆</div>
         <div id="fieldMenu">
@@ -191,23 +235,76 @@
             <div id="Operator">
                 🎵 Musik
                 <input id="inpVmusic" type="range" min="0" max="1" step="0.1" value="1">
-                🔊 Sound Effect
+                🔊 Sound Effect (debug)
                 <input id="inpVsfx" type="range" min="0" max="1" step="0.1" value="1">
-                📃 Bahasa
+                📃 Bahasa (debug)
                 <select name="" id="" style="font-size: 2vw;">
                     <option value="">Bahasa Indonesia</option>
-                </select>
+                </select><br><br><hr><br>
+                <label id="skipTutorialLabel" for="skiptutorial">
+                    ⏩ skip turorial (debug)
+                </label>
+                <input type="checkbox" name="skiptutorial" id="skipTutorialBtn">
             </div>
             <div id="creditTab" style="color: aliceblue;">
-                <h1 style="font-size: 2.5vw;">
-                    <span id="h">Lead Dev:</span> Kenny Richie Nergiva <br>
-                    <span id="h">Illust Team:</span> Kenny Richie Nergiva <br>
-                    <span id="h">Music Team:</span> Kenny Richie Nergiva <br>
-                    <span id="h">UI/UX Team:</span> Kenny Richie Nergiva <br>
-                    <span id="h">Programmer Dev:</span> Kenny Richie Nergiva <br>
-                    <span id="h">Writer:</span> Kenny Richie Nergiva <br>
-                    <span id="h">Quality Control:</span> Kenny Richie Nergiva <br>
-                </h1>
+                <div id="developerProfile">
+                    <h1 style="font-size: 2.5vw;">
+                        <span id="h">Lead Dev:</span> Kenny Richie Nergiva <br>
+                        <span id="h">Illust Team:</span> Kenny Richie Nergiva <br>
+                        <span id="h">Music Team:</span> Kenny Richie Nergiva <br>
+                        <span id="h">UI/UX Team:</span> Kenny Richie Nergiva <br>
+                        <span id="h">Programmer Dev:</span> Kenny Richie Nergiva <br>
+                        <span id="h">Writer:</span> Kenny Richie Nergiva <br>
+                        <span id="h">Quality Control:</span> Kenny Richie Nergiva <br>
+                    </h1>
+                </div>
+                <div id="TesterTeam">
+                    <h1 id="testerList">
+                        <div id="patchnote">
+                            patchnote 1.0v
+                            <hr>
+                            <ul>
+                                <li>kenny richie</li>
+                            </ul>
+                        </div>
+                        <div id="patchnote">
+                            patchnote 1.1v
+                            <hr>
+                            <ul>
+                                <li>kenny richie</li>
+                            </ul>
+                        </div>
+                        <div id="patchnote">
+                            patchnote 1.15v
+                            <hr>
+                            <ul>
+                                <li>kenny richie</li>
+                                <li>Fanly</li>
+                                <li>NekoAngel</li>
+                            </ul>
+                        </div>
+                        <div id="patchnote">
+                            patchnote 1.2v
+                            <hr>
+                            <ul>
+                                <li>kenny richie</li>
+                            </ul>
+                        </div>
+                    </h1>
+                </div>
+                <div id="MemberList">
+                    <h1>Member List</h1>
+                    <ol>
+                        <li>Nishizumi Grave Laz</li>
+                        <li>Nekoangel</li>
+                        <li>Karamatsu</li>
+                        <li>Fanly</li>
+                    </ol>
+                </div>
+                <div id="creditInfoBtn">Member List</div>
+                <div id="guideCredit">
+                    halo le
+                </div>
             </div>
             <div id="leaderboardTab">
                <table border="1">
@@ -219,10 +316,29 @@
                </table>
             </div>
         </div>
+        <div id="noteSUKMA">
+            <abbr title="iya ntar ku benerin dah">scroll keatas woy masih ngebug jir malu gw 😭 akwokowk 😂</abbr>
+        </div><style>
+            #noteSUKMA{cursor: pointer; position: absolute; font-size: 3vw; color: white;margin-left: 15vw; margin-top: 65vw;}
+        </style>
     </div>
     <style>
         #h{
             color: gold;
+        }abbr{text-decoration: underline; transition: 0.5s;}abbr:hover{transform: scale(1.1); transition: 0.5s;}
+        #MemberList{display: none; position: absolute;}#MemberList h1{font-size: 2.2vw;}
+        #TesterTeam{display: none; position: absolute;}
+        #developerProfile{position: absolute;}
+        #guideCredit{
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.769);
+            backdrop-filter: blur(0.6vw);
+            width: 23vw; padding: 1vw;
+            font-size: 1.6vw;
+            color: white;
+            height: 30vw;
+            margin-left: 47vw;
+            border: 0.2vw solid crimson;
         }
         #Operator{
             color: white; font-size: 2.5vw;
@@ -239,7 +355,17 @@
         #imgMinlevel:active{
             border: 0.1vw solid rgb(30, 91, 164);
         }
-        
+        #testerList{
+            cursor:ns-resize;
+            width: 55vw;
+            display: flex;
+            flex-direction: column-reverse;
+            overflow-y: scroll;
+            scrollbar-width: thin;
+            scrollbar-color: black;
+            height: 30vw;
+            background-color: black;
+        }
         #Operator input,#Operator select{
             width: 100%;
         }
@@ -353,6 +479,7 @@
             status:"lock"
         }
     ]
+    let noteSUKMA = document.getElementById('noteSUKMA');
     let configEvent = document.getElementById('configEvent');
     let gen = document.getElementById('gen');
     let startBtn = document.getElementById('startBtn');
@@ -369,20 +496,34 @@
     let Music = document.getElementById('Music');
     let Operator = document.getElementById('Operator');
     let creditTab = document.getElementById('creditTab');
+    let creditInfoBtn = document.getElementById('creditInfoBtn');
     let togglefieldmenu = false
     let cdwarnValue = 10
     let warnValidation = false
     let warningBtn = document.getElementById('warningBtn');
     let menulevelTitle = document.getElementById('menulevelTitle');
     let menulevelImg = document.getElementById('menulevelImg');
+    let developerProfile = document.getElementById('developerProfile');
+    let TesterTeam = document.getElementById('TesterTeam');
+    let MemberList = document.getElementById('MemberList');
     let menulevelLocation = document.getElementById('menulevelLocation');
     let menulevelbtns = document.getElementById('menulevelbtns');
     let mulaigame = document.getElementById('mulaigame');
     let bsfx = document.getElementById('bsfx');
     let leaderboard = document.getElementById('leaderboard');
     let leaderboardTab = document.getElementById('leaderboardTab');
+    let guideCredit = document.getElementById('guideCredit');
     let menulevelActive = 0
     let bisaMain = true
+    let guideCreditData=[
+        `jadilah xenowaskyy aka kenny sang game developer :v`,
+        `teman-teman yang di list ini telah menyampaikan informasi pendapatnya kepada developernya tentang Bug
+        atau memberi saran,kritik, dan masukan untuk keberlangsungan berkembangnya game ini (ditulis dengan nama panggung mereka)<br><br>
+        Terima kasih sudah memberi masukan, ayo beri developernya masukan! (lewat WA)`,
+        `teman-teman ini yang selalu stay tune menunggu update dengan cara bergabung ke channel BijiAtomHidrogen
+        untuk menunggu kabar update dari MedikaTerror selanjutnya <br><br>
+        Terima kasih sudah bergabung, ayo join channel BijiAtomHidrogen di WA!`
+    ]
 
     LEVEL.forEach((element,index) => {
         menulevelbtns.innerHTML+=`<img src="${element.img}" id="imgMinlevel">`
@@ -451,23 +592,25 @@ csfx.addEventListener("play",()=>{
 })
     warningBtn.addEventListener("click",()=>{
         if(warnValidation){
-            csfx.play()
-            warningPage.style.display = "none"
-            gen.style.display = "inline"
-        }
-    })
+        csfx.play()
+        warningPage.style.display = "none"
+        gen.style.display = "inline"
+    }
+})
 
-    startBtn.addEventListener("click",()=>{
+startBtn.addEventListener("click",()=>{
         csfx.play()
         togglefieldmenu = !togglefieldmenu
         fieldSettings.style.display="none"
         toggleOpr = false
         if(togglefieldmenu){
+            noteSUKMA.style.display="none"
             fieldMenu.style.marginTop = "12vw" 
             fieldMenu.style.opacity = "1"
         }else{
             fieldMenu.style.marginTop = "62vw"
             fieldMenu.style.opacity = "0"
+            noteSUKMA.style.display="inline"
         }
     })
     mulaigame.addEventListener("click",()=>{
@@ -485,6 +628,33 @@ csfx.addEventListener("play",()=>{
                 window.location.href = "./malam1.html"
             },24000)
        }
+    })
+    let toggleCreditMoreInfo = 2
+    guideCredit.innerHTML = `${guideCreditData[0]}`
+    creditInfoBtn.addEventListener("click",()=>{
+        if(toggleCreditMoreInfo==0){
+            developerProfile.style.display ="none"
+            TesterTeam.style.display ="inline"
+            MemberList.style.display ="none"
+            creditInfoBtn.innerHTML = "Dev Profile"
+            guideCredit.innerHTML = `${guideCreditData[1]}`
+            toggleCreditMoreInfo++
+        }else if(toggleCreditMoreInfo==1){
+            developerProfile.style.display ="inline"
+            TesterTeam.style.display ="none"
+            MemberList.style.display ="none"
+            creditInfoBtn.innerHTML = "Member List"
+            guideCredit.innerHTML = `${guideCreditData[0]}`
+            toggleCreditMoreInfo++
+        }
+        else{
+            developerProfile.style.display ="none"
+            TesterTeam.style.display ="none"
+            MemberList.style.display ="inline"
+            creditInfoBtn.innerHTML = "Tester List"
+            guideCredit.innerHTML = `${guideCreditData[2]}`
+            toggleCreditMoreInfo=0
+        }
     })
     
     let toggleOpr = false
