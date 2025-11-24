@@ -163,27 +163,27 @@
                 color: white;
                 position: absolute;
                 margin-top: 30vw;
-                border: 0.4vw solid rgb(125, 125, 255);
+                border: 0.4vw solid rgb(83, 0, 0);
                 background-color: transparent;
                 transform: scale(1);
                 transition: 0.3s;
             }
             #creditInfoBtn:hover{
                 transition: 0.3s;
-                background-color: rgba(125, 125, 255, 0.269);
+                background-color: rgba(255, 125, 125, 0.269);
                 transform: scale(1.1);
             }
             #creditInfoBtn:active{
-                background-color: rgba(125, 125, 255, 0.489);
+                background-color: rgba(255, 125, 125, 0.489);
             }
             #patchnote{
                 width: 40vw;
                 padding: 1.2vw;
                 font-size: 1.9vw;
                 /* color: black; */
-                background-image: linear-gradient(to left, rgba(15, 15, 15, 0), rgb(24, 24, 104));
+                background-image: linear-gradient(to left, rgba(15, 15, 15, 0), rgb(104, 24, 24));
                 margin: 1vw;
-                border-left: 0.8vw solid rgb(37, 174, 189);
+                border-left: 0.8vw solid rgb(67, 0, 0);
             }
             #skipTutorialLabel{
                 position: absolute;
@@ -193,10 +193,16 @@
             }#MemberList ol{border: 0.3vw solid; height: 25vw; overflow-y: scroll; scrollbar-width: thin;}
             #MemberList ol li{
                 margin-top: 1vw;margin-left: 5vw;
-                border: 0.2vw solid rgb(0, 111, 209);
+                border: 0.2vw solid rgb(209, 0, 0);
                 width: 35vw;
-                background-image: linear-gradient(to right, rgb(0, 47, 88),rgba(47, 0, 88, 0.676));
-                padding: 1vw;
+                background-image: linear-gradient(to right, rgb(88, 0, 0),rgba(0, 0, 0, 0.676));
+                padding: 1vw; font-size: 1.5vw;
+            }
+            #myOC{
+                position: absolute;
+                width: 20vw; z-index: 4;
+                margin-left: 47vw;
+                margin-top: -10vw;
             }
         </style>
         <h1 id="warningTitle">⛔ PERINGATAN KERAS <hr></h1>
@@ -288,6 +294,14 @@
                             <hr>
                             <ul>
                                 <li>kenny richie</li>
+                                <li>/v/</li>
+                            </ul>
+                        </div>
+                        <div id="patchnote">
+                            patchnote 1.3v
+                            <hr>
+                            <ul>
+                                <li>kenny richie</li>
                             </ul>
                         </div>
                     </h1>
@@ -300,6 +314,7 @@
                         <li>Karamatsu</li>
                         <li>Fanly</li>
                     </ol>
+                    <img src="../res/xenowoki.png" alt="" id="myOC">
                 </div>
                 <div id="creditInfoBtn">Member List</div>
                 <div id="guideCredit">

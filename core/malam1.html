@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <title>Malam 1 - Time System</title> -->
     <title>Malam 1 - Mari Kita Ungkap</title>
     <style>
         /* --- RESET & SYSTEM --- */
@@ -14,6 +13,51 @@
             width: 100vw; height: 100vh;
             overflow: hidden;
             display: flex; justify-content: center; align-items: center;
+        }
+        /* --- LOADING SCREEN --- */
+        /* Overlay Loading Screen */
+        #loading-screen {
+            position: fixed;
+            font-size: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0f0f0f; 
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; 
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 20%;
+            background-color: #000000;
+            overflow: hidden;
+            margin: 2% 0;
+            border: 1px solid #555;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background-color: #ffffff; 
+            transition: width 0.2s ease; 
+        }
+
+        .loader-content {
+            text-align: center;
+            height: 15%;
+            width: 60%;
+        }
+
+        #loading-screen.hide {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         }
 
         /* --- VIEWPORT --- */
@@ -77,8 +121,8 @@
             50% { transform: scale(1.02); filter: brightness(1); }
         }
 
-        /* --- NAVIGATION BUTTON (BIRU TRANSPARAN) --- */
-        #moveBtn {
+        /* --- NAVIGATION BUTTON --- */
+        .nav-btn {
             position: absolute;
             z-index: 10;
             padding: 0.3% 0.45%;
@@ -93,13 +137,10 @@
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            
-            /* Posisi Default */
-            top: 40%; left: 51%; 
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%); /* Center anchor */
         }
         
-        #moveBtn:hover {
+        .nav-btn:hover {
             background-color: rgba(0, 149, 255, 0.349);
             box-shadow: 0 0 25px rgba(0, 150, 255, 0.6);
             border : 0.2vh solid rgba(0, 149, 255, 0.459);
@@ -150,8 +191,8 @@
         /* NAVBAR JAM */
         #cctvNavbar{
             position: absolute; background-color: rgb(0, 0, 0); border-bottom: 0.3vw solid rgb(39, 88, 13);
-            width: 100%; height: 5%; top: -5%; font-size: 60%; color: white;
-            display: flex; align-items: center; padding-left: 2%; /* Agar teks tidak mepet */
+            width: 100%; height: 5%; top: -5%; font-size: 1rem; color: white;
+            display: flex; align-items: center; padding-left: 2%; 
             font-family: 'Courier New', Courier, monospace; font-weight: bold;
         }
 
@@ -179,8 +220,8 @@
             background-color: rgba(0, 255, 0, 0.15);
             border: 0.3vh solid rgba(0, 255, 0, 0.3);
             color: rgba(255, 255, 255, 0.9);
-            padding: 0.5% 1%; font-size: 4%;
-            font-family: 'Courier New', Courier, monospace; font-weight: bold; font-size: 0.9rem;
+            padding: 0.5% 1%; font-size: 0.6rem;
+            font-family: 'Courier New', Courier, monospace; font-weight: bold; font-size: 1em;
             cursor: pointer; text-align: center; width: 120%; transition: 0.2s;
         }
         .floor-btn:hover { background-color: rgba(0, 255, 0, 0.3); }
@@ -234,6 +275,15 @@
     </style>
 </head>
 <body>
+    <div id="loading-screen">
+         <div class="loader-content">
+            <h2>Santai ae dlu, lagi Memuat Aset...</h2>
+            <div class="progress-container">
+                <div id="progress-bar"></div>
+            </div>
+            <p id="progress-text">0%</p>
+        </div>
+    </div>
 
     <audio id="bgAudio" loop><source src="./assets/audio/MainBgmHorror.mp3" type="audio/mpeg"></audio>
     <audio id="btnSfx"><source src="./assets/audio/mechanicalswish.mp3" type="audio/mpeg"></audio>
@@ -246,16 +296,16 @@
     <div id="viewport">
         <div id="transitionOverlay"></div>
 
-        <div id="main">
+       <div id="main">
             <img src="./assets/image/M1/panoramaSectionA1.png" id="mainImg1" class="main-img">
             <img src="./assets/image/M1/panoramaSectionA2.png" id="mainImg2" class="main-img">
             <img src="./assets/image/M1/panoramaSectionA3.png" id="mainImg3" class="main-img">
             
-            <div id="moveBtn">B</div>
+            <div id="navLayer" style="position: absolute; top:0; left:0; width: 100%; height: 100%; z-index: 10;">
+                </div>
 
             <div id="entities">
-                <img src="" id="entityIMG" style="border: 2px dashed rgba(255,0,0,0); min-height: 200px;">
-            </div>
+                </div>
         </div>
 
         <div id="viewLeftBox" class="viewSide"></div>
@@ -307,6 +357,7 @@
     </div>
 
     <script>
+        
         // --- ELEMENTS ---
         const startBtn = document.getElementById('startBtn');
         const cctvBtn = document.getElementById('cctvBtn');
@@ -314,7 +365,7 @@
         const cctvScreen = document.getElementById('cctvScreen');         
         const cctvFrame = document.getElementById('cctvFrame');
         const cctvUiLayer = document.getElementById('cctvUiLayer'); 
-        const cctvNavbar = document.getElementById('cctvNavbar'); // Elements Navbar
+        const cctvNavbar = document.getElementById('cctvNavbar');
         const mainContainer = document.getElementById('main');
         const leftZone = document.getElementById('viewLeftBox');
         const rightZone = document.getElementById('viewRightBox');
@@ -322,6 +373,7 @@
         const posisiAnda = document.getElementById('posisiAnda');
         const moveBtn = document.getElementById('moveBtn');
         const transitionOverlay = document.getElementById('transitionOverlay');
+        const navLayer = document.getElementById('navLayer');
         
         const mainImg1 = document.getElementById('mainImg1');
         const mainImg2 = document.getElementById('mainImg2');
@@ -334,6 +386,61 @@
             2: document.getElementById('floor2Group'),
             1: document.getElementById('floor1Group')
         };
+
+        // --- LOADING SCREEN ---
+    document.addEventListener("DOMContentLoaded", () => {
+        const loadingScreen = document.getElementById('loading-screen');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const mediaAssets = document.querySelectorAll('img, video, audio');
+        let totalAssets = mediaAssets.length;
+        let assetsLoaded = 0;
+
+        function updateProgress() {
+            assetsLoaded++;
+            const percent = Math.round((assetsLoaded / totalAssets) * 100);
+            progressBar.style.width = percent + '%';
+            progressText.textContent = percent + '%';
+
+            if (assetsLoaded >= totalAssets) {
+                finishLoading();
+            }
+        }
+
+        function finishLoading() {
+            setTimeout(() => {
+                loadingScreen.classList.add('hide');
+            }, 500);
+        }
+
+        if (totalAssets === 0) {
+            finishLoading();
+        } else {
+            mediaAssets.forEach((asset) => {
+                if (asset.complete || asset.readyState === 4) {
+                    updateProgress();
+                } else {
+                    if (asset.tagName === 'IMG') {
+                        asset.addEventListener('load', updateProgress);
+                        asset.addEventListener('error', updateProgress); 
+                    } 
+                    else {
+                        asset.addEventListener('canplaythrough', updateProgress, { once: true });
+                        asset.addEventListener('error', updateProgress);
+                    }
+                }
+            });
+        }
+
+        // SAFETY NET 
+        window.addEventListener('load', () => {
+            if (assetsLoaded < totalAssets) {
+                progressBar.style.width = '100%';
+                progressText.textContent = '100%';
+                finishLoading();
+            }
+        });
+    });
 
         // --- AUDIO ---
         const bgAudio = document.getElementById('bgAudio');
@@ -369,16 +476,20 @@
         };
 
         // DATA PANORAMA (TITIK LOKASI)
+// DATA PANORAMA (TITIK LOKASI)
         const locationData = {
+            // --- LANTAI 3 ---
             'A': {
                 images: [
                     './assets/image/M1/panoramaSectionA1.png',
                     './assets/image/M1/panoramaSectionA2.png',
                     './assets/image/M1/panoramaSectionA3.png'
                 ],
-                btnTarget: 'B', 
-                btnText: 'B',
-                btnPos: { left: '51%', top: '40%' }, 
+                buttons: [
+                    { target: 'B', text: 'AREA B', css: { left: '50.8%', top: '50%' } },
+                    { target: 'C', text: 'AREA C', css: { left: '65.5%', top: '50%' } },
+                    { target: 'D', text: 'TURUN KE LT.2 (AREA D)', css: { left: '80%', top: '80%' } }
+                ],
                 playerData: { floor: 3, cam: 'A', mapCss: { top: '75%', left: '22%' } }
             },
             'B': {
@@ -387,17 +498,73 @@
                     './assets/image/M1/panoramaSectionB2.png',
                     './assets/image/M1/panoramaSectionB3.png'
                 ],
-                btnTarget: 'A', 
-                btnText: 'A',
-                btnPos: { left: '9%', top: '40%' }, 
+                buttons: [
+                    { target: 'A', text: 'AREA A', css: { left: '9%', top: '40%' } },
+                    { target: 'C', text: 'AREA C', css: { left: '75%', top: '40%' } },
+                    { target: 'E', text: 'TURUN KE LT.2 (AREA E)', css: { left: '32.5%', top: '80%' } }
+                ],
                 playerData: { floor: 3, cam: 'B', mapCss: { top: '20%', left: '22%' } }
+            },
+            'C': {
+                images: [
+                    './assets/image/M1/panoramaSectionC1.png',
+                    './assets/image/M1/panoramaSectionC2.png',
+                    './assets/image/M1/panoramaSectionC3.png'
+                ],
+                buttons: [
+                    { target: 'A', text: 'AREA A', css: { left: '55.5%', top: '50%' } }, 
+                    { target: 'B', text: 'AREA B', css: { left: '8%', top: '50%' } },
+                    { target: 'F', text: 'TURUN KE LT.2 (AREA F)', css: { left: '21%', top: '80%' } }
+                ],
+                playerData: { floor: 3, cam: 'C', mapCss: { top: '25%', left: '77%' } }
+            },
+
+            // --- LANTAI 2 ---
+            'D': {
+                images: [
+                    './assets/image/M1/panoramaSectionD1.png',
+                    './assets/image/M1/panoramaSectionD2.png',
+                    './assets/image/M1/panoramaSectionD3.png'
+                ],
+                buttons: [
+                    { target: 'A', text: 'NAIK KE LT.3 (AREA A)', css: { left: '75%', top: '20%' } },
+                    { target: 'E', text: 'AREA E', css: { left: '57%', top: '50%' } },
+                    { target: 'F', text: 'AREA F', css: { left: '68%', top: '50%' } }
+                ],
+                playerData: { floor: 2, cam: 'D', mapCss: { top: '75%', left: '22%' } }
+            },
+            'E': {
+                images: [
+                    './assets/image/M1/panoramaSectionE1.png',
+                    './assets/image/M1/panoramaSectionE2.png',
+                    './assets/image/M1/panoramaSectionE3.png'
+                ],
+                buttons: [
+                    { target: 'B', text: 'NAIK KE LT.3 (AREA B)', css: { left: '35%', top: '20%' } },
+                    { target: 'D', text: 'AREA D', css: { left: '8%', top: '38%' } },
+                    { target: 'F', text: 'AREA F', css: { left: '80%', top: '35%' } }
+                ],
+                playerData: { floor: 2, cam: 'E', mapCss: { top: '20%', left: '22%' } }
+            },
+            'F': {
+                images: [
+                    './assets/image/M1/panoramaSectionF1.png',
+                    './assets/image/M1/panoramaSectionF2.png',
+                    './assets/image/M1/panoramaSectionF3.png'
+                ],
+                buttons: [
+                    { target: 'E', text: 'AREA E', css: { left: '58%', top: '50%' } },
+                    { target: 'C', text: 'NAIK KE LT.3 (AREA C)', css: { left: '60%', top: '20%' } },
+                    { target: 'D', text: 'AREA D', css: { left: '88%', top: '50%' } }
+                ],
+                playerData: { floor: 2, cam: 'F', mapCss: { top: '25%', left: '77%' } }
             }
         };
 
         // --- TIME SYSTEM CONFIG (BARU) ---
-        let gameHour = 18;      // Mulai jam 00:00 (Default)
+        let gameHour = 18;      // Mulai jam 18:00 (Default)
         let gameMinute = 0;
-        const realSecondsPerGameMinute = 2; // 1 menit game = 6 detik asli
+        const realSecondsPerGameMinute = 2; // 1 menit game = 2 detik asli
         let clockInterval; 
 
         // --- GAME STATE ---
@@ -414,6 +581,34 @@
 
         // Variable Player (Dinamis)
         let playerData = locationData['A'].playerData;
+
+        // --- MOVEMENT LOGIC TERBARU (MULTI TOMBOL) ---
+
+        // Fungsi untuk merender tombol berdasarkan lokasi saat ini
+        function renderNavButtons() {
+            navLayer.innerHTML = ''; // Hapus tombol lama
+            const data = locationData[currentLocation];
+
+            if (data && data.buttons) {
+                data.buttons.forEach(btnData => {
+                    const btn = document.createElement('div');
+                    btn.className = 'nav-btn'; // Pakai class CSS baru
+                    btn.innerText = btnData.text;
+                    btn.style.left = btnData.css.left;
+                    btn.style.top = btnData.css.top;
+                    
+                    // Event Klik Tombol
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Agar tidak tembus klik ke belakang
+                        if(isMoving || isMonitorUp) return;
+                        
+                        startMovementSequence(btnData.target);
+                    });
+
+                    navLayer.appendChild(btn);
+                });
+            }
+        }
 
 
         // --- TIME SYSTEM LOGIC ---
@@ -448,63 +643,63 @@
         }
 
 
-        // --- MOVEMENT LOGIC ---
 
-        moveBtn.addEventListener('click', () => {
-            if(isMoving || isMonitorUp) return; 
-            
-            const targetLocID = locationData[currentLocation].btnTarget;
+
+    // Update function startMovementSequence agar menerima targetID langsung
+        function startMovementSequence(targetLocID) {
             const targetData = locationData[targetLocID];
+            if (!targetData) return;
 
-            startMovementSequence(targetLocID, targetData);
-        });
-
-        function startMovementSequence(targetLocID, targetData) {
             isMoving = true;
-            moveBtn.style.pointerEvents = "none"; 
+            navLayer.style.pointerEvents = "none"; // Matikan klik tombol sementara
 
-            // 1. FADE OUT
+            // 1. FADE OUT (Layar Hitam)
             transitionOverlay.style.opacity = 1;
 
-            // 2. Jeda 1 Detik 
+            // 2. Jeda 1 Detik sebelum mulai jalan
             setTimeout(() => {
                 footstepPlayerSfx.currentTime = 0;
                 footstepPlayerSfx.play();
 
-                // 3. Jalan selama 6 Detik
+                // 3. PRA-RENDERING (Di detik ke-3 / 50% jalan)
+                setTimeout(() => {
+                    mainImg1.src = targetData.images[0];
+                    mainImg2.src = targetData.images[1];
+                    mainImg3.src = targetData.images[2];
+                    
+                    // Optional: Console log untuk debug 
+                    console.log(`Assets pre-loaded for ${targetLocID}`);
+                }, 1950); 
+
+                // 4. Selesai Jalan (3.9 Detik)
                 setTimeout(() => {
                     finishMovement(targetLocID, targetData);
-                }, 6000); 
+                }, 3900); 
 
             }, 1000); 
         }
 
-        function finishMovement(targetLocID, targetData) {
-            footstepPlayerSfx.pause();
-            
+      function finishMovement(targetLocID, targetData) {
+          footstepPlayerSfx.pause();
+          footstepPlayerSfx.currentTime = 0;
+          
             newAreaSfx.currentTime = 0;
             newAreaSfx.play();
 
             currentLocation = targetLocID;
-            
-            mainImg1.src = targetData.images[0];
-            mainImg2.src = targetData.images[1];
-            mainImg3.src = targetData.images[2];
-
             playerData = targetData.playerData;
 
-            const nextData = locationData[currentLocation];
-            moveBtn.innerText = nextData.btnText;
-            moveBtn.style.left = nextData.btnPos.left;
-            moveBtn.style.top = nextData.btnPos.top;
-
+            // Update Posisi di Map CCTV jika layar nyala
             updatePlayerMarker();
 
-            transitionOverlay.style.opacity = 0;
+            // Render tombol baru untuk lokasi ini
+            renderNavButtons();
+
+            transitionOverlay.style.opacity = 0; // Buka layar hitam
 
             setTimeout(() => {
                 isMoving = false;
-                moveBtn.style.pointerEvents = "auto";
+                navLayer.style.pointerEvents = "auto"; // Hidupkan klik lagi
             }, 1000); 
         }
 
@@ -611,13 +806,15 @@
         cctvBtn.addEventListener("click", handleCctvBtn);
         monitorWrapper.addEventListener("click", turnOnScreen);
 
-        // START GAME EVENT
+        // --- INISIALISASI PERTAMA ---
+        // Panggil ini di dalam startBtn event listener agar tombol awal (A ke B/C) muncul
         startBtn.addEventListener('click', () => {
             if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
             startBtn.style.display = "none";
             bgAudio.play();
             
-            startClock(); // MULAI WAKTU SAAT GAME DIMULAI
+            renderNavButtons(); 
+            startClock(); 
             gameLoop();
         });
 

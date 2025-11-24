@@ -10,7 +10,6 @@
       /* --- Pengaturan Global --- */
       body{
           background-color: #121212; /* Latar belakang sangat gelap */
-
       }
 #baseLauncher {
     background-color: #121212; /* Latar belakang sangat gelap */
@@ -118,7 +117,7 @@
 }
 
 .game-details h3 {
-    color: #007bff; /* Judul bagian menggunakan warna aksen */
+    color: #007bff; 
     font-size: 1.3rem;
     border-bottom: 2px solid #333;
     padding-bottom: 5px;
@@ -133,16 +132,16 @@
 }
 
 #developer-note {
-    background-color: #2a2a2a; /* Latar belakang berbeda untuk catatan */
-    border-left: 5px solid #007bff; /* Garis aksen di kiri */
+    background-color: #2a2a2a; 
+    border-left: 5px solid #007bff; 
     padding: 15px;
     margin: 15px 0 0;
     font-style: italic;
     color: #b0b0b0;
 }
 #patch-note {
-    background-color: #2a2a2a; /* Latar belakang berbeda untuk catatan */
-    border-left: 5px solid #6aff6f; /* Garis aksen di kiri */
+    background-color: #2a2a2a; 
+    border-left: 5px solid #6aff6f; 
     padding: 15px;
     margin: 15px 0 0;
     font-style: italic;
@@ -217,6 +216,8 @@
                     <li>Menambahkan animasi dasar </li>
                     <li>Menambahkan level Malam 1 </li>
                     <li>Menambahkan cctv </li>
+                    <li>Memperbarui UI cctv </li>
+                    <li>Menambahkan Roaming ke titik A.B.C.D,E, dan F </li>
                     <hr>
                     <li>Memperbaiki beberapa bug </li>
                     <li>Melakukan Optimisasi dasar </li>
@@ -234,7 +235,7 @@
 
 </body>
 <script type="module">
-    import versionData from '../config/config.js'
+    import versionData from './config/config.js'
     document.getElementById("version").innerHTML = versionData
     document.getElementById("gr").innerHTML = `Patch Note: ${versionData}`
 </script>
@@ -250,7 +251,6 @@ document.addEventListener('DOMContentLoaded', () => {
         baseLauncher.style.display ="none"
         gamecutsceneLauncher.style.display ="inline"
         document.documentElement.requestFullscreen()
-        // document.body.style.overflow="hidden"
         introVideo.play()
         setTimeout(() => {
             window.location.href = "./core/lobby.html"

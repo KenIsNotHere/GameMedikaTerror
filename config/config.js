@@ -1,6 +1,6 @@
 let versionData = ()=>{
     let MajorVersion = 1
-    let MinorVersion = 2
+    let MinorVersion = 3
     let ComplementaryVersion = "Pre-Alpha"
     let Version = `${MajorVersion}.${MinorVersion}v (${ComplementaryVersion})`
         return Version
