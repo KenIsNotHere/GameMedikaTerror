@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malam 1 - Mari Kita Ungkap</title>
+    <style>
+        /* --- RESET & SYSTEM --- */
+        * { padding: 0; margin: 0; box-sizing: border-box; user-select: none; }
+        
+        body {
+            background-color: black;
+            width: 100vw; height: 100vh;
+            overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+        }
+        /* --- LOADING SCREEN --- */
+        /* Overlay Loading Screen */
+        #loading-screen {
+            position: fixed;
+            font-size: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0f0f0f; 
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; 
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 20%;
+            background-color: #000000;
+            overflow: hidden;
+            margin: 2% 0;
+            border: 1px solid #555;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background-color: #ffffff; 
+            transition: width 0.2s ease; 
+        }
+
+        .loader-content {
+            text-align: center;
+            height: 15%;
+            width: 60%;
+        }
+
+        #loading-screen.hide {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* --- VIEWPORT --- */
+        #viewport {
+            position: relative;
+            background-color: #111;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            animation: breathingView 4s infinite ease-in-out, animasiLampuRedup 5s infinite alternate;
+            transform-origin: center center;
+        }
+
+        @keyframes breathingView {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-0.5%) scale(1.005); }
+        }
+        @keyframes animasiLampuRedup {
+            0% { filter: brightness(0.8); }
+            100% { filter: brightness(1); }
+        }
+
+        @media (min-aspect-ratio: 16/9) {
+            #viewport { height: 100vh; width: 177.78vh; }
+            html { font-size: 2vh; } 
+        }
+        @media (max-aspect-ratio: 16/9) {
+            #viewport { width: 100vw; height: 56.25vw; }
+            html { font-size: 2vw; }
+        }
+
+        /* --- TRANSITION OVERLAY (LAYAR HITAM) --- */
+        #transitionOverlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: black;
+            z-index: 100; /* Paling atas */
+            opacity: 0;   /* Default tidak terlihat */
+            pointer-events: none; /* Agar bisa klik tembus saat transparan */
+            transition: opacity 1s ease-in-out; /* Animasi Fade 1 Detik */
+        }
+
+        /* --- PANORAMA --- */
+        #main {
+            display: flex; width: 300%; height: 100%;
+            position: absolute; top: 0; left: 0; will-change: transform;
+        }
+        .main-img { width: 33.3333%; height: 100%; object-fit: cover; display: block; }
+
+        /* --- NAVIGATION BUTTON --- */
+        .nav-btn {
+            position: absolute;
+            z-index: 10;
+            padding: 0.3% 0.45%;
+            background-color: rgba(0, 150, 255, 0.15);
+            border : 0.2vh solid rgba(0, 149, 255, 0);
+            color: rgba(200, 230, 255, 0.306);
+            box-shadow: 0 0 15px rgba(0, 150, 255, 0.3);
+            backdrop-filter: blur(2px);
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 70%;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%); /* Center anchor */
+        }
+        
+        .nav-btn:hover {
+            background-color: rgba(0, 149, 255, 0.349);
+            box-shadow: 0 0 25px rgba(0, 150, 255, 0.6);
+            border : 0.2vh solid rgba(0, 149, 255, 0.459);
+            color: white;
+        }
+
+        /* --- TRIGGERS --- */
+        .viewSide { position: absolute; width: 15%; height: 100%; z-index: 50; top: 0; }
+        #viewLeftBox { left: 0; }
+        #viewRightBox { right: 0; }
+
+        /* --- UI LAYER --- */
+        #UI { position: absolute; width: 100%; height: 100%; pointer-events: none; z-index: 60; }
+
+        /* TOMBOL CCTV UTAMA */
+        #cctvBtn {
+            pointer-events: auto; position: absolute; bottom: 5%; left: 50%;
+            transform: translateX(-50%); width: 50%; padding: 0.5%;
+            background-color: rgba(0, 128, 0, 0.2); backdrop-filter: blur(5px);
+            color: rgba(255, 255, 255, 0.8); text-align: center; font-size: 1.2rem; font-weight: bold;
+            cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: all 0.2s ease;
+        }
+        #cctvBtn:hover { background-color: rgba(0, 128, 0, 0.5); }
+        #cctvBtn.btn-red { background-color: rgba(200, 0, 0, 0.6) !important; border-color: red; color: white; }
+        #cctvBtn.btn-red:hover { background-color: rgba(200, 0, 0, 0.9) !important; }
+
+        /* MONITOR CONTAINER */
+        #cctvContainer {
+            position: absolute; width: 100%; height: 100%;
+            perspective: 1000px; display: flex; justify-content: center; pointer-events: none; overflow: hidden;
+        }
+        #monitorWrapper {
+            width: 65%; position: absolute; bottom: 0; transform-origin: bottom center;
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); pointer-events: auto; cursor: pointer; 
+        }
+        #cctvFrame { width: 100%; display: block; position: relative; z-index: 1; transition: filter 0.2s; }
+        #cctvScreen {
+            position: absolute; z-index: 2; width: 65%; left: 16.6%; top: 15%; aspect-ratio: 4/3; 
+            object-fit: cover; display: none; box-shadow: 0 0 20vw rgba(255, 126, 51, 0.148);
+        }
+
+        /* --- CCTV UI (MAP & CONTROLS) --- */
+        #cctvUiLayer {
+            position: absolute; z-index: 3; width: 65%; left: 16.6%; top: 15%; aspect-ratio: 4/3;
+            pointer-events: none; display: none;
+        }
+
+        /* --- ENTITY DISPLAY ON CCTV --- */
+        #cctvEntityRustwalkerDisplay {
+            position: absolute;
+            z-index: 3; /* Di atas gambar Background Ruangan (Level 2), tapi di bawah UI (Level 3 ke atas) */
+            
+            /* Menyamakan posisi dengan #cctvScreen agar koordinat akurat */
+            width: 65%; 
+            left: 16.6%; 
+            top: 15%; 
+            aspect-ratio: 4/3; 
+            
+            object-fit: contain; /* Agar gambar tidak gepeng */
+            pointer-events: none; /* Agar klik tembus ke map di belakangnya jika perlu */
+            display: none; /* Sembunyi default */
+            
+            /* Default Anchor di tengah agar mudah mengatur posisi */
+            transform-origin: center center;
+        }
+
+        /* NAVBAR JAM */
+        #cctvNavbar{
+            position: absolute; background-color: rgb(0, 0, 0); border-bottom: 0.3vw solid rgb(88, 13, 13);
+            width: 100%; height: 5%; top: -5%; font-size: 1rem; color: rgb(255, 79, 79);
+            display: flex; align-items: center; padding-left: 2%; 
+            font-family: 'Courier New', Courier, monospace; font-weight: bold;
+        }
+
+        #mapContainer {
+            position: absolute; bottom: 5%; right: 5%; width: 35%; height: auto;
+        }
+
+        #floorPlan {
+            width: 100%; height: auto; opacity: 0.8; border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        #posisiAnda {
+            position: absolute; width: 10%; height: auto; z-index: 10;
+            animation: blink 1s infinite; display: none; filter: brightness(1.5) contrast(1.5);
+        }
+
+        /* FLOOR BUTTONS */
+        .floor-controls {
+            position: absolute; left: -170%; bottom: 0; 
+            display: flex; flex-direction: column; gap: 0.5vh;
+            pointer-events: auto;
+        }
+
+        .floor-btn {
+            background-color: rgba(255, 0, 0, 0.15);
+            border: 0.3vh solid rgba(255, 17, 0, 0.3);
+            color: rgba(255, 255, 255, 0.9);
+            padding: 0.5% 1%; font-size: 0.6rem;
+            font-family: 'Courier New', Courier, monospace; font-weight: bold; font-size: 1em;
+            cursor: pointer; text-align: center; width: 120%; transition: 0.2s;
+        }
+        .floor-btn:hover { background-color: rgba(255, 0, 0, 0.3); }
+        .floor-btn.active-floor {
+            border: 0.3vh solid #ff7300; background-color: rgba(255, 81, 0, 0.25);
+            text-shadow: 0 0 5px #ff6a00; box-shadow: 0 0 10px rgba(255, 106, 0, 0.1);
+        }
+
+        /* CAMERA BUTTONS */
+        .cam-group { display: none; }
+        .cam-group.show-group { display: block; } 
+
+        .cam-btn {
+            position: absolute; pointer-events: auto; 
+            background-color: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.6);
+            color: rgba(255, 255, 255, 0.8); padding: 2% 4%;
+            font-family: 'Courier New', Courier, monospace; font-weight: bold; font-size: 0.6rem;
+            cursor: pointer; text-transform: uppercase; text-shadow: 0 0 2px white;
+            text-align: center; width: 37%;
+        }
+        .cam-btn:hover { background-color: rgba(255, 255, 255, 0.3); }
+        .cam-btn.active {
+            background-color: rgba(255, 0, 0, 0.3); border-color: rgba(255, 0, 0, 0.8);
+            color: #ff0000; text-shadow: 0 0 5px rgb(255, 0, 0); box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
+        }
+
+        /* POSISI KAMERA LANTAI 3 */
+        #camA { top: 70%; left: 10%; }
+        #camB { top: 20%; left: 10%; }
+        #camC { top: 20%; left: 70%; }
+        /* POSISI KAMERA LANTAI 2 */
+        #camD { top: 70%; left: 10%; } 
+        #camE { top: 10%; left: 10%; } 
+        #camF { top: 10%; left: 70%; } 
+        /* POSISI KAMERA LANTAI 1 */
+        #camG { top: 80%; left: 20%; }
+        #camH { top: 15%; left: 15%; }
+        #camI { top: 15%; left: 75%; }
+        #camJ { top: 70%; left: 70%; }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        .hideCctv { transform: rotateX(110deg) translateY(20%); filter: blur(20px) brightness(0); opacity: 0; pointer-events: none; }
+        .showCctv { transform: rotateX(0deg) translateY(-10%); filter: blur(0px) brightness(0.7); opacity: 1; }
+
+        #startBtn {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.185); backdrop-filter: blur(5px); z-index: 99;
+            display: flex; justify-content: center; align-items: center;
+            color: white; font-size: 2.5rem; cursor: pointer; text-transform: uppercase; letter-spacing: 2px;
+        }
+
+        /* --- JUMPSCARE LAYER --- */
+        #jumpscareLayer {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 5000; /* Di atas segalanya */
+            pointer-events: none;
+            display: none; /* Sembunyi default */
+            overflow: hidden;
+            background-color: transparent;
+        }
+
+        #jumpscareImg {
+            position: absolute;
+            right: -100%; /* Mulai di luar layar kanan */
+            height: 250%; /* Penuhi tinggi layar */
+            width: auto;
+            object-fit: cover;
+            filter: contrast(1.2) brightness(0.8);
+        }
+
+        /* Kelas Saat Jumpscare Aktif */
+        .jumpscare-active-Rustwalker #jumpscareImg {
+            bottom: -120%;
+            scale: 1;
+            animation: 
+                RustwalkerSlideInRight 0.2s forwards ease-out, /* Muncul cepat 0.2 detik */
+                violentShake 0.3s infinite;         /* Gemetar terus menerus */
+        }
+        .jumpscare-active-TheRuin #jumpscareImg {
+            bottom: -200%;
+            scale: 1.6;
+            animation: 
+            TheRuinSlideInRight 0.2s forwards ease-out, /* Muncul cepat 0.2 detik */
+            violentShake 0.3s infinite;         /* Gemetar terus menerus */
+        }
+
+        /* --- JUMPSCARE KEYFRAMES --- */
+        @keyframes RustwalkerSlideInRight {
+            0% { right: -150%; opacity: 0; }
+            100% { right: 10%; opacity: 1; }
+        }
+        @keyframes TheRuinSlideInRight {
+            0% { right: -150%; opacity: 0; }
+            100% { right: -45%; opacity: 1; }
+        }
+
+        @keyframes violentShake {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(15px, 15px) rotate(2deg); }
+            50% { transform: translate(-15px, 10px) rotate(-2deg); }
+            75% { transform: translate(10px, -15px) rotate(1deg); }
+            100% { transform: translate(-10px, -10px) rotate(-1deg); }
+        }
+
+        @keyframes strobeFlash {
+            0% { filter: brightness(1) sepia(0) hue-rotate(0deg); }
+            50% { filter: brightness(3) sepia(1) hue-rotate(-50deg) contrast(2); background-color: #300000; }
+            100% { filter: brightness(0.5); }
+        }
+
+        /* --- THE RUIN ENTITY --- */
+     /* --- THE RUIN ENTITY --- */
+        #theRuinEntity {
+            position: absolute;
+            z-index: 8; 
+            display: none; 
+            transform-origin: center center;
+            pointer-events: none;
+            
+            width: 50%;  /* Sesuaikan lebar (misal 50% dari tinggi layar) */
+            height: 80%; /* Sesuaikan tinggi (misal 80% dari tinggi layar) */
+            
+            /* Pusatkan container ini di titik koordinat (top/left) yang ditentukan JS */
+            transform: translate(-50%, -50%);
+        }
+
+        #ruinWrapper {
+            position: relative;
+            width: 50%; height: 50%;
+        }
+
+        /* Bagian Tubuh & Kepala */
+        #ruinBody, #ruinHead {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: auto;
+            object-fit: contain;
+        }
+
+        /* Animasi Kepala (Sedikit bergoyang/floating) */
+        #ruinHead {
+            animation: ruinHeadMove 3s infinite ease-in-out;
+        }
+
+        @keyframes ruinHeadMove {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-2%) rotate(8deg); }
+        }
+
+        /* --- VIEWPORT EFFECT SAAT RUIN MUNCUL --- */
+        /* Class ini akan ditambahkan ke #viewport lewat JS */
+        .ruin-active-effect {
+            animation: flikering 0.1s infinite alternate !important;
+        }
+
+        /* Animasi Flikering (Redup Nyala Cepat) */
+        @keyframes flikering {
+            0% { filter: brightness(0.1) hue-rotate(0deg) ; }
+            100% { filter: brightness(0.8) hue-rotate(-20deg) ; }
+        }
+
+
+    </style>
+</head>
+<body>
+    <div id="loading-screen">
+         <div class="loader-content">
+            <h2>goodluck ya, lagi Memuat Aset...</h2>
+            <div class="progress-container">
+                <div id="progress-bar"></div>
+            </div>
+            <p id="progress-text">0%</p>
+        </div>
+    </div>
+
+    <audio id="bgAudio" loop><source src="./assets/audio/MainBgmHorror.mp3" type="audio/mpeg"></audio>
+    <audio id="btnSfx"><source src="./assets/audio/mechanicalswish.mp3" type="audio/mpeg"></audio>
+    <audio id="cctvStatic" loop><source src="./assets/audio/ConstantStaticTv.mp3" type="audio/mpeg"></audio>
+    <audio id="monitorOnSfx"><source src="./assets/audio/cassette-sfx.mp3" type="audio/mpeg"></audio>
+    <audio id="camSwitchSfx"><source src="./assets/audio/beep.mp3" type="audio/mpeg"></audio>
+    <audio id="footstepPlayerSfx"><source src="./assets/audio/playerRunSfx.mp3" type="audio/mpeg"></audio>
+    <audio id="newAreaSfx"><source src="./assets/audio/sfxNewArea.mp3" type="audio/mpeg"></audio>
+    <audio id="cctvErrorSfx"><source src="./assets/audio/staticTV.mp3" type="audio/mpeg"></audio>
+    <audio id="jumpscare1Sfx"><source src="./assets/audio/jumpscare1sfx.mp3" type="audio/mpeg"></audio>
+    <audio id="theRuinSfx"><source src="./assets/audio/theRuinSfx.mp3" type="audio/mpeg"></audio>
+
+    <div id="viewport">
+        <div id="transitionOverlay"></div>
+        <div id="jumpscareLayer">
+            <img src="./assets/image/M1/entity/RustwalkerStatic.png" id="jumpscareImg" alt="JUMPSCARE">
+        </div>
+
+       <div id="main">
+            <img src="./assets/image/M1/panoramaSectionA1.png" id="mainImg1" class="main-img">
+            <img src="./assets/image/M1/panoramaSectionA2.png" id="mainImg2" class="main-img">
+            <img src="./assets/image/M1/panoramaSectionA3.png" id="mainImg3" class="main-img">
+            
+            <div id="navLayer" style="position: absolute; top:0; left:0; width: 100%; height: 100%; z-index: 10;">
+                </div>
+
+                
+            <div id="theRuinEntity">
+                <div id="ruinWrapper">
+                    <img src="./assets/image/M1/entity/theRuinBody.png" id="ruinBody" alt="Ruin Body">
+                    <img src="./assets/image/M1/entity/theRuinHead.png" id="ruinHead" alt="Ruin Head">
+                </div>
+            </div>
+
+        </div>
+
+        <div id="viewLeftBox" class="viewSide"></div>
+        <div id="viewRightBox" class="viewSide"></div>
+
+        <div id="UI">
+            <div id="cctvContainer">
+                <div id="monitorWrapper" class="hideCctv">
+                    <img src="./assets/image/komp.png" id="cctvFrame">
+                    <img src="./assets/image/M1/cctv/cameraSectionA.png" id="cctvScreen">
+                    <img src="./assets/image/M1/entity/entityOnCCTVRustwalker.png" alt="" id="cctvEntityRustwalkerDisplay">
+                    <div id="cctvUiLayer">
+                        <div id="cctvNavbar">00:00</div> 
+                        
+                        <div id="mapContainer">
+                            <img src="./assets/image/M1/cctv/DenahLantai3.png" id="floorPlan">
+                            <img src="./assets/image/M1/cctv/PosisiAnda.png" id="posisiAnda">
+                            
+                            <div id="floor3Group" class="cam-group show-group">
+                                <div id="camA" class="cam-btn active" data-cam="A">CAM A</div>
+                                <div id="camB" class="cam-btn" data-cam="B">CAM B</div>
+                                <div id="camC" class="cam-btn" data-cam="C">CAM C</div>
+                            </div>
+                            <div id="floor2Group" class="cam-group">
+                                <div id="camD" class="cam-btn" data-cam="D">CAM D</div>
+                                <div id="camE" class="cam-btn" data-cam="E">CAM E</div>
+                                <div id="camF" class="cam-btn" data-cam="F">CAM F</div>
+                            </div>
+                            <div id="floor1Group" class="cam-group">
+                                <div id="camG" class="cam-btn" data-cam="G">CAM G</div>
+                                <div id="camH" class="cam-btn" data-cam="H">CAM H</div>
+                                <div id="camI" class="cam-btn" data-cam="I">CAM I</div>
+                                <div id="camJ" class="cam-btn" data-cam="J">CAM J</div>
+                            </div>
+
+                            <div class="floor-controls">
+                                <div class="floor-btn active-floor" data-floor="3">FLOOR 3</div>
+                                <div class="floor-btn" data-floor="2">FLOOR 2</div>
+                                <div class="floor-btn" data-floor="1">FLOOR 1</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="cctvBtn">▲</div>
+        </div>
+
+        <div id="startBtn">Ketuk Untuk 💀</div>
+    </div>
+
+    <script>
+        
+        // --- ELEMENTS ---
+        const startBtn = document.getElementById('startBtn');
+        const cctvBtn = document.getElementById('cctvBtn');
+        const monitorWrapper = document.getElementById('monitorWrapper'); 
+        const cctvScreen = document.getElementById('cctvScreen');         
+        const cctvFrame = document.getElementById('cctvFrame');
+        const cctvUiLayer = document.getElementById('cctvUiLayer'); 
+        const cctvNavbar = document.getElementById('cctvNavbar');
+        const mainContainer = document.getElementById('main');
+        const leftZone = document.getElementById('viewLeftBox');
+        const rightZone = document.getElementById('viewRightBox');
+        const floorPlan = document.getElementById('floorPlan');
+        const posisiAnda = document.getElementById('posisiAnda');
+        const moveBtn = document.getElementById('moveBtn');
+        const transitionOverlay = document.getElementById('transitionOverlay');
+        const navLayer = document.getElementById('navLayer');
+        
+        const mainImg1 = document.getElementById('mainImg1');
+        const mainImg2 = document.getElementById('mainImg2');
+        const mainImg3 = document.getElementById('mainImg3');
+
+        const camBtns = document.querySelectorAll('.cam-btn');
+        const floorBtns = document.querySelectorAll('.floor-btn');
+        const camGroups = {
+            3: document.getElementById('floor3Group'),
+            2: document.getElementById('floor2Group'),
+            1: document.getElementById('floor1Group')
+        };
+
+        // --- LOADING SCREEN ---
+    document.addEventListener("DOMContentLoaded", () => {
+        const loadingScreen = document.getElementById('loading-screen');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const mediaAssets = document.querySelectorAll('img, video, audio');
+        let totalAssets = mediaAssets.length;
+        let assetsLoaded = 0;
+
+        function updateProgress() {
+            assetsLoaded++;
+            const percent = Math.round((assetsLoaded / totalAssets) * 100);
+            progressBar.style.width = percent + '%';
+            progressText.textContent = percent + '%';
+
+            if (assetsLoaded >= totalAssets) {
+                finishLoading();
+            }
+        }
+
+        function finishLoading() {
+            setTimeout(() => {
+                loadingScreen.classList.add('hide');
+            }, 500);
+        }
+
+        if (totalAssets === 0) {
+            finishLoading();
+        } else {
+            mediaAssets.forEach((asset) => {
+                if (asset.complete || asset.readyState === 4) {
+                    updateProgress();
+                } else {
+                    if (asset.tagName === 'IMG') {
+                        asset.addEventListener('load', updateProgress);
+                        asset.addEventListener('error', updateProgress); 
+                    } 
+                    else {
+                        asset.addEventListener('canplaythrough', updateProgress, { once: true });
+                        asset.addEventListener('error', updateProgress);
+                    }
+                }
+            });
+        }
+
+        // SAFETY NET 
+        window.addEventListener('load', () => {
+            if (assetsLoaded < totalAssets) {
+                progressBar.style.width = '100%';
+                progressText.textContent = '100%';
+                finishLoading();
+            }
+        });
+    });
+
+        // --- AUDIO ---
+        const bgAudio = document.getElementById('bgAudio');
+        const btnSfx = document.getElementById('btnSfx');
+        const cctvStatic = document.getElementById('cctvStatic');
+        const monitorOnSfx = document.getElementById('monitorOnSfx');
+        const camSwitchSfx = document.getElementById('camSwitchSfx');
+        const footstepPlayerSfx = document.getElementById('footstepPlayerSfx');
+        const newAreaSfx = document.getElementById('newAreaSfx');
+        const cctvErrorSfx = document.getElementById('cctvErrorSfx');
+        const jumpscare1Sfx = document.getElementById('jumpscare1Sfx');
+        const theRuinSfx = document.getElementById('theRuinSfx');
+
+        bgAudio.volume = 0.8; btnSfx.volume = 0.8; cctvStatic.volume = 0.5; monitorOnSfx.volume = 1.0;
+        footstepPlayerSfx.volume = 1.0; newAreaSfx.volume = 1.0; camSwitchSfx.volume = 0.3;  
+        cctvErrorSfx.volume = 0.8; jumpscare1Sfx.volume = 0.4; theRuinSfx.volume = 0.7;
+
+        // --- DATABASE CONFIG ---
+        
+        const cameraData = {
+            'A': './assets/image/M1/cctv/cameraSectionA.png',
+            'B': './assets/image/M1/cctv/cameraSectionB.png', 
+            'C': './assets/image/M1/cctv/cameraSectionC.png',
+            'D': './assets/image/M1/cctv/cameraSectionD.png',
+            'E': './assets/image/M1/cctv/cameraSectionE.png',
+            'F': './assets/image/M1/cctv/cameraSectionF.png',
+            'G': './assets/image/M1/cctv/cameraSectionG.png',
+            'H': './assets/image/M1/cctv/cameraSectionH.png',
+            'I': './assets/image/M1/cctv/cameraSectionI.png',
+            'J': './assets/image/M1/cctv/cameraSectionJ.png'
+        };
+
+        const floorData = {
+            3: './assets/image/M1/cctv/DenahLantai3.png',
+            2: './assets/image/M1/cctv/DenahLantai2.png', 
+            1: './assets/image/M1/cctv/DenahLantai1.png'  
+        };
+
+        // DATA PANORAMA (TITIK LOKASI)
+        const locationData = {
+            // --- LANTAI 3 ---
+            'A': {
+                images: [
+                    './assets/image/M1/panoramaSectionA1.png',
+                    './assets/image/M1/panoramaSectionA2.png',
+                    './assets/image/M1/panoramaSectionA3.png'
+                ],
+                buttons: [
+                    { target: 'B', text: 'AREA B', css: { left: '50.8%', top: '50%' } },
+                    { target: 'C', text: 'AREA C', css: { left: '65.5%', top: '50%' } },
+                    { target: 'D', text: 'TURUN KE LT.2 (AREA D)', css: { left: '80%', top: '80%' } }
+                ],
+                playerData: { floor: 3, cam: 'A', mapCss: { top: '75%', left: '22%' } }
+            },
+            'B': {
+                images: [
+                    './assets/image/M1/panoramaSectionB1.png',
+                    './assets/image/M1/panoramaSectionB2.png',
+                    './assets/image/M1/panoramaSectionB3.png'
+                ],
+                buttons: [
+                    { target: 'A', text: 'AREA A', css: { left: '9%', top: '40%' } },
+                    { target: 'C', text: 'AREA C', css: { left: '75%', top: '40%' } },
+                    { target: 'E', text: 'TURUN KE LT.2 (AREA E)', css: { left: '32.5%', top: '80%' } }
+                ],
+                playerData: { floor: 3, cam: 'B', mapCss: { top: '20%', left: '22%' } }
+            },
+            'C': {
+                images: [
+                    './assets/image/M1/panoramaSectionC1.png',
+                    './assets/image/M1/panoramaSectionC2.png',
+                    './assets/image/M1/panoramaSectionC3.png'
+                ],
+                buttons: [
+                    { target: 'A', text: 'AREA A', css: { left: '55.5%', top: '50%' } }, 
+                    { target: 'B', text: 'AREA B', css: { left: '8%', top: '50%' } },
+                    { target: 'F', text: 'TURUN KE LT.2 (AREA F)', css: { left: '21%', top: '80%' } }
+                ],
+                playerData: { floor: 3, cam: 'C', mapCss: { top: '25%', left: '77%' } }
+            },
+
+            // --- LANTAI 2 ---
+            'D': {
+                images: [
+                    './assets/image/M1/panoramaSectionD1.png',
+                    './assets/image/M1/panoramaSectionD2.png',
+                    './assets/image/M1/panoramaSectionD3.png'
+                ],
+                buttons: [
+                    { target: 'A', text: 'NAIK KE LT.3 (AREA A)', css: { left: '75%', top: '20%' } },
+                    { target: 'E', text: 'AREA E', css: { left: '57%', top: '50%' } },
+                    { target: 'F', text: 'AREA F', css: { left: '68%', top: '50%' } }
+                ],
+                playerData: { floor: 2, cam: 'D', mapCss: { top: '75%', left: '22%' } }
+            },
+            'E': {
+                images: [
+                    './assets/image/M1/panoramaSectionE1.png',
+                    './assets/image/M1/panoramaSectionE2.png',
+                    './assets/image/M1/panoramaSectionE3.png'
+                ],
+                buttons: [
+                    { target: 'B', text: 'NAIK KE LT.3 (AREA B)', css: { left: '35%', top: '20%' } },
+                    { target: 'D', text: 'AREA D', css: { left: '8%', top: '38%' } },
+                    { target: 'F', text: 'AREA F', css: { left: '80%', top: '35%' } }
+                ],
+                playerData: { floor: 2, cam: 'E', mapCss: { top: '20%', left: '22%' } }
+            },
+            'F': {
+                images: [
+                    './assets/image/M1/panoramaSectionF1.png',
+                    './assets/image/M1/panoramaSectionF2.png',
+                    './assets/image/M1/panoramaSectionF3.png'
+                ],
+                buttons: [
+                    { target: 'E', text: 'AREA E', css: { left: '58%', top: '50%' } },
+                    { target: 'C', text: 'NAIK KE LT.3 (AREA C)', css: { left: '60%', top: '20%' } },
+                    { target: 'D', text: 'AREA D', css: { left: '88%', top: '50%' } }
+                ],
+                playerData: { floor: 2, cam: 'F', mapCss: { top: '25%', left: '77%' } }
+            },
+
+            // --- LANTAI 1 (Entity movement ONLY, player cannot go here yet) ---
+            'G': {
+                images: [
+                    './assets/image/M1/panoramaSectionG1.png',
+                    './assets/image/M1/panoramaSectionG2.png',
+                    './assets/image/M1/panoramaSectionG3.png'
+                ],
+                buttons: [],
+                playerData: { floor: 1, cam: 'G', mapCss: { top: '80%', left: '20%' } }
+            },
+            'H': {
+                images: [
+                    './assets/image/M1/panoramaSectionH1.png',
+                    './assets/image/M1/panoramaSectionH2.png',
+                    './assets/image/M1/panoramaSectionH3.png'
+                ],
+                buttons: [],
+                playerData: { floor: 1, cam: 'H', mapCss: { top: '15%', left: '15%' } }
+            },
+            'I': {
+                images: [
+                    './assets/image/M1/panoramaSectionI1.png',
+                    './assets/image/M1/panoramaSectionI2.png',
+                    './assets/image/M1/panoramaSectionI3.png'
+                ],
+                buttons: [],
+                playerData: { floor: 1, cam: 'I', mapCss: { top: '15%', left: '75%' } }
+            },
+            'J': {
+                images: [
+                    './assets/image/M1/panoramaSectionJ1.png',
+                    './assets/image/M1/panoramaSectionJ2.png',
+                    './assets/image/M1/panoramaSectionJ3.png'
+                ],
+                buttons: [],
+                playerData: { floor: 1, cam: 'J', mapCss: { top: '70%', left: '70%' } }
+            }
+        };
+
+        // --- VISUAL CONFIGURATION RUSTWALKER (CCTV) ---
+        /* Format Config:
+           img: Path gambar
+           css: 
+             top/left: Posisi di layar (0% - 100%)
+             scale: Ukuran (1 = normal, 0.5 = setengah, 2 = besar)
+             brightness: Kecerahan (agar menyatu dengan room yang gelap/terang)
+        */
+        const rustwalkerVisualConfig = {
+            'A': { img: './assets/image/M1/entity/entityOnCCTVRustwalker.png', css: { top: '50%', left: '60%', scale: 0.6, brightness: 1 } },
+            'B': { img: './assets/image/M1/entity/entityOnCCTVRustwalker.png', css: { top: '45%', left: '45%', scale: 1.2, brightness: 1 } },
+            'C': { img: './assets/image/M1/entity/entityOnCCTVRustwalker.png', css: { top: '46%', left: '50%', scale: 1.5, brightness: 1 } },
+            
+            'D': { img: './assets/image/M1/entity/entityOnCCTVRustwalker.png', css: { top: '40%', left: '75%', scale: 1, brightness: 1 } },
+            'E': { img: './assets/image/M1/entity/entityOnCCTVRustwalker.png', css: { top: '43%', left: '50%', scale: 1.2, brightness: 1 } },
+            'F': { img: './assets/image/M1/entity/entityOnCCTVRustwalker.png', css: { top: '45%', left: '50%', scale: 1.5, brightness: 0.5 } },
+            
+            'G': { img: './assets/image/M1/entity/entityOnCCTVRustwalker.png', css: { top: '50%', left: '55%', scale: 1.1, brightness: 1 } },
+            'H': { img: './assets/image/M1/entity/entityOnCCTVRustwalker.png', css: { top: '49%', left: '50%', scale: 1.2, brightness: 0.2 } },
+            'I': { img: './assets/image/M1/entity/entityOnCCTVRustwalker.png', css: { top: '50%', left: '50%', scale: 1.3, brightness: 1 } },
+            
+            // Jaga-jaga jika ada lokasi J
+            'J': { img: './assets/image/M1/entity/entityOnCCTVRustwalker.png', css: { top: '50%', left: '50%', scale: 0, brightness: 1 } }
+        };
+
+        // --- TIME SYSTEM CONFIG ---
+        let gameHour = 18;      // Mulai jam 18:00 (Default)
+        let gameMinute = 0;
+        const realSecondsPerGameMinute = 2 ; // 1 menit game = 6 detik asli (Time Speed) code: tmx
+        let clockInterval; 
+
+        // --- GAME STATE ---
+        let isMonitorUp = false; 
+        let isScreenOn = false;  
+        let isMoving = false; 
+        let currentPan = 50;
+        let panSpeed = 0.8;
+        let moveDirection = 0;
+        
+        let currentLocation = 'A'; 
+        let currentCamera = 'A';  
+        let currentViewFloor = 3; 
+
+        // Variable Player (Dinamis)
+        let playerData = locationData['A'].playerData;
+
+        // -> ENTITY 01: "RUSTWALKER" code: enx1
+        // --- ENTITY CONFIG (Rustwalker) ---
+        const RUSTWALKER_MIN_SPAWN_GAME_MINS = 1; // 18:08
+        const RUSTWALKER_MAX_SPAWN_GAME_MINS = 2; // 18:20
+        const RUSTWALKER_MIN_MOVE_INTERVAL_SEC = 2; //5
+        const RUSTWALKER_MAX_MOVE_INTERVAL_SEC = 3; //30
+
+        let rustwalkerData = {
+            name: 'Rustwalker',
+            location: 'I', // Start/Spawn location
+            floor: 1, 
+            isSpawned: false,
+        };
+
+        let rustwalkerSpawnMinute = 0; 
+        let rustwalkerMoveTimer = null; 
+
+        // Definisi Koneksi dan Probabilitas JALUR ENTITAS
+        const entityMovementMap = {
+            // Target: Tipe Gerakan (near, far, veryFar, floor)
+            'A': { B: 'near', C: 'veryFar', D: 'floor' },
+            'B': { A: 'near', C: 'far', E: 'floor' },
+            'C': { B: 'far', A: 'veryFar', F: 'floor' },
+
+            'D': { E: 'near', F: 'veryFar', A: 'floor', G: 'floor' },
+            'E': { D: 'near', F: 'far', B: 'floor', H: 'floor' },
+            'F': { E: 'far', D: 'veryFar', C: 'floor', I: 'floor' },
+
+            'G': { H: 'near', J: 'far', D: 'floor' },
+            'H': { G: 'near', I: 'far', E: 'floor' },
+            'I': { H: 'far', J: 'near', F: 'floor' },
+            'J': { I: 'near', G: 'far' },
+        };
+        
+        const movementProbabilities = {
+            near: 34,
+            far: 31,
+            veryFar: 5,
+            floor: 30
+        };
+        
+        const movementTypes = ['near', 'far', 'veryFar', 'floor'];
+
+
+        // --- ENTITY MOVEMENT LOGIC ---
+        function getNextRustwalkerTarget(currentLocation) {
+            const possibleMoves = entityMovementMap[currentLocation];
+            if (!possibleMoves) return currentLocation;
+
+            // 1. Kumpulkan semua target yang tersedia
+            const availableTypes = [...new Set(Object.values(possibleMoves))];
+            
+            // 2. Lakukan Roll untuk menentukan TIPE pergerakan
+            let roll = Math.random() * 100;
+            let cumulativeProb = 0;
+
+            for (const type of movementTypes) {
+                cumulativeProb += movementProbabilities[type];
+
+                if (roll < cumulativeProb) {
+                    // TIPE pergerakan terpilih.
+                    
+                    // Filter target yang cocok dengan tipe ini
+                    const targetsOfType = [];
+                    for (const target in possibleMoves) {
+                        if (possibleMoves[target] === type) {
+                            targetsOfType.push(target);
+                        }
+                    }
+
+                    // Jika target untuk tipe ini ada
+                    if (targetsOfType.length > 0) {
+                        let chosenTarget;
+                        
+                        // Khusus Lantai 2 (D, E, F): Split 30% Floor jadi 15% Naik, 15% Turun
+                        if (type === 'floor' && ['D', 'E', 'F'].includes(currentLocation)) {
+                            const upTargets = targetsOfType.filter(t => ['A', 'B', 'C'].includes(t));
+                            const downTargets = targetsOfType.filter(t => ['G', 'H', 'I'].includes(t));
+
+                            // Roll 50:50 untuk naik atau turun, dari pool 30% Floor
+                            if (upTargets.length > 0 && downTargets.length > 0) {
+                                if (Math.random() < 0.5) {
+                                    chosenTarget = upTargets[Math.floor(Math.random() * upTargets.length)];
+                                } else {
+                                    chosenTarget = downTargets[Math.floor(Math.random() * downTargets.length)];
+                                }
+                            } else {
+                                // Jika hanya bisa ke satu arah (Naik/Turun), pilih target itu saja
+                                chosenTarget = targetsOfType[Math.floor(Math.random() * targetsOfType.length)];
+                            }
+                        } else {
+                            // Kasus umum: Pilih target acak dari tipe yang terpilih
+                            chosenTarget = targetsOfType[Math.floor(Math.random() * targetsOfType.length)];
+                        }
+                        
+                        return chosenTarget;
+                    }
+                    
+                    // Jika tipe gerakan terpilih tapi tidak ada rute yang cocok dari lokasi ini, 
+                    // entitas akan tetap diam dan kita keluar dari loop roll.
+                    return currentLocation; 
+                }
+            }
+            // Fallback: tetap di lokasi saat ini
+            return currentLocation;
+        }
+
+        // --- VISUAL UPDATE LOGIC ---
+        const cctvRustwalkerEntityImg = document.getElementById('cctvEntityRustwalkerDisplay');
+
+        function updateCctvEntityVisuals() {
+            // 1. Cek apakah Entity sudah Spawn
+            if (!rustwalkerData.isSpawned) {
+                cctvRustwalkerEntityImg.style.display = 'none';
+                return;
+            }
+
+            // 2. Cek apakah Kamera yang kita lihat == Lokasi Entity
+            if (currentCamera === rustwalkerData.location) {
+                const visualData = rustwalkerVisualConfig[currentCamera];
+                
+                if (visualData) {
+                    // Update Source Gambar
+                    cctvRustwalkerEntityImg.src = visualData.img;
+                    
+                    // Update CSS Positioning
+                    // Kita gunakan Translate -50% -50% agar titik koordinatnya di tengah gambar
+                    cctvRustwalkerEntityImg.style.top = visualData.css.top;
+                    cctvRustwalkerEntityImg.style.left = visualData.css.left;
+                    cctvRustwalkerEntityImg.style.transform = `translate(-50%, -50%) scale(${visualData.css.scale})`;
+                    cctvRustwalkerEntityImg.style.filter = `brightness(${visualData.css.brightness})`;
+                    
+                    // Tampilkan
+                    cctvRustwalkerEntityImg.style.display = 'block';
+                }
+            } else {
+                // Jika Entity tidak di kamera ini, sembunyikan
+                cctvRustwalkerEntityImg.style.display = 'none';
+            }
+        }
+
+        // -> ENTITY 02: "THE RUIN"  code: enx2
+        // --- THE RUIN CONFIGURATION ---
+        const THERUIN_MIN_SPAWN_GAME_MINS = 33; // 18:33
+        const THERUIN_MAX_SPAWN_GAME_MINS = 58; // 18:58
+        
+        // Timer Kematian (Toleransi)
+        const THERUIN_DEATH_TIMER_SEC = 6;  // 6
+        
+        // Interval Muncul Kembali (Real Time: 2 - 7 Menit)
+        const THERUIN_RECURRENCE_MIN_SEC = 20; // 2 menit
+        const THERUIN_RECURRENCE_MAX_SEC = 60; // 7 menit
+
+        let theRuinData = {
+            isActive: false,
+            hasSpawnedOnce: false,
+            deathTimer: null,
+            nextSpawnRealTime: null // Timestamp untuk spawn berikutnya
+        };
+
+        const ruinEntityDiv = document.getElementById('theRuinEntity');
+        const ruinBodyImg = document.getElementById('ruinBody');
+        const ruinHeadImg = document.getElementById('ruinHead');
+
+        // VISUAL CONFIG: Posisi Ruin di setiap Panorama (A-J)
+        // Default: Top 50%, Left 50%, Scale 1
+        const ruinLocationConfig = {
+            'A': { top: '50%', left: '65%', scale: 0.5, brightness: 1 },
+            'B': { top: '47%', left: '64%', scale: 1, brightness: 1 },
+            'C': { top: '45%', left: '43%', scale: 1, brightness: 1 },
+            'D': { top: '44%', left: '57%', scale: 1.1, brightness: 1 },
+            'E': { top: '46%', left: '32%', scale: 0.7, brightness: 1 },
+            'F': { top: '48%', left: '85%', scale: 1, brightness: 1 },
+            'G': { top: '50%', left: '50%', scale: 1, brightness: 1 },
+            'H': { top: '50%', left: '50%', scale: 1, brightness: 1 },
+            'I': { top: '50%', left: '50%', scale: 1, brightness: 1 },
+            'J': { top: '50%', left: '50%', scale: 1, brightness: 1 }
+        };
+
+        // --- THE RUIN LOGIC ---
+
+        function spawnTheRuin() {
+            if (theRuinData.isActive) return;
+            
+            // Cek apakah config lokasi ada
+            const config = ruinLocationConfig[currentLocation];
+            if (!config) return;
+
+            console.log(`[THE RUIN] MUNCUL DI ${currentLocation}! PINDAH LANTAI SEKARANG!`);
+
+            theRuinData.isActive = true;
+            theRuinData.hasSpawnedOnce = true;
+
+            // 1. Tampilkan Visual
+            ruinEntityDiv.style.display = 'block';
+            ruinEntityDiv.style.top = config.top;
+            ruinEntityDiv.style.left = config.left;
+            ruinEntityDiv.style.transform = `translate(-50%, -50%) scale(${config.scale})`;
+            ruinEntityDiv.style.filter = `brightness(${config.brightness})`;
+
+            // 2. Efek Audio & Viewport
+            theRuinSfx.currentTime = 0;
+            theRuinSfx.play();
+            viewport.classList.add('ruin-active-effect'); // Tambah animasi flickering
+
+            // 3. Mulai Timer Kematian (5 Detik)
+            theRuinData.deathTimer = setTimeout(() => {
+                triggerRuinJumpscare("Waktu Habis");
+            }, THERUIN_DEATH_TIMER_SEC * 1000);
+        }
+
+        function resetTheRuin(success = false) {
+            if (!theRuinData.isActive) return;
+
+            console.log("[THE RUIN] Menghilang...");
+            
+            // Reset State
+            theRuinData.isActive = false;
+            clearTimeout(theRuinData.deathTimer);
+
+            // Hilangkan Visual & Efek
+            setTimeout(() => {
+                theRuinSfx.volume *= 0.1
+                ruinEntityDiv.style.display = 'none';
+                viewport.classList.remove('ruin-active-effect');
+            }, 1000);
+            setTimeout(() => {
+                theRuinSfx.volume *= 10
+            }, 7000);
+
+            if (success) {
+                // Jika selamat, atur jadwal muncul berikutnya (2-7 menit lagi)
+                const nextIntervalSec = Math.floor(Math.random() * (THERUIN_RECURRENCE_MAX_SEC - THERUIN_RECURRENCE_MIN_SEC + 1)) + THERUIN_RECURRENCE_MIN_SEC;
+                
+                // Set waktu target (Waktu sekarang + interval)
+                theRuinData.nextSpawnRealTime = Date.now() + (nextIntervalSec * 1000);
+                
+                console.log(`[THE RUIN] Akan kembali dalam ${nextIntervalSec} detik.`);
+            }
+        }
+
+        function triggerRuinJumpscare(reason) {
+            console.log(`[GAME OVER] The Ruin kills you. Reason: ${reason}`);
+            
+            clearTimeout(theRuinData.deathTimer);
+            resetTheRuin(false); 
+
+            // FORCE JUMPSCARE:
+            rustwalkerData.location = currentLocation; 
+            
+            // Panggil fungsi collision dengan parameter 'TheRuin'
+            checkPlayerCollision('TheRuin'); 
+        }
+
+        // --- CHECKER (Dipanggil di GameLoop/Timer) ---
+        
+        let ruinSpawnMinute = 0; // Waktu random pertama kali
+
+        function calculateRuinFirstSpawn() {
+            ruinSpawnMinute = Math.floor(Math.random() * (THERUIN_MAX_SPAWN_GAME_MINS - THERUIN_MIN_SPAWN_GAME_MINS + 1)) + THERUIN_MIN_SPAWN_GAME_MINS;
+            console.log(`[THE RUIN] Jadwal muncul pertama jam 18:${ruinSpawnMinute}`);
+        }
+
+        function checkTheRuinStatus() {
+            // 1. Cek Spawn Pertama (Berdasarkan Jam Game)
+            if (!theRuinData.hasSpawnedOnce) {
+                if (gameHour === 18 && gameMinute >= ruinSpawnMinute) {
+                    spawnTheRuin();
+                }
+            } 
+            // 2. Cek Spawn Berikutnya (Berdasarkan Waktu Nyata)
+            else if (theRuinData.nextSpawnRealTime && Date.now() >= theRuinData.nextSpawnRealTime) {
+                if (!theRuinData.isActive) {
+                    spawnTheRuin();
+                    theRuinData.nextSpawnRealTime = null; // Reset agar tidak loop
+                }
+            }
+        }
+
+ // --- JUMPSCARE LOGIC ---
+        const jumpscareLayer = document.getElementById('jumpscareLayer');
+        const viewport = document.getElementById('viewport');
+
+// Update checkPlayerCollision agar menerima parameter 'killer'
+        function checkPlayerCollision(killer = 'Rustwalker') {
+            // Jika lokasi Entity SAMA dengan lokasi Player
+            if (rustwalkerData.location === currentLocation) {
+                
+                // --- PILIH GAMBAR JUMPSCARE BERDASARKAN PEMBUNUH ---
+                const jumpscareImg = document.getElementById('jumpscareImg');
+                
+                if (killer === 'TheRuin') {
+                    // Gunakan gambar The Ruin (Body atau Head)
+                    jumpscareImg.src = "./assets/image/M1/entity/theRuinHead.png"; 
+                } else {
+                    // Default: Rustwalker
+                    jumpscareImg.src = "./assets/image/M1/entity/RustwalkerStatic.png";
+                }
+                // ----------------------------------------------------
+
+                // 1. STOP GAME LOOP & INPUT
+                clearInterval(clockInterval);
+                clearTimeout(rustwalkerMoveTimer);
+                isMoving = true; 
+                navLayer.style.pointerEvents = "none"; 
+                cctvBtn.style.pointerEvents = "none"; 
+
+                // 2. MATIKAN MONITOR & UI
+                monitorWrapper.style.display = 'none'; 
+                cctvBtn.style.display = 'none';
+                
+                // 3. MATIKAN AUDIO LAIN
+                bgAudio.pause();
+                cctvStatic.pause();
+                
+                // 4. VISUAL: AKTIFKAN JUMPSCARE
+                jumpscareLayer.style.display = 'block'; 
+                if (killer === 'TheRuin') {
+                    jumpscareLayer.classList.add('jumpscare-active-TheRuin'); 
+                }else {
+                    jumpscareLayer.classList.add('jumpscare-active-Rustwalker'); 
+                }
+                
+                // Efek Strobe
+                viewport.style.animation = "";
+                setTimeout(() => {
+                    viewport.style.animation = "strobeFlash 0.05s steps(2, start) infinite";
+                }, 5);
+                
+
+                // 5. AUDIO: MAINKAN SUARA JUMPSCARE
+                jumpscare1Sfx.currentTime = 0;
+                jumpscare1Sfx.volume = 1.0;
+                jumpscare1Sfx.play().catch(e => console.log("Audio fail:", e));
+
+                // 6. ENDING
+                setTimeout(() => {
+                    if(killer === "TheRuin"){
+                        alert(`LU MATI gara-gara ${killer}. \n makanya cepet-cepet pindah lantai`);
+                    }else{
+                        alert(`LU MATI.\n${killer} nangkep lu di AREA ${currentLocation}. \n makanya sering-sering cek cctv lah`);
+                    }
+                    location.reload(); 
+                }, 5000); 
+            }
+        }
+
+        // --- KONSTANTA BARU ---
+        const TRANSITION_DURATION_MS = 500; // 0.5 detik untuk efek error
+
+        function moveRustwalker() {
+            clearTimeout(rustwalkerMoveTimer); 
+
+            const newLocation = getNextRustwalkerTarget(rustwalkerData.location);
+            const oldLocation = rustwalkerData.location;
+
+            if (newLocation && newLocation !== oldLocation) {
+                
+                // Cek kondisi: Apakah Entity bergerak saat player sedang melihat kamera LAMA?
+                const isPlayerWatching = currentCamera === oldLocation && isScreenOn;
+
+                if (isPlayerWatching) {
+                    // --- AKTIVASI EFEK ERROR CCTV ---
+                    
+                    // 1. Ganti tampilan layar dengan gambar error dan mainkan SFX
+                    cctvScreen.src = "./assets/image/M1/cctv/cameraError.png";
+                    cctvRustwalkerEntityImg.style.display = 'none'; // Sembunyikan entity selama transisi
+                    cctvErrorSfx.currentTime = 0; // Mulai dari awal
+                    cctvErrorSfx.play();
+
+                    setTimeout(() => {
+                        // 2. Setelah 0.5 detik, pindahkan Entity ke lokasi baru secara logis
+                        rustwalkerData.location = newLocation;
+                        rustwalkerData.floor = locationData[newLocation].playerData.floor;
+                        
+                        console.log(`[Rustwalker] Pindah dari: ${oldLocation} (Lantai ${locationData[oldLocation].playerData.floor}) ke: ${rustwalkerData.location} (Lantai ${rustwalkerData.floor})`);
+                        
+                        // 3. Update tampilan layar ke kamera BARU 
+                        cctvScreen.src = cameraData[currentCamera]
+                        
+                        // 4. Update visual entity di kamera baru (penting untuk menghilangkan Entity di kamera lama)
+                        updateCctvEntityVisuals(); 
+
+                        // 5. Matikan SFX
+                        cctvErrorSfx.pause();
+
+                    }, TRANSITION_DURATION_MS); 
+                    
+                } else {
+                    // --- PERGERAKAN NORMAL (Player tidak melihat) ---
+                    rustwalkerData.location = newLocation;
+                    rustwalkerData.floor = locationData[newLocation].playerData.floor;
+                    
+                    console.log(`[Rustwalker] Pindah dari: ${oldLocation} (Lantai ${locationData[oldLocation].playerData.floor}) ke: ${rustwalkerData.location} (Lantai ${rustwalkerData.floor})`);
+                    
+                    // Update visual entity hanya jika monitor aktif
+                    if (isScreenOn) updateCctvEntityVisuals(); 
+                }
+
+            } else {
+                 console.log(`[Rustwalker] Tidak bergerak, tetap di: ${rustwalkerData.location} (Lantai ${rustwalkerData.floor})`);
+                 
+                 // Tetap panggil update visuals jika monitor aktif, jaga-jaga jika ada bug render
+                 if (isScreenOn) updateCctvEntityVisuals();
+            }
+
+            checkPlayerCollision(); 
+
+            // Set waktu interval bergerak berikutnya (10-30 detik nyata)
+            const nextIntervalSec = Math.floor(Math.random() * (RUSTWALKER_MAX_MOVE_INTERVAL_SEC - RUSTWALKER_MIN_MOVE_INTERVAL_SEC + 1)) + RUSTWALKER_MIN_MOVE_INTERVAL_SEC;
+
+            // Panggil kembali fungsi moveRustwalker setelah interval
+            rustwalkerMoveTimer = setTimeout(moveRustwalker, nextIntervalSec * 1000);
+            console.log(`[Rustwalker] Akan bergerak lagi dalam ${nextIntervalSec} detik nyata.`);
+        }
+
+        function startRustwalkerMovement() {
+            // Panggil fungsi gerakan pertama
+            moveRustwalker();
+            updateCctvEntityVisuals();
+        }
+
+        // --- SPAWN LOGIC ---
+
+        function calculateSpawnTime() {
+            // Menghitung menit spawn game (20 - 30)
+            const randomMin = Math.floor(Math.random() * (RUSTWALKER_MAX_SPAWN_GAME_MINS - RUSTWALKER_MIN_SPAWN_GAME_MINS + 1)) + RUSTWALKER_MIN_SPAWN_GAME_MINS;
+            rustwalkerSpawnMinute = randomMin;
+            console.log(`[Rustwalker] Akan muncul pada jam 18:${rustwalkerSpawnMinute.toString().padStart(2, '0')}`);
+        }
+
+        function checkSpawnTime() {
+            if (rustwalkerData.isSpawned) return;
+
+            // Cek apakah sudah jam 18:XX dan menitnya sudah mencapai batas random
+            if (gameHour === 18 && gameMinute >= rustwalkerSpawnMinute) {
+                rustwalkerData.isSpawned = true;
+                console.log(`[Rustwalker] ENTITAS AKTIF! Muncul di titik awal: ${rustwalkerData.location} (Lantai ${rustwalkerData.floor})`);
+                startRustwalkerMovement();
+            }
+        }
+
+        // --- MOVEMENT LOGIC TERBARU (MULTI TOMBOL) ---
+
+        // Fungsi untuk merender tombol berdasarkan lokasi saat ini
+        function renderNavButtons() {
+            navLayer.innerHTML = ''; // Hapus tombol lama
+            const data = locationData[currentLocation];
+
+            if (data && data.buttons) {
+                data.buttons.forEach(btnData => {
+                    const btn = document.createElement('div');
+                    btn.className = 'nav-btn'; // Pakai class CSS baru
+                    btn.innerText = btnData.text;
+                    btn.style.left = btnData.css.left;
+                    btn.style.top = btnData.css.top;
+                    
+                    // Event Klik Tombol
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Agar tidak tembus klik ke belakang
+                        if(isMoving || isMonitorUp) return;
+                        
+                        startMovementSequence(btnData.target);
+                    });
+
+                    navLayer.appendChild(btn);
+                });
+            }
+        }
+
+
+        // --- TIME SYSTEM LOGIC ---
+            function updateGameTime() {
+            gameMinute++;
+
+            if (gameMinute >= 60) {
+                gameMinute = 0;
+                gameHour++;
+            }
+
+            if (gameHour >= 24) {
+                gameHour = 0; // Reset ke 00:00 setelah 23:59
+            }
+            
+            checkSpawnTime();       // Cek Rustwalker
+            checkTheRuinStatus();   // cek The Ruin
+
+            // Format String: 00:00
+            const formattedHour = gameHour.toString().padStart(2, '0');
+            const formattedMinute = gameMinute.toString().padStart(2, '0');
+            
+            // Update UI
+            cctvNavbar.innerText = `${formattedHour}:${formattedMinute}`;
+        }
+
+        function startClock() {
+            // Update tampilan awal
+            const formattedHour = gameHour.toString().padStart(2, '0');
+            const formattedMinute = gameMinute.toString().padStart(2, '0');
+            cctvNavbar.innerText = `${formattedHour}:${formattedMinute}`;
+
+            // Jalankan timer
+            clockInterval = setInterval(updateGameTime, realSecondsPerGameMinute * 1000);
+        }
+
+
+
+
+    // Update function startMovementSequence agar menerima targetID langsung
+      function startMovementSequence(targetLocID) {
+            const targetData = locationData[targetLocID];
+            if (!targetData) return;
+
+            // --- THE RUIN INTERACTION LOGIC ---
+            if (theRuinData.isActive) {
+                // Cek apakah target ada di LANTAI BERBEDA?
+                const currentFloor = locationData[currentLocation].playerData.floor;
+                const targetFloor = targetData.playerData.floor;
+
+                if (currentFloor === targetFloor) {
+                    // KESALAHAN FATAL: Pindah ruangan di lantai yang sama saat Ruin ada
+                    triggerRuinJumpscare("Kabur ke ruangan sebelah (Salah)");
+                    return; // Batalkan perpindahan
+                } else {
+                    // SUKSES: Pemain pindah lantai
+                    console.log("[THE RUIN] Pemain berhasil kabur ke lantai lain!");
+                    resetTheRuin(true); // True = Selamat
+                }
+            }
+            // ----------------------------------
+
+            isMoving = true;
+            navLayer.style.pointerEvents = "none"; 
+
+            currentLocation = targetLocID;
+            playerData = targetData.playerData;
+
+            transitionOverlay.style.opacity = 1;
+
+            setTimeout(() => {
+                footstepPlayerSfx.currentTime = 0;
+                footstepPlayerSfx.play();
+
+                setTimeout(() => {
+                    mainImg1.src = targetData.images[0];
+                    mainImg2.src = targetData.images[1];
+                    mainImg3.src = targetData.images[2];
+                    
+                    console.log(`Assets pre-loaded for ${targetLocID}`);
+                    currentPan = 50
+                }, 250); 
+
+                setTimeout(() => {
+                    finishMovement(targetLocID, targetData);
+                }, 500); 
+
+            }, 1000); 
+        }
+
+      function finishMovement(targetLocID, targetData) {
+          footstepPlayerSfx.pause();
+          footstepPlayerSfx.currentTime = 0;
+          
+            newAreaSfx.currentTime = 0;
+            newAreaSfx.play();
+
+            // Update Posisi di Map CCTV jika layar nyala
+            updatePlayerMarker();
+
+            // Render tombol baru untuk lokasi ini
+            renderNavButtons();
+
+            // update collision
+            checkPlayerCollision(); 
+
+
+            transitionOverlay.style.opacity = 0; // Buka layar hitam
+
+            setTimeout(() => {
+                isMoving = false;
+                navLayer.style.pointerEvents = "auto"; // Hidupkan klik lagi
+            }, 1000); 
+        }
+
+
+        // --- CCTV LOGIC ---
+
+        function switchFloor(floorNum) {
+            if (currentViewFloor == floorNum) return;
+            currentViewFloor = parseInt(floorNum);
+            floorPlan.src = floorData[currentViewFloor] || floorData[3];
+
+            for (let f in camGroups) camGroups[f].classList.remove('show-group'); 
+            if (camGroups[currentViewFloor]) camGroups[currentViewFloor].classList.add('show-group'); 
+
+            floorBtns.forEach(btn => {
+                if (parseInt(btn.getAttribute('data-floor')) === currentViewFloor) btn.classList.add('active-floor');
+                else btn.classList.remove('active-floor');
+            });
+
+            updatePlayerMarker();
+            camSwitchSfx.currentTime = 0; camSwitchSfx.play();
+        }
+
+        function updatePlayerMarker() {
+            if (currentViewFloor === playerData.floor) {
+                posisiAnda.style.display = 'block';
+                posisiAnda.style.top = playerData.mapCss.top;
+                posisiAnda.style.left = playerData.mapCss.left;
+            } else {
+                posisiAnda.style.display = 'none';
+            }
+        }
+
+        function switchCamera(camID) {
+            if (currentCamera === camID) return;
+            currentCamera = camID;
+            cctvScreen.src = cameraData[camID] || cameraData['A'];
+            camBtns.forEach(b => {
+                if (b.getAttribute('data-cam') === camID) b.classList.add('active');
+                else b.classList.remove('active');
+            });
+            updateCctvEntityVisuals();
+            camSwitchSfx.currentTime = 0; camSwitchSfx.play();
+        }
+
+        // --- EVENT LISTENERS ---
+        floorBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if(!isScreenOn) return;
+                switchFloor(btn.getAttribute('data-floor'));
+            });
+        });
+
+        camBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if(!isScreenOn) return;
+                switchCamera(btn.getAttribute('data-cam'));
+            });
+        });
+
+        const handleCctvBtn = () => {
+            btnSfx.currentTime = 0; btnSfx.play();
+            if (isScreenOn) turnOffScreen();
+            else toggleMonitorPosition();
+        };
+
+        const toggleMonitorPosition = () => {
+            if (!isMonitorUp) {
+                monitorWrapper.classList.replace("hideCctv", "showCctv");
+                cctvBtn.innerHTML = "▼"; isMonitorUp = true;
+            } else {
+                monitorWrapper.classList.replace("showCctv", "hideCctv");
+                cctvBtn.innerHTML = "▲"; isMonitorUp = false;
+            }
+        };
+
+        const turnOnScreen = () => {
+            if (isMonitorUp && !isScreenOn) {
+                monitorOnSfx.currentTime = 0; monitorOnSfx.play(); cctvStatic.play(); 
+                cctvScreen.style.display = "block";
+                cctvUiLayer.style.display = "block"; 
+                cctvRustwalkerEntityImg.style.display = 'block';
+                cctvFrame.style.filter="brightness(1.4)";
+                cctvBtn.innerHTML = "OFF"; cctvBtn.classList.add("btn-red");
+                updatePlayerMarker();
+                updateCctvEntityVisuals();
+                isScreenOn = true;
+            }
+        };
+
+        const turnOffScreen = () => {
+            monitorOnSfx.currentTime = 0; monitorOnSfx.play(); cctvStatic.pause(); cctvStatic.currentTime = 0;
+            cctvScreen.style.display = "none";
+            cctvUiLayer.style.display = "none"; 
+            cctvRustwalkerEntityImg.style.display = 'none';
+            cctvFrame.style.filter= "brightness(1)";
+            cctvBtn.innerHTML = "▼"; cctvBtn.classList.remove("btn-red");
+            isScreenOn = false;
+        };
+
+        leftZone.addEventListener('mouseenter', () => { moveDirection = -1; });
+        leftZone.addEventListener('mouseleave', () => { if(moveDirection === -1) moveDirection = 0; });
+        rightZone.addEventListener('mouseenter', () => { moveDirection = 1; });
+        rightZone.addEventListener('mouseleave', () => { if(moveDirection === 1) moveDirection = 0; });
+
+        cctvBtn.addEventListener("click", handleCctvBtn);
+        monitorWrapper.addEventListener("click", turnOnScreen);
+
+// --- INISIALISASI PERTAMA ---
+        // Panggil ini di dalam startBtn event listener agar tombol awal (A ke B/C) muncul
+        startBtn.addEventListener('click', () => {
+            if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+            startBtn.style.display = "none";
+            bgAudio.play();
+
+            // aktivasi audio context
+            footstepPlayerSfx.play(); footstepPlayerSfx.pause()
+            newAreaSfx.play(); newAreaSfx.pause()
+            cctvErrorSfx.play(); cctvErrorSfx.pause()
+            jumpscare1Sfx.play(); jumpscare1Sfx.pause()
+            theRuinSfx.play(); theRuinSfx.pause()
+            
+            calculateSpawnTime(); // <-- BARU: Tentukan kapan Rustwalker spawn
+            calculateRuinFirstSpawn();
+            renderNavButtons(); 
+            startClock(); 
+            gameLoop();
+        });
+
+        mainContainer.style.transform = `translateX(-33.333%)`; 
+        
+        function gameLoop() {
+            if (moveDirection !== 0 && !isMonitorUp && !isMoving) {
+                currentPan += moveDirection * panSpeed;
+                if (currentPan < 0) currentPan = 0;
+                if (currentPan > 100) currentPan = 100;
+            }
+            const percentage = (currentPan / 100) * 66.666; 
+            mainContainer.style.transform = `translateX(-${percentage}%)`;
+            requestAnimationFrame(gameLoop);
+        }
+    </script>
+</body>
+</html>

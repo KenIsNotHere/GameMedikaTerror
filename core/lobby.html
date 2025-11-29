@@ -102,13 +102,13 @@
         cursor: pointer;
         font-family:monospace;
 
-        /* display: none; */
-
-    }
-
-    #gen{
         display: none;
+
     }
+
+    /* #gen{
+        display: none;
+    } */
 
     #Music{position: absolute;}
 </style>
@@ -200,6 +200,10 @@
                 width: 20vw; z-index: 4;
                 margin-left: 47vw;
                 margin-top: -10vw;
+            }#lethalBtn{
+                padding: 0.8vw; cursor: pointer;
+                background-color: crimson;
+                color: white; font-size: 2vw;
             }
         </style>
         <h1 id="warningTitle">⛔ PERINGATAN KERAS <hr></h1>
@@ -243,7 +247,10 @@
                 📃 Bahasa (debug)
                 <select name="" id="" style="font-size: 2vw;">
                     <option value="">Bahasa Indonesia</option>
-                </select><br><br><hr>
+                </select><br><br><hr><button id="lethalBtn">
+                    Lethal Mode
+                </button>
+
             </div>
             <div id="creditTab" style="color: aliceblue;">
                 <div id="developerProfile">
@@ -279,7 +286,7 @@
                             <ul>
                                 <li>kenny richie</li>
                                 <li>Fanly</li>
-                                <li>NekoAngel</li>
+                                <li>Angeline</li>
                             </ul>
                         </div>
                         <div id="patchnote">
@@ -302,6 +309,7 @@
                             <hr>
                             <ul>
                                 <li>kenny richie</li>
+                                <li>kenny richie</li>
                             </ul>
                         </div>
                     </h1>
@@ -310,7 +318,7 @@
                     <h1>Member List</h1>
                     <ol>
                         <li>Nishizumi Grave Laz</li>
-                        <li>Nekoangel</li>
+                        <li>Angeline</li>
                         <li>Karamatsu</li>
                         <li>Fanly</li>
                     </ol>
@@ -331,13 +339,14 @@
                </table>
             </div>
         </div>
-        <div id="noteSUKMA">
+        <div id="easterEgg">
             <abbr title="iya ntar ku benerin dah">scroll keatas woy masih ngebug jir malu gw 😭 akwokowk 😂</abbr>
         </div><style>
-            #noteSUKMA{cursor: pointer; position: absolute; font-size: 3vw; color: white;margin-left: 15vw; margin-top: 65vw;}
+            #easterEgg{cursor: pointer; position: absolute; font-size: 3vw; color: white;margin-left: 15vw; margin-top: 65vw;}
         </style>
     </div>
     <style>
+      
         #h{
             color: gold;
         }abbr{text-decoration: underline; transition: 0.5s;}abbr:hover{transform: scale(1.1); transition: 0.5s;}
@@ -494,7 +503,7 @@
             status:"lock"
         }
     ]
-    let noteSUKMA = document.getElementById('noteSUKMA');
+    let easterEgg = document.getElementById('easterEgg');
     let configEvent = document.getElementById('configEvent');
     let gen = document.getElementById('gen');
     let startBtn = document.getElementById('startBtn');
@@ -528,8 +537,10 @@
     let leaderboard = document.getElementById('leaderboard');
     let leaderboardTab = document.getElementById('leaderboardTab');
     let guideCredit = document.getElementById('guideCredit');
+    let lethalBtn = document.getElementById('lethalBtn');
     let menulevelActive = 0
     let bisaMain = true
+    let isLethalMode = false
     let guideCreditData=[
         `jadilah xenowaskyy aka kenny sang game developer :v`,
         `teman-teman yang di list ini telah menyampaikan informasi pendapatnya kepada developernya tentang Bug
@@ -619,13 +630,13 @@ startBtn.addEventListener("click",()=>{
         fieldSettings.style.display="none"
         toggleOpr = false
         if(togglefieldmenu){
-            noteSUKMA.style.display="none"
+            easterEgg.style.display="none"
             fieldMenu.style.marginTop = "12vw" 
             fieldMenu.style.opacity = "1"
         }else{
             fieldMenu.style.marginTop = "62vw"
             fieldMenu.style.opacity = "0"
-            noteSUKMA.style.display="inline"
+            easterEgg.style.display="inline"
         }
     })
     mulaigame.addEventListener("click",()=>{
@@ -640,7 +651,11 @@ startBtn.addEventListener("click",()=>{
                 mainvlob.src="./assets/video/OPnight1.mp4"
             }, 4000);
             setTimeout(()=>{
-                window.location.href = "./malam1.html"
+                if(!isLethalMode){
+                    window.location.href = "./malam1.html"
+                }else{
+                    window.location.href = "./malam1x.html"
+                }
             },24000)
        }
     })
@@ -710,6 +725,22 @@ startBtn.addEventListener("click",()=>{
     })
     quitBtn.addEventListener("click",()=>{
         window.location.href ="../index.html"
+    })
+    lethalBtn.addEventListener("click",()=>{
+        if(!isLethalMode){
+            lethalBtn.innerHTML=`Lethal Mode <span style="color: lime; font-weight:700;">(active)</span>`
+            startBtn.style.color = 'crimson'
+            startBtn.innerHTML = '🔥 Mulai menggila ⚠'
+            mainvlob.style.filter ="sepia(1) hue-rotate(-50deg) contrast(2) "
+            Music.pause()
+        }else{
+            lethalBtn.innerHTML=`Lethal Mode`
+            startBtn.style.color = 'aliceblue'
+            startBtn.innerHTML = '▶ Mulai Investigasi'
+            mainvlob.style.filter =" hue-rotate(0deg) contrast(1) "
+            Music.play()
+        }
+        isLethalMode = !isLethalMode
     })
 </script>
 </html>
