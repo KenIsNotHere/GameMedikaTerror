@@ -290,7 +290,6 @@
 
         #jumpscareImg {
             position: absolute;
-            right: -100%; /* Mulai di luar layar kanan */
             height: 250%; /* Penuhi tinggi layar */
             width: auto;
             object-fit: cover;
@@ -309,8 +308,15 @@
             bottom: -200%;
             scale: 1.6;
             animation: 
-            TheRuinSlideInRight 0.2s forwards ease-out, /* Muncul cepat 0.2 detik */
-            violentShake 0.3s infinite;         /* Gemetar terus menerus */
+                TheRuinSlideInRight 0.2s forwards ease-out, /* Muncul cepat 0.2 detik */
+                violentShake 0.3s infinite;         /* Gemetar terus menerus */
+        }
+        .jumpscare-active-TheJester #jumpscareImg {
+            bottom: -176%;
+            scale: 1.6;
+            animation: 
+                TheJesterSlideInRight 0.2s forwards ease-out, /* Muncul cepat 0.2 detik */
+                violentShake 0.3s infinite;         /* Gemetar terus menerus */
         }
 
         /* --- JUMPSCARE KEYFRAMES --- */
@@ -321,6 +327,10 @@
         @keyframes TheRuinSlideInRight {
             0% { right: -150%; opacity: 0; }
             100% { right: -45%; opacity: 1; }
+        }
+        @keyframes TheJesterSlideInRight {
+            0% { right: 150%; opacity: 0; }
+            100% { right: -7%; opacity: 1; }
         }
 
         @keyframes violentShake {
@@ -388,7 +398,44 @@
             100% { filter: brightness(0.8) hue-rotate(-20deg) ; }
         }
 
+/* --- THE JESTER ELEMENTS (CCTV) --- */
+        #cctvJesterWrapper {
+            position: absolute;
+            z-index: 4; 
+            /* Ukuran default wrapper */
+            width: 65%; left: 16.6%; top: 15%; aspect-ratio: 4/3; 
+            pointer-events: none; 
+            display: none; /* Sembunyi default */
+            transform-origin: center center;
+        }
 
+        #jesterCctvBody, #jesterCctvHead {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: contain;
+        }
+
+        /* Animasi Kepala Jester (Sedikit miring-miring creepy) */
+        #jesterCctvHead {
+            animation: jesterHeadTwitch 4s infinite ease-in-out;
+            transform-origin: center bottom; /* Poros di leher */
+        }
+
+        @keyframes jesterHeadTwitch {
+            0%, 100% { transform: rotate(0deg); }
+            10% { transform: rotate(5deg); }
+            20% { transform: rotate(-3deg); }
+            30% { transform: rotate(0deg); }
+            60% { transform: rotate(0deg); }
+            70% { transform: rotate(-8deg); }
+            80% { transform: rotate(3deg); }
+        }
+
+        /* Helper untuk reset filter */
+        .filter-reset {
+            filter: saturate(1) hue-rotate(0deg);
+        }
     </style>
 </head>
 <body>
@@ -412,6 +459,11 @@
     <audio id="cctvErrorSfx"><source src="./assets/audio/staticTV.mp3" type="audio/mpeg"></audio>
     <audio id="jumpscare1Sfx"><source src="./assets/audio/jumpscare1sfx.mp3" type="audio/mpeg"></audio>
     <audio id="theRuinSfx"><source src="./assets/audio/theRuinSfx.mp3" type="audio/mpeg"></audio>
+    <audio id="thejesterMusicBoxSfx"><source src="./assets/audio/theJesterPassive.mp3" type="audio/mpeg"></audio>
+    <audio id="thejesterHuntSfx"><source src="./assets/audio/theJesterHuntSFX.mp3" type="audio/mpeg"></audio>
+    <audio id="thejesterScream"><source src="./assets/audio/theJesterScreamCaught.mp3" type="audio/mpeg"></audio>
+    <audio id="thejesterPursuing"><source src="./assets/audio/theJesterPursuing.mp3" type="audio/mpeg"></audio>
+    <audio id="thejesterRUN"><source src="./assets/audio/theJesterRUN.mp3" type="audio/mpeg"></audio>
 
     <div id="viewport">
         <div id="transitionOverlay"></div>
@@ -446,6 +498,10 @@
                     <img src="./assets/image/komp.png" id="cctvFrame">
                     <img src="./assets/image/M1/cctv/cameraSectionA.png" id="cctvScreen">
                     <img src="./assets/image/M1/entity/entityOnCCTVRustwalker.png" alt="" id="cctvEntityRustwalkerDisplay">
+                    <div id="cctvJesterWrapper">
+                        <img src="./assets/image/M1/entity/theJesterBody.png" id="jesterCctvBody">
+                        <img src="./assets/image/M1/entity/theJesterHead.png" id="jesterCctvHead">
+                    </div>
                     <div id="cctvUiLayer">
                         <div id="cctvNavbar">00:00</div> 
                         
@@ -582,10 +638,17 @@
         const cctvErrorSfx = document.getElementById('cctvErrorSfx');
         const jumpscare1Sfx = document.getElementById('jumpscare1Sfx');
         const theRuinSfx = document.getElementById('theRuinSfx');
+        const thejesterMusicBoxSfx = document.getElementById('thejesterMusicBoxSfx');
+        const thejesterHuntSfx = document.getElementById('thejesterHuntSfx');
+        const thejesterScream = document.getElementById('thejesterScream');
+        const thejesterPursuing = document.getElementById('thejesterPursuing');
+        const thejesterRUN= document.getElementById('thejesterRUN');
 
         bgAudio.volume = 0.8; btnSfx.volume = 0.8; cctvStatic.volume = 0.5; monitorOnSfx.volume = 1.0;
         footstepPlayerSfx.volume = 1.0; newAreaSfx.volume = 1.0; camSwitchSfx.volume = 0.3;  
-        cctvErrorSfx.volume = 0.8; jumpscare1Sfx.volume = 0.4; theRuinSfx.volume = 0.7;
+        cctvErrorSfx.volume = 0.8; jumpscare1Sfx.volume = 0.8; theRuinSfx.volume = 0.7;
+        thejesterHuntSfx.volume = 1.0; thejesterMusicBoxSfx.volume = 0.4; thejesterScream.volume = 0.9;
+        thejesterPursuing.volume = 1.0; thejesterRUN.volume = 0;
 
         // --- DATABASE CONFIG ---
         
@@ -659,9 +722,10 @@
                     './assets/image/M1/panoramaSectionD3.png'
                 ],
                 buttons: [
-                    { target: 'A', text: 'NAIK KE LT.3 (AREA A)', css: { left: '75%', top: '20%' } },
+                    { target: 'A', text: 'NAIK KE LT.3 (AREA A)', css: { left: '80%', top: '20%' } },
                     { target: 'E', text: 'AREA E', css: { left: '57%', top: '50%' } },
-                    { target: 'F', text: 'AREA F', css: { left: '68%', top: '50%' } }
+                    { target: 'F', text: 'AREA F', css: { left: '68%', top: '50%' } },
+                    { target: 'G', text: 'TURUN KE LT.1 (AREA G)', css: { left: '80%', top: '78%' } }
                 ],
                 playerData: { floor: 2, cam: 'D', mapCss: { top: '75%', left: '22%' } }
             },
@@ -674,7 +738,8 @@
                 buttons: [
                     { target: 'B', text: 'NAIK KE LT.3 (AREA B)', css: { left: '35%', top: '20%' } },
                     { target: 'D', text: 'AREA D', css: { left: '8%', top: '38%' } },
-                    { target: 'F', text: 'AREA F', css: { left: '80%', top: '35%' } }
+                    { target: 'F', text: 'AREA F', css: { left: '80%', top: '35%' } },
+                    { target: 'H', text: 'TURUN KE LT.1 (AREA H)', css: { left: '35%', top: '79%' } }
                 ],
                 playerData: { floor: 2, cam: 'E', mapCss: { top: '20%', left: '22%' } }
             },
@@ -692,15 +757,18 @@
                 playerData: { floor: 2, cam: 'F', mapCss: { top: '25%', left: '77%' } }
             },
 
-            // --- LANTAI 1 (Entity movement ONLY, player cannot go here yet) ---
+            // --- LANTAI 1 ---
             'G': {
                 images: [
                     './assets/image/M1/panoramaSectionG1.png',
                     './assets/image/M1/panoramaSectionG2.png',
                     './assets/image/M1/panoramaSectionG3.png'
                 ],
-                buttons: [],
-                playerData: { floor: 1, cam: 'G', mapCss: { top: '80%', left: '20%' } }
+                buttons: [
+                    { target: 'D', text: 'NAIK KE LT.2 (AREA D)', css: { left: '55%', top: '20%' } },
+                    { target: 'H', text: 'AREA H', css: { left: '15%', top: '50%' } },
+                ],
+                playerData: { floor: 1, cam: 'G', mapCss: { top: '70%', left: '25%' } }
             },
             'H': {
                 images: [
@@ -708,8 +776,11 @@
                     './assets/image/M1/panoramaSectionH2.png',
                     './assets/image/M1/panoramaSectionH3.png'
                 ],
-                buttons: [],
-                playerData: { floor: 1, cam: 'H', mapCss: { top: '15%', left: '15%' } }
+                buttons: [
+                    { target: 'E', text: 'NAIK KE LT.2 (AREA E)', css: { left: '77%', top: '20%' } },
+                    { target: 'G', text: 'AREA G', css: { left: '67.3%', top: '50%' } },
+                ],
+                playerData: { floor: 1, cam: 'H', mapCss: { top: '20%', left: '22%' } }
             },
             'I': {
                 images: [
@@ -759,7 +830,7 @@
         // --- TIME SYSTEM CONFIG ---
         let gameHour = 18;      // Mulai jam 18:00 (Default)
         let gameMinute = 0;
-        const realSecondsPerGameMinute = 6 ; // 1 menit game = 6 detik asli (Time Speed) code: tmx
+        let realSecondsPerGameMinute = 4; // 1 menit game = 6 detik asli (Time Speed) code: tmx
         let clockInterval; 
 
         // --- GAME STATE ---
@@ -782,7 +853,7 @@
         const RUSTWALKER_MIN_SPAWN_GAME_MINS = 8; // 18:08
         const RUSTWALKER_MAX_SPAWN_GAME_MINS = 20; // 18:20
         const RUSTWALKER_MIN_MOVE_INTERVAL_SEC = 5; //5
-        const RUSTWALKER_MAX_MOVE_INTERVAL_SEC = 30; //30
+        const RUSTWALKER_MAX_MOVE_INTERVAL_SEC = 27; //27
 
         let rustwalkerData = {
             name: 'Rustwalker',
@@ -888,6 +959,7 @@
         const cctvRustwalkerEntityImg = document.getElementById('cctvEntityRustwalkerDisplay');
 
         function updateCctvEntityVisuals() {
+            updateJesterVisuals();
             // 1. Cek apakah Entity sudah Spawn
             if (!rustwalkerData.isSpawned) {
                 cctvRustwalkerEntityImg.style.display = 'none';
@@ -927,7 +999,7 @@
         const THERUIN_DEATH_TIMER_SEC = 6;  // 6
         
         // Interval Muncul Kembali (Real Time: 2 - 7 Menit)
-        const THERUIN_RECURRENCE_MIN_SEC = 120; // 2 menit
+        const THERUIN_RECURRENCE_MIN_SEC = 150; // 2.5 menit
         const THERUIN_RECURRENCE_MAX_SEC = 420; // 7 menit
 
         let theRuinData = {
@@ -950,8 +1022,8 @@
             'D': { top: '44%', left: '57%', scale: 1.1, brightness: 1 },
             'E': { top: '46%', left: '32%', scale: 0.7, brightness: 1 },
             'F': { top: '48%', left: '85%', scale: 1, brightness: 1 },
-            'G': { top: '50%', left: '50%', scale: 1, brightness: 1 },
-            'H': { top: '50%', left: '50%', scale: 1, brightness: 1 },
+            'G': { top: '43%', left: '27%', scale: 0.7, brightness: 1 },
+            'H': { top: '45%', left: '67%', scale: 0.7, brightness: 0.2 },
             'I': { top: '50%', left: '50%', scale: 1, brightness: 1 },
             'J': { top: '50%', left: '50%', scale: 1, brightness: 1 }
         };
@@ -1022,13 +1094,289 @@
             console.log(`[GAME OVER] The Ruin kills you. Reason: ${reason}`);
             
             clearTimeout(theRuinData.deathTimer);
-            resetTheRuin(false); 
-
-            // FORCE JUMPSCARE:
-            rustwalkerData.location = currentLocation; 
+            resetTheRuin(false);  
             
-            // Panggil fungsi collision dengan parameter 'TheRuin'
-            checkPlayerCollision('TheRuin'); 
+            triggerJumpscare('TheRuin'); 
+        }
+
+        // -> ENTITY 03: "THE JESTER" code: enx3
+        
+        // --- JESTER CONFIG ---
+        const JESTER_MIN_SPAWN_GAME_MINS = 70; // 19:10 (1 Jam = 60 menit + 10)
+        const JESTER_MAX_SPAWN_GAME_MINS = 90; // 19:30 (1 Jam = 60 menit + 30)
+        
+        const JESTER_RESPAWN_MIN_SEC = 300; // 5 Menit
+        const JESTER_RESPAWN_MAX_SEC = 540; // 9 Menit
+
+        let jesterData = {
+            state: 0, // 0: Inactive, 1: Passive, 2: Active (Hunt), 3: Aggressive
+            location: null,
+            spawnTimeGameMinute: 0,
+            nextSpawnRealTime: 0,
+            catchCount: 0,     // Berapa kali player berhasil menemukannya
+            targetCatchCount: 0, // Target (3-5 kali)
+            stareTimer: 0,     // Timer saat player menatap CCTV
+            isActive: false    // Flag global
+        };
+
+        const jesterWrapper = document.getElementById('cctvJesterWrapper');
+
+        // VISUAL CONFIG JESTER (Sesuaikan path gambar)
+const jesterVisualConfig = {
+    'A': { css: { top: '50%', left: '50%', scale: 1, brightness: 1 } },
+    'B': { css: { top: '50%', left: '50%', scale: 1, brightness: 1 } },
+    'C': { css: { top: '50%', left: '50%', scale: 1, brightness: 1 } },
+    'D': { css: { top: '50%', left: '50%', scale: 1, brightness: 1 } },
+    'E': { css: { top: '50%', left: '50%', scale: 1, brightness: 1 } },
+    'F': { css: { top: '50%', left: '50%', scale: 1, brightness: 1 } },
+    'G': { css: { top: '50%', left: '50%', scale: 1, brightness: 1 } },
+    'H': { css: { top: '50%', left: '50%', scale: 1, brightness: 1 } },
+    'I': { css: { top: '50%', left: '50%', scale: 1, brightness: 1 } },
+    'J': { css: { top: '50%', left: '50%', scale: 1, brightness: 1 } }
+};
+
+        // --- PHASE CONTROL ---
+
+        function calculateJesterFirstSpawn() {
+            // Hitung menit total dari jam 18:00. 19:10 = 70 menit setelah start
+            jesterData.spawnTimeGameMinute = Math.floor(Math.random() * (JESTER_MAX_SPAWN_GAME_MINS - JESTER_MIN_SPAWN_GAME_MINS + 1)) + JESTER_MIN_SPAWN_GAME_MINS;
+            console.log(`[JESTER] Jadwal Fase 1 (Pasif) pada menit ke-${jesterData.spawnTimeGameMinute} in-game`);
+        }
+
+        function checkJesterSpawnStatus() {
+            // Logic Spawn Fase 1
+            if (jesterData.state === 0) {
+                // Konversi Jam Game ke Total Menit (Start 18:00)
+                let currentTotalMinutes = ((gameHour - 18) * 60) + gameMinute;
+                
+                // Cek Spawn Pertama
+                if (!jesterData.isActive && currentTotalMinutes >= jesterData.spawnTimeGameMinute && jesterData.nextSpawnRealTime === 0) {
+                    startJesterPhase1();
+                }
+                // Cek Respawn (Real Time)
+                else if (!jesterData.isActive && jesterData.nextSpawnRealTime > 0 && Date.now() >= jesterData.nextSpawnRealTime) {
+                    startJesterPhase1();
+                }
+            }
+        }
+
+        // --- PHASE 1: PASSIVE (Music Box) ---
+        function startJesterPhase1() {
+            console.log("[JESTER] PHASE 1: PASSIVE STARTED");
+            jesterData.state = 1;
+            jesterData.isActive = true;
+            
+            // PAUSE THE RUIN SPAWN
+            // (Kita asumsikan variable global theRuinData bisa diakses)
+            // Logic pause ruin ada di checkTheRuinStatus, kita tambahkan kondisi pengecekan isActive Jester nanti
+
+            thejesterMusicBoxSfx.currentTime = 0;
+            thejesterMusicBoxSfx.play();
+
+            thejesterMusicBoxSfx.onended = () => {
+                startJesterPhase2();
+            };
+        }
+
+        // --- PHASE 2: ACTIVE (The Hunt) ---
+        let jesterPhase2CheckInterval;
+
+        function startJesterPhase2() {
+            console.log("[JESTER] PHASE 2: HUNT STARTED");
+            jesterData.state = 2;
+            jesterData.catchCount = 0;
+            jesterData.targetCatchCount = Math.round(Math.random() * 1 + 2); // 2 - 3 kali
+            console.log(`[JESTER] Player harus menemukan Jester ${jesterData.targetCatchCount} kali.`);
+
+            // Audio Hunt
+            thejesterHuntSfx.currentTime = 0;
+            thejesterHuntSfx.play();
+
+        
+            // Spawn Visual Pertama
+            relocateJester();
+
+            // Mulai Loop Pengecekan "Stare" (Menatap)
+            // Kita cek setiap 100ms apakah player melihat Jester
+            if (jesterPhase2CheckInterval) clearInterval(jesterPhase2CheckInterval);
+            jesterPhase2CheckInterval = setInterval(jesterPhase2Logic, 100);
+
+            // Jika Audio Habis & Player belum menang -> FASE 3
+            thejesterHuntSfx.onended = () => {
+                if (jesterData.state === 2) {
+                    clearInterval(jesterPhase2CheckInterval);
+                    startJesterPhase3(); // Player Gagal
+                }
+            };
+        }
+
+function relocateJester() {
+            // Pilih lokasi random KECUALI lokasi player saat ini DAN KECUALI TITIK J
+            const allLocs = Object.keys(locationData);
+            
+            // Filter: Bukan lokasi player saat ini && Bukan lokasi 'J'
+            const validLocs = allLocs.filter(loc => loc !== currentLocation && loc !== 'J');
+            
+            // Safety check jika array kosong
+            if (validLocs.length === 0) return;
+
+            jesterData.location = validLocs[Math.floor(Math.random() * validLocs.length)];
+            console.log(`[JESTER] Bersembunyi di ${jesterData.location}`);
+
+            updateCctvEntityVisuals(); // Refresh tampilan CCTV
+        }
+
+        function jesterPhase2Logic() {
+            if (jesterData.state !== 2) return;
+
+            // Logic Menatap (Stare)
+            // Syarat: Monitor Nyala + Camera Benar + Jester ada di sana
+            if (isScreenOn && isMonitorUp && currentCamera === jesterData.location) {
+                jesterData.stareTimer += 0.1; // Tambah 100ms
+                
+                // Debug log (optional)
+                // console.log("Staring at Jester...", jesterData.stareTimer);
+
+                if (jesterData.stareTimer >= 2.0  ) { // 2 Detik
+                    handleJesterCaught();
+                }
+            } else {
+                jesterData.stareTimer = 0; // Reset jika memalingkan pandangan/ganti kamera
+            }
+        }
+
+        function handleJesterCaught() {
+            jesterData.stareTimer = 0; // Reset timer
+            jesterData.catchCount++;
+            console.log(`[JESTER] Ditemukan! (${jesterData.catchCount}/${jesterData.targetCatchCount})`);
+
+            // Play Scream
+            thejesterScream.currentTime = 0;
+            thejesterScream.play();
+
+            // Visual Static Error (Transisi)
+            const prevLoc = jesterData.location;
+            
+            // Efek Error CCTV (copy logic dr Rustwalker)
+            cctvScreen.src = "./assets/image/M1/cctv/cameraError.png";
+            cctvRustwalkerEntityImg.style.display = 'none'; // Sembunyikan entitas lain
+            jesterWrapper.style.display = 'none'; // Sembunyikan Jester
+            cctvErrorSfx.currentTime = 0; cctvErrorSfx.play();
+
+            // Cek Menang?
+            if (jesterData.catchCount >= jesterData.targetCatchCount) {
+                // MENANG LAWAN JESTER
+                setTimeout(() => {
+                    endJesterEncounter(true);
+                }, 500);
+            } else {
+                // BELUM MENANG, PINDAH TEMPAT
+                setTimeout(() => {
+                    cctvErrorSfx.pause();
+                    relocateJester(); // Pindah lokasi baru
+                    
+                    // Kembalikan view CCTV (Logic updateCctvVisuals dipanggil di dlm relocateJester lwt switchCamera simulasi atau manual)
+                    // Karena kita tidak ganti kamera, kita manual update src
+                    cctvScreen.src = cameraData[currentCamera];
+                    updateCctvEntityVisuals(); 
+                    
+                }, 500);
+            }
+        }
+
+        function endJesterEncounter(success) {
+            console.log(`[JESTER] Encounter End. Success: ${success}`);
+            jesterData.state = 0;
+            jesterData.isActive = false;
+            clearInterval(jesterPhase2CheckInterval);
+
+            // Reset Audio & Visual
+            thejesterHuntSfx.pause();
+            jesterWrapper.style.display = 'none';
+
+            // Jadwalkan Respawn (5-9 Menit)
+            const nextRespawnSec = Math.floor(Math.random() * (JESTER_RESPAWN_MAX_SEC - JESTER_RESPAWN_MIN_SEC + 1)) + JESTER_RESPAWN_MIN_SEC;
+            jesterData.nextSpawnRealTime = Date.now() + (nextRespawnSec * 1000);
+            console.log(`[JESTER] Will return in ${nextRespawnSec}s`);
+        }
+
+        // --- PHASE 3: AGGRESSIVE (Inevitable Death) ---
+        function startJesterPhase3() {
+            console.log("[JESTER] PHASE 3: AGGRESSIVE STARTED");
+            jesterData.state = 3;
+            
+            // Hilang dari CCTV
+            jesterWrapper.style.display = 'none';
+            
+            // Audio 1: Pursuing (Sekali)
+            thejesterPursuing.currentTime = 0;
+            thejesterPursuing.play();
+
+            thejesterPursuing.onended = () => {
+                startJesterRunSequence();
+            };
+        }
+
+        function startJesterRunSequence() {
+            console.log("[JESTER] RUNNING...");
+            
+            // Audio 2: RUN (Looping makin cepat)
+            // Kita pakai rekursif setTimeout untuk mengatur kecepatan playback
+            
+            let runDuration = 10000; // 10 detik total lari
+            let startTime = Date.now();
+            let currentDelay = 1000; // Mulai 1 detik
+            let currentVolume = 0.1;
+
+            function playRunSound() {
+                if (Date.now() - startTime > runDuration) {
+                    // PERBAIKAN: Panggil fungsi universal langsung
+                    triggerJumpscare('TheJester');
+                    return;
+                }
+
+                thejesterRUN.currentTime = 0;
+                thejesterRUN.volume = Math.min(currentVolume, 1.0);
+                thejesterRUN.play();
+
+                // Build Up Volume
+                currentVolume += 0.1;
+
+                // Percepat Tempo (Kurangi Delay)
+                // Kurangi 15% setiap loop, min 100ms
+                currentDelay = Math.max(100, currentDelay * 0.85); 
+
+                setTimeout(playRunSound, currentDelay);
+            }
+
+            playRunSound(); // Start Loop
+        }
+
+        // --- JESTER VISUAL UPDATE (CCTV) ---
+        // Panggil fungsi ini di dalam updateCctvEntityVisuals() utama
+        function updateJesterVisuals() {
+            // Jika Jester tidak aktif di fase 2, sembunyikan
+            if (jesterData.state !== 2) {
+                jesterWrapper.style.display = 'none';
+                return;
+            }
+
+            // Jika kamera sesuai lokasi Jester
+            if (currentCamera === jesterData.location) {
+                const config = jesterVisualConfig[currentCamera];
+                if (config) {
+                    // PERBAIKAN: JANGAN UBAH TOP/LEFT!
+                    // Biarkan CSS #cctvJesterWrapper (top: 15%, left: 16.6%) yang mengatur posisinya agar pas di layar.
+                    
+                    // Kita hanya atur Scale dan Brightness
+                    jesterWrapper.style.transform = `scale(${config.css.scale})`; 
+                    jesterWrapper.style.filter = `brightness(${config.css.brightness})`;
+
+                    jesterWrapper.style.display = 'block';
+                }
+            } else {
+                jesterWrapper.style.display = 'none';
+            }
         }
 
         // --- CHECKER (Dipanggil di GameLoop/Timer) ---
@@ -1041,6 +1389,8 @@
         }
 
         function checkTheRuinStatus() {
+            if (jesterData.isActive) return;
+
             // 1. Cek Spawn Pertama (Berdasarkan Jam Game)
             if (!theRuinData.hasSpawnedOnce) {
                 if (gameHour === 18 && gameMinute >= ruinSpawnMinute) {
@@ -1060,67 +1410,83 @@
         const jumpscareLayer = document.getElementById('jumpscareLayer');
         const viewport = document.getElementById('viewport');
 
+        // --- UNIVERSAL JUMPSCARE FUNCTION ---
+        function triggerJumpscare(killerName) {
+            console.log(`[GAME OVER] Jumpscare triggered by: ${killerName}`);
+
+            // 1. STOP SEMUA SISTEM
+            clearInterval(clockInterval);
+            clearInterval(jesterPhase2CheckInterval); // Stop Jester Loop
+            clearTimeout(rustwalkerMoveTimer);
+            clearTimeout(theRuinData.deathTimer);
+            
+            isMoving = true; 
+            navLayer.style.pointerEvents = "none"; 
+            cctvBtn.style.pointerEvents = "none"; 
+
+            // 2. MATIKAN UI & AUDIO LINGKUNGAN
+            monitorWrapper.style.display = 'none'; 
+            cctvBtn.style.display = 'none';
+            bgAudio.pause();
+            cctvStatic.pause();
+            thejesterHuntSfx.pause(); // Stop suara fase 2
+            thejesterPursuing.pause();
+            thejesterRUN.pause();
+
+            // 3. SETUP GAMBAR & CLASS JUMPSCARE
+            const jumpscareImg = document.getElementById('jumpscareImg');
+            jumpscareLayer.className = ''; // Reset class list
+
+            if (killerName === 'TheRuin') {
+                jumpscareImg.src = "./assets/image/M1/entity/theRuinHead.png"; 
+                jumpscareLayer.classList.add('jumpscare-active-TheRuin'); 
+            } 
+            else if (killerName === 'TheJester') {
+                jumpscareImg.src = "./assets/image/M1/entity/theJesterHead.png"; 
+                jumpscareLayer.classList.add('jumpscare-active-TheJester'); 
+            }
+            else { // Default: Rustwalker
+                jumpscareImg.src = "./assets/image/M1/entity/RustwalkerStatic.png";
+                jumpscareLayer.classList.add('jumpscare-active-Rustwalker');
+            }
+
+            // 4. EKSEKUSI VISUAL
+            jumpscareLayer.style.display = 'block'; 
+            
+            // Efek Strobe Layar
+            viewport.style.animation = "none";
+            setTimeout(() => {
+                viewport.style.animation = "strobeFlash 0.05s steps(2, start) infinite";
+            }, 10);
+
+            // 5. AUDIO JUMPSCARE
+            jumpscare1Sfx.currentTime = 0;
+            jumpscare1Sfx.volume = 1.0;
+            jumpscare1Sfx.play().catch(e => console.log("Audio fail:", e));
+
+            // 6. GAME OVER ALERT & RELOAD
+            setTimeout(() => {
+                let message = "";
+                if(killerName === "TheRuin") message = "KAMU MATI.\nThe Ruin menangkapmu (Kelamaan diam/Salah jalan).";
+                else if(killerName === "TheJester") message = "KAMU MATI.\nThe Jester menangkapmu (Habis waktu/Gagal cari).";
+                else message = `KAMU MATI.\nRustwalker menangkapmu di AREA ${currentLocation}.`;
+                
+                alert(message);
+                // location.reload(); 
+            }, 3000); // Durasi sebelum reload
+        }
+
 // Update checkPlayerCollision agar menerima parameter 'killer'
-        function checkPlayerCollision(killer = 'Rustwalker') {
-            // Jika lokasi Entity SAMA dengan lokasi Player
+     function checkPlayerCollision(forcedKiller = null) {
+            // Jika dipaksa (misal oleh logic The Ruin/Jester fase akhir)
+            if (forcedKiller) {
+                triggerJumpscare(forcedKiller);
+                return;
+            }
+
+            // Deteksi Manual (Rustwalker)
             if (rustwalkerData.location === currentLocation) {
-                
-                // --- PILIH GAMBAR JUMPSCARE BERDASARKAN PEMBUNUH ---
-                const jumpscareImg = document.getElementById('jumpscareImg');
-                
-                if (killer === 'TheRuin') {
-                    // Gunakan gambar The Ruin (Body atau Head)
-                    jumpscareImg.src = "./assets/image/M1/entity/theRuinHead.png"; 
-                } else {
-                    // Default: Rustwalker
-                    jumpscareImg.src = "./assets/image/M1/entity/RustwalkerStatic.png";
-                }
-                // ----------------------------------------------------
-
-                // 1. STOP GAME LOOP & INPUT
-                clearInterval(clockInterval);
-                clearTimeout(rustwalkerMoveTimer);
-                isMoving = true; 
-                navLayer.style.pointerEvents = "none"; 
-                cctvBtn.style.pointerEvents = "none"; 
-
-                // 2. MATIKAN MONITOR & UI
-                monitorWrapper.style.display = 'none'; 
-                cctvBtn.style.display = 'none';
-                
-                // 3. MATIKAN AUDIO LAIN
-                bgAudio.pause();
-                cctvStatic.pause();
-                
-                // 4. VISUAL: AKTIFKAN JUMPSCARE
-                jumpscareLayer.style.display = 'block'; 
-                if (killer === 'TheRuin') {
-                    jumpscareLayer.classList.add('jumpscare-active-TheRuin'); 
-                }else {
-                    jumpscareLayer.classList.add('jumpscare-active-Rustwalker'); 
-                }
-                
-                // Efek Strobe
-                viewport.style.animation = "";
-                setTimeout(() => {
-                    viewport.style.animation = "strobeFlash 0.05s steps(2, start) infinite";
-                }, 5);
-                
-
-                // 5. AUDIO: MAINKAN SUARA JUMPSCARE
-                jumpscare1Sfx.currentTime = 0;
-                jumpscare1Sfx.volume = 1.0;
-                jumpscare1Sfx.play().catch(e => console.log("Audio fail:", e));
-
-                // 6. ENDING
-                setTimeout(() => {
-                    if(killer === "TheRuin"){
-                        alert(`LU MATI gara-gara ${killer}. \n makanya cepet-cepet pindah lantai`);
-                    }else{
-                        alert(`LU MATI.\n${killer} nangkep lu di AREA ${currentLocation}. \n makanya sering-sering cek cctv lah`);
-                    }
-                    location.reload(); 
-                }, 5000); 
+                triggerJumpscare('Rustwalker');
             }
         }
 
@@ -1263,6 +1629,7 @@
             
             checkSpawnTime();       // Cek Rustwalker
             checkTheRuinStatus();   // cek The Ruin
+            checkJesterSpawnStatus(); // <-- Tambahkan ini
 
             // Format String: 00:00
             const formattedHour = gameHour.toString().padStart(2, '0');
@@ -1305,6 +1672,18 @@
                     console.log("[THE RUIN] Pemain berhasil kabur ke lantai lain!");
                     resetTheRuin(true); // True = Selamat
                 }
+            }
+
+            // --- TAMBAHAN: JESTER DEADLY MISTAKE ---
+            if (jesterData.state === 2 && targetLocID === jesterData.location) {
+                console.log("[GAME OVER] Player berjalan ke arah Jester!");
+                // Hentikan logic Jester
+                clearInterval(jesterPhase2CheckInterval);
+                thejesterHuntSfx.pause();
+                
+                // Trigger Jumpscare Instant
+                checkPlayerCollision('TheJester'); 
+                return;
             }
             // ----------------------------------
 
@@ -1468,7 +1847,7 @@
         cctvBtn.addEventListener("click", handleCctvBtn);
         monitorWrapper.addEventListener("click", turnOnScreen);
 
-// --- INISIALISASI PERTAMA ---
+// --- INISIALISASI PERTAMA --- code: stx
         // Panggil ini di dalam startBtn event listener agar tombol awal (A ke B/C) muncul
         startBtn.addEventListener('click', () => {
             if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
@@ -1481,9 +1860,15 @@
             cctvErrorSfx.play(); cctvErrorSfx.pause()
             jumpscare1Sfx.play(); jumpscare1Sfx.pause()
             theRuinSfx.play(); theRuinSfx.pause()
+            thejesterMusicBoxSfx.play(); thejesterMusicBoxSfx.pause()
+            thejesterHuntSfx.play(); thejesterHuntSfx.pause()
+            thejesterScream.play(); thejesterScream.pause()
+            thejesterPursuing.play(); thejesterPursuing.pause()
+            thejesterRUN.play(); thejesterRUN.pause()
             
             calculateSpawnTime(); // <-- BARU: Tentukan kapan Rustwalker spawn
             calculateRuinFirstSpawn();
+            calculateJesterFirstSpawn(); // <-- Tambahkan ini
             renderNavButtons(); 
             startClock(); 
             gameLoop();
