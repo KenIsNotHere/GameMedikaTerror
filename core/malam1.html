@@ -2538,29 +2538,15 @@ function relocateJester() {
     
             // 6. DEATH SCREEN SEQUENCE 
             setTimeout(() => {
-                showDeathScreen(killerName);
+                let message = "";
+                if(killerName === "TheRuin") message = "KAMU MATI.\nThe Ruin menangkapmu (Kelamaan diam/Salah jalan).";
+                else if(killerName === "TheJester") message = "KAMU MATI.\nThe Jester menangkapmu (Habis waktu/Gagal cari).";
+                else message = `KAMU MATI.\nRustwalker menangkapmu di AREA ${currentLocation}.`;
                 
-            }, 4000); // Tunggu 4 Detik setelah jumpscare mulai
-        } 
-        else {
-             // Tampilkan Entity di Panorama (Visual Attack)
-            const config = devourerLocationConfig[currentLocation];
-            // Fallback config
-            const safeConfig = config 
-            
-            devourerEntity.style.display = 'block';
-            // devourerEntity.style.top = safeConfig.top;
-            devourerEntity.style.left = safeConfig.left;
-            currentPan = safeConfig.forcedPanoramaView
-            devourerEntity.classList.add("death")
-
-             setTimeout(() => {
-                showDeathScreen(killerName);
-                
-            }, 4000); // Tunggu 4 Detik setelah jumpscare mulai
+                alert(message);
+                // location.reload(); 
+            }, 3000); // Durasi sebelum reload
         }
-        }
-
 
 // Update checkPlayerCollision agar menerima parameter 'killer'
      function checkPlayerCollision(forcedKiller = null) {
