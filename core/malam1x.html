@@ -226,7 +226,7 @@
             pointer-events: auto;
         }
 
-        .floor-btn {
+         .floor-btn {
             background-color: rgba(255, 0, 0, 0.15);
             border: 0.3vw solid rgba(255, 17, 0, 0.3);
             color: rgba(255, 255, 255, 0.9);
@@ -832,7 +832,7 @@
             pointer-events: none; position: absolute; left: 50%; transition: 1.2s;
             transform: translateX(-50%); width: auto; padding: 0.5%; font-weight: 500;
             background-color: rgba(10, 10, 10, 0.413); font-size: 1.6vw; z-index: 101;
-            color: rgba(255, 255, 255, 0.68); text-align: center; font-family:cursive,'Courier New', Courier, monospace;
+            color: rgba(255, 255, 255, 0.68); text-align: center; font-family:cursive, "monospace",'Courier New', Courier, monospace;
         }
         #notification.note-active {top: 2%;}
         #notification.note-inactive {top: -12%;}
@@ -902,7 +902,76 @@
             background-color: rgba(0, 255, 100, 0.5) !important;
         }
 
+/* --- WINNING SCREEN --- */
+        #winningScreen {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: black;
+            z-index: 10000; /* Di atas Death Screen */
+            display: none; /* Hidden default */
+            justify-content: center; align-items: center;
+            overflow: hidden; opacity: 0;
+            transition: opacity 2s ease-in-out; /* Fade In Perlahan */
+        }
 
+        #winningBgImg {
+            position: absolute; top: -5%; left: -5%; width: 110%; height: 110%;
+            object-fit: cover; opacity: 0.8;
+            animation: winningBgAnim 8s infinite ease-in-out alternate;
+        }
+
+        @keyframes winningBgAnim {
+            0% { transform: translateY(0) scale(1); filter: brightness(0.6); }
+            100% { transform: translateY(-2%) scale(1.02); filter: brightness(1.0); }
+        }
+
+        #winningOverlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(5px);
+            z-index: 1;
+        }
+
+        #winningContent {
+            position: relative; z-index: 2;
+            text-align: center; color: white;
+            font-family: 'Courier New', Courier, monospace;
+            background: rgba(0, 0, 0, 0.167);
+            padding: 4vw; border: 2px solid rgba(255, 255, 255, 0.082);
+            width: 70%; max-width: 800px;
+        }
+
+        #winningTitle {
+            font-size: 5vw; margin-bottom: 2vw;
+            color: #44b4ff; text-shadow: 0 0 15px #004288;
+            min-height: 1.2em; /* Mencegah layout jump saat ngetik */
+        }
+
+        #winningSubtitle {
+            font-size: 2vw; margin-bottom: 4vh; color: #ddd;
+            min-height: 1.2em;
+        }
+
+        #winningStats {
+            font-size: 1.5vw; color: #aaa; margin-bottom: 5vh;
+            border-top: 1px solid #555; padding-top: 2vh;
+            opacity: 0; transition: opacity 1s;
+        }
+
+        #winningButtons {
+            display: flex; justify-content: center; gap: 20px;
+            opacity: 0; transition: opacity 1s; pointer-events: none;
+        }
+
+        #winningButtons button {
+            background: transparent; border: 2px solid #448fff; color: #4460ff;
+            padding: 15px 30px; font-size: 1.2rem; font-family: inherit; font-weight: bold;
+            cursor: pointer; transition: 0.3s;
+        }
+        #winningButtons button:hover {
+            background: #4447ff; color: black; box-shadow: 0 0 20px #7700ff;
+        }
+        #winMenuBtn { border-color: white; color: white; }
+        #winMenuBtn:hover { background: white; color: black; box-shadow: 0 0 20px white; }
 
 
     </style>
@@ -948,6 +1017,8 @@
     <audio id="devourerAppearanceSFX"><source src="./assets/audio/devourerAppearanceSFX.mp3" type="audio/mpeg"></audio>
     <audio id="devourerAmbientSFX"><source src="./assets/audio/devourerAmbientSFX.mp3" type="audio/mpeg"></audio>
     <audio id="devourerScreamSFX"><source src="./assets/audio/devourerScreamSFX.mp3" type="audio/mpeg"></audio>
+    <audio id="winningMusic"><source src="./assets/audio/winningMusic.mp3" type="audio/mpeg"></audio>
+    <audio id="keyboardSfx"><source src="./assets/audio/keyboardSFX.mp3" type="audio/mpeg"></audio>
 
     <div id="deathScreen">
         <div id="deathFlash"></div>
@@ -964,6 +1035,26 @@
             <div id="deathStats">
                 <p id="deathTime">SURVIVED UNTIL: 00:00</p>
                 <button id="retryBtn">ULANGI MALAM INI</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="winningScreen">
+        <img src="./assets/image/wining.png" id="winningBgImg" alt="Victory">
+        
+        <div id="winningOverlay"></div>
+
+        <div id="winningContent">
+            <h1 id="winningTitle"></h1>
+            <h2 id="winningSubtitle"></h2>
+            
+            <div id="winningStats">
+                <p id="winGameTime">WAKTU GAME SELESAI: --:--</p>
+                </div>
+
+            <div id="winningButtons">
+                <button id="winRetryBtn">ULANGI MALAM</button>
+                <button id="winMenuBtn">KEMBALI KE MENU</button>
             </div>
         </div>
     </div>
@@ -1177,6 +1268,29 @@
                 './assets/image/M1/panoramaSectionJ1.png',
                 './assets/image/M1/panoramaSectionJ2.png',
                 './assets/image/M1/panoramaSectionJ3.png',
+                './assets/image/M1/panel/ClosedElectricalPanelSectionA.png',
+                './assets/image/M1/panel/OpenedElectricalPanelSectionA.png',
+                './assets/image/M1/panel/ClosedElectricalPanelSectionD.png',
+                './assets/image/M1/panel/OpenedElectricalPanelSectionD.png',
+                './assets/image/M1/panel/ClosedElectricalPanelSectionH.png',
+                './assets/image/M1/panel/OpenedElectricalPanelSectionH.png',
+                './assets/image/M1/panel/ClosedElectricalPanelSectionI.png',
+                './assets/image/M1/panel/OpenedElectricalPanelSectionI.png',
+                "./assets/image/M1/entity/theRuinHead.png",
+                "./assets/image/M1/entity/theRuinBody.png",
+                "./assets/image/M1/entity/theJesterHead.png",
+                "./assets/image/M1/entity/theJesterBody.png",
+                "./assets/image/M1/entity/rottenneckHEAD.png",
+                "./assets/image/M1/entity/rottenneckJAW.png",
+                "./assets/image/M1/entity/RustwalkerStatic.png",
+                "./assets/image/M1/entity/devourerBody.png",
+                "./assets/image/M1/entity/devourerHead.png",
+                "./assets/image/M1/cctv/DenahLantai3.png",
+                "./assets/image/M1/cctv/DenahLantai2.png",
+                "./assets/image/M1/cctv/DenahLantai1.png",
+                "./assets/image/M1/cctv/PosisiAnda.png",
+                "./assets/image/M1/entity/entityOnCCTVRustwalker.png",
+                "./assets/image/M1/toilet.png"
             ]
             preRenderingIMGfile.forEach(source => {
                 preRenderingIMGwrapper.innerHTML+=`<img src='${source}'>`
@@ -1241,6 +1355,8 @@
         });
     });
 
+    // document.addEventListener("contextmenu",(e)=>{e.preventDefault(); return false})
+
         // --- AUDIO --- code: aux
         const bgAudio = document.getElementById('bgAudio');
         const btnSfx = document.getElementById('btnSfx');
@@ -1270,6 +1386,8 @@
         const devourerAppearanceSFX = document.getElementById('devourerAppearanceSFX');
         const devourerAmbientSFX = document.getElementById('devourerAmbientSFX');
         const devourerScreamSFX = document.getElementById('devourerScreamSFX');
+        const winningMusic = document.getElementById('winningMusic');
+        const keyboardSfx = document.getElementById('keyboardSfx');
 
         bgAudio.volume = 0.8; btnSfx.volume = 0.3; cctvStatic.volume = 0.5; monitorOnSfx.volume = 1.0;
         footstepPlayerSfx.volume = 1.0; newAreaSfx.volume = 1.0; camSwitchSfx.volume = 0.3;  
@@ -1279,6 +1397,7 @@
         openElectricalPanel.volume = 1.0; closeElectricalPanel.volume = 1.0; completeSfx.volume = 1.0;
         minigamePanelClickSfx.volume = 1.0; correctSfx.volume = 1.0; incorrectSfx.volume = 1.0; devourerScreamSFX.volume = 1.0;
         rottenneckSFX.volume = 1.0; rottenneckScreamSFX.volume = 1.0; devourerAppearanceSFX.volume = 1.0;
+        winningMusic.volume = 1.0; keyboardSfx.volume = 1.0;
 
         // --- DATABASE CONFIG ---
         
@@ -1470,8 +1589,8 @@
                         id: 'panelI',
                         text: 'PANEL I',
                         css: { left: '65%', top: '25%' }, 
-                        imgClosed: './assets/image/M1/panel/ClosedElectricalPanelSectionI.png',
-                        imgOpened: './assets/image/M1/panel/OpenedElectricalPanelSectionI.png'
+                        imgClosed: './assets/image/M1/panel/ClosedElectricalPanelSectionD.png',
+                        imgOpened: './assets/image/M1/panel/OpenedElectricalPanelSectionD.png'
                     }
                 ],
                 playerData: { floor: 1, cam: 'I', mapCss: { top: '15%', left: '75%' } }
@@ -1582,10 +1701,10 @@
 
         // -> ENTITY 01: "RUSTWALKER" code: enx1
         // --- ENTITY CONFIG (Rustwalker) ---
-        const RUSTWALKER_MIN_SPAWN_GAME_MINS = 8; // 18:08
-        const RUSTWALKER_MAX_SPAWN_GAME_MINS = 20; // 18:20
-        const RUSTWALKER_MIN_MOVE_INTERVAL_SEC = 5; //5
-        const RUSTWALKER_MAX_MOVE_INTERVAL_SEC = 27; //27
+        const RUSTWALKER_MIN_SPAWN_GAME_MINS = 1; 
+        const RUSTWALKER_MAX_SPAWN_GAME_MINS = 3; 
+        const RUSTWALKER_MIN_MOVE_INTERVAL_SEC = 2; 
+        const RUSTWALKER_MAX_MOVE_INTERVAL_SEC = 3;
 
         let rustwalkerData = {
             name: 'Rustwalker',
@@ -1730,15 +1849,15 @@
 
         // -> ENTITY 02: "THE RUIN"  code: enx2
         // --- THE RUIN CONFIGURATION ---
-        const THERUIN_MIN_SPAWN_GAME_MINS = 33; // 18:33
-        const THERUIN_MAX_SPAWN_GAME_MINS = 58; // 18:58
+        const THERUIN_MIN_SPAWN_GAME_MINS = 8; // 18:33
+        const THERUIN_MAX_SPAWN_GAME_MINS = 14; // 18:58
         
         // Timer Kematian (Toleransi)
-        const THERUIN_DEATH_TIMER_SEC = 7;  // 7
+        const THERUIN_DEATH_TIMER_SEC = 5;  // 7
         
         // Interval Muncul Kembali (Real Time: 2 - 7 Menit)
-        const THERUIN_RECURRENCE_MIN_SEC = 150; // 2.5 menit
-        const THERUIN_RECURRENCE_MAX_SEC = 420; // 7 menit
+        const THERUIN_RECURRENCE_MIN_SEC = 50; // 2.5 menit
+        const THERUIN_RECURRENCE_MAX_SEC = 250; // 7 menit
 
         let theRuinData = {
             isActive: false,
@@ -1840,11 +1959,11 @@
         // -> ENTITY 03: "THE JESTER" code: enx3
         
         // --- JESTER CONFIG ---
-        const JESTER_MIN_SPAWN_GAME_MINS = 70; // 19:10 (1 Jam = 60 menit + 10)
-        const JESTER_MAX_SPAWN_GAME_MINS = 90; // 19:30 (1 Jam = 60 menit + 30)
+        const JESTER_MIN_SPAWN_GAME_MINS = 16; // 19:10 (1 Jam = 60 menit + 10)
+        const JESTER_MAX_SPAWN_GAME_MINS = 36; // 19:30 (1 Jam = 60 menit + 30)
         
-        const JESTER_RESPAWN_MIN_SEC = 300; // 5 Menit
-        const JESTER_RESPAWN_MAX_SEC = 540; // 9 Menit
+        const JESTER_RESPAWN_MIN_SEC = 150; // 5 Menit
+        const JESTER_RESPAWN_MAX_SEC = 300; // 9 Menit
 
         let jesterData = {
             state: 0, // 0: Inactive, 1: Passive, 2: Active (Hunt), 3: Aggressive
@@ -1923,7 +2042,7 @@ const jesterVisualConfig = {
             console.log("[JESTER] PHASE 2: HUNT STARTED");
             jesterData.state = 2;
             jesterData.catchCount = 0;
-            jesterData.targetCatchCount = Math.round(Math.random() * 1 + 2); // 2 - 3 kali
+            jesterData.targetCatchCount = Math.round(Math.random() * 1 + 3); // 3 - 4 kali
             console.log(`[JESTER] Player harus menemukan Jester ${jesterData.targetCatchCount} kali.`);
 
             // Audio Hunt
@@ -2117,8 +2236,8 @@ function relocateJester() {
 
         // -> ENTITY 04: "ROTTENNECK" code: enx4
         
-        const ROTTENNECK_MIN_SPAWN_GAME_MINS = 110; // 19:50
-        const ROTTENNECK_MAX_SPAWN_GAME_MINS = 130; // 20:15
+        const ROTTENNECK_MIN_SPAWN_GAME_MINS = 50; // 19:50
+        const ROTTENNECK_MAX_SPAWN_GAME_MINS = 70; // 20:15
         // const ROTTENNECK_MIN_SPAWN_GAME_MINS = 1; 
         // const ROTTENNECK_MAX_SPAWN_GAME_MINS = 2; 
         
@@ -2282,10 +2401,10 @@ function relocateJester() {
 
         // -> ENTITY 05: "DEVOURER" code: enx5
         
-        const DEVOURER_MIN_SPAWN_GAME_MINS = 150; // 20:30 150
-        const DEVOURER_MAX_SPAWN_GAME_MINS = 190; // 21:10 190
-        const DEVOURER_MIN_MOVE_INTERVAL_SEC = 600; // 10 menit
-        const DEVOURER_MAX_MOVE_INTERVAL_SEC = 720; // 12 menit
+        const DEVOURER_MIN_SPAWN_GAME_MINS = 80; // 20:30 150
+        const DEVOURER_MAX_SPAWN_GAME_MINS = 90; // 21:10 190
+        const DEVOURER_MIN_MOVE_INTERVAL_SEC = 180; // 10 menit
+        const DEVOURER_MAX_MOVE_INTERVAL_SEC = 300; // 12 menit
 
         // Config Posisi Devourer di Panorama
         const devourerLocationConfig = {
@@ -2984,7 +3103,7 @@ function relocateJester() {
              }
         };
 
-        // State Minigame Lokal
+        // State Minigame Lokal code: quest
         let isMinigameOpen = false;
         let memoryBoardLocked = false;
         let firstCard = null;
@@ -3331,8 +3450,7 @@ function relocateJester() {
             closeMinigame();
             PanelActivationBtn.style.display = 'none'; 
             if (allComplete) {
-                alert("SEMUA PANEL AKTIF! KAMU BERHASIL MELEWATI MALAM INI!");
-                // location.reload(); // Atau panggil fungsi End Game/Next Level
+                triggerWinCondition();
             }
         }, 2500);
     }
@@ -3556,15 +3674,17 @@ function relocateJester() {
             });
         });
 
-        const handleCctvBtn = () => {
+        const handleCctvBtn = (e) => {
+            e.preventDefault()
             if (isFocusingPanel) return;
 
             btnSfx.currentTime = 0; btnSfx.play();
-            if (isScreenOn) turnOffScreen();
-            else toggleMonitorPosition();
+            if (isScreenOn) turnOffScreen(e);
+            else toggleMonitorPosition(e);
         };
 
-        const toggleMonitorPosition = () => {
+        const toggleMonitorPosition = (e) => {
+            e.preventDefault()
             if (!isMonitorUp) {
                 monitorWrapper.classList.replace("hideCctv", "showCctv");
                 cctvBtn.innerHTML = "▼"; isMonitorUp = true;
@@ -3574,7 +3694,8 @@ function relocateJester() {
             }
         };
 
-        const turnOnScreen = () => {
+        const turnOnScreen = (e) => {
+            e.preventDefault()
             if (isMonitorUp && !isScreenOn) {
                 monitorOnSfx.currentTime = 0; monitorOnSfx.play(); cctvStatic.play(); 
                 cctvScreen.style.display = "block";
@@ -3588,7 +3709,8 @@ function relocateJester() {
             }
         };
 
-        const turnOffScreen = () => {
+        const turnOffScreen = (e) => {
+            e.preventDefault()
             monitorOnSfx.currentTime = 0; monitorOnSfx.play(); cctvStatic.pause(); cctvStatic.currentTime = 0;
             cctvScreen.style.display = "none";
             cctvUiLayer.style.display = "none"; 
@@ -3602,9 +3724,16 @@ function relocateJester() {
         leftZone.addEventListener('mouseleave', () => { if(moveDirection === -1) moveDirection = 0; });
         rightZone.addEventListener('mouseenter', () => { moveDirection = 1; });
         rightZone.addEventListener('mouseleave', () => { if(moveDirection === 1) moveDirection = 0; });
+        
+        leftZone.addEventListener('touchstart', (e) => {e.preventDefault(); moveDirection = -1; });
+        leftZone.addEventListener('touchend', (e) => {e.preventDefault();  if(moveDirection === -1) moveDirection = 0; });
+        rightZone.addEventListener('touchstart', (e) => {e.preventDefault();  moveDirection = 1; });
+        rightZone.addEventListener('touchend', (e) => {e.preventDefault();  if(moveDirection === 1) moveDirection = 0; });
 
-        cctvBtn.addEventListener("click", handleCctvBtn);
-        monitorWrapper.addEventListener("click", turnOnScreen);
+
+
+        cctvBtn.addEventListener("click", (e)=>{handleCctvBtn(e)});
+        monitorWrapper.addEventListener("click", (e)=>{turnOnScreen(e)});
 
 // --- INISIALISASI PERTAMA --- code: stx
         startBtn.addEventListener('click', () => {
@@ -3635,6 +3764,8 @@ function relocateJester() {
             devourerAppearanceSFX.play(); devourerAppearanceSFX.pause()
             devourerAmbientSFX.play(); devourerAmbientSFX.pause()
             devourerScreamSFX.play(); devourerScreamSFX.pause()
+            winningMusic.play(); winningMusic.pause()
+            keyboardSfx.play(); keyboardSfx.pause()
             
             calculateSpawnTime(); 
             calculateRuinFirstSpawn();
@@ -3767,6 +3898,111 @@ function relocateJester() {
         // Tombol Ulangi
         retryBtn.addEventListener('click', () => {
             location.reload();
+        });
+
+        // --- WINNING SYSTEM ---
+        const winningScreen = document.getElementById('winningScreen');
+        const winningTitle = document.getElementById('winningTitle');
+        const winningSubtitle = document.getElementById('winningSubtitle');
+        const winGameTime = document.getElementById('winGameTime');
+        const winningStats = document.getElementById('winningStats');
+        const winningButtons = document.getElementById('winningButtons');
+        const winRetryBtn = document.getElementById('winRetryBtn');
+        const winMenuBtn = document.getElementById('winMenuBtn');
+
+        const winTitles = ["MISI SELESAI", "KAMU BERHASIL", "MALAM SELESAI"];
+        const winSubtitles = "Selamat, Anda telah melakukan aktivasi terhadap semua panel listrik pada bangunan ini.";
+
+        function triggerWinCondition() {
+            console.log("[GAME WON] All panels activated!");
+
+            // 1. STOP SEMUA SISTEM (Game Freeze)
+            clearInterval(clockInterval);
+            clearInterval(jesterPhase2CheckInterval); 
+            clearTimeout(rustwalkerMoveTimer);
+            clearTimeout(theRuinData.deathTimer);
+            clearTimeout(rottenneckData.failTimer); 
+            clearInterval(rottenneckStareInterval);
+            
+            // Kunci Input
+            isMoving = true; 
+            navLayer.style.pointerEvents = "none"; 
+            cctvBtn.style.pointerEvents = "none"; 
+            monitorWrapper.style.display = 'none'; 
+            cctvBtn.style.display = 'none';
+
+            // 2. MATIKAN AUDIO LINGKUNGAN
+            bgAudio.pause();
+            cctvStatic.pause();
+            devourerAmbientSFX.pause();
+            // Matikan audio musuh lain jika sedang main...
+
+            // 3. MULAI SEQUENSI KEMENANGAN
+            winningMusic.currentTime = 0;
+            winningMusic.play();
+
+            // Tampilkan Layar (Fade In)
+            winningScreen.style.display = 'flex';
+            // Force reflow
+            void winningScreen.offsetWidth;
+            winningScreen.style.opacity = 1;
+
+            // 4. EFEK MENGETIK (Typewriter)
+            // Pilih Judul Acak
+            const chosenTitle = winTitles[Math.floor(Math.random() * winTitles.length)];
+            
+            // Mulai ngetik Judul dulu
+            typeWriter(winningTitle, chosenTitle, 100, () => {
+                // Setelah judul selesai, ketik Subjudul
+                setTimeout(() => {
+                    typeWriter(winningSubtitle, winSubtitles, 50, () => {
+                        // Setelah subjudul selesai, tampilkan Stats & Tombol
+                        showWinStats();
+                    });
+                }, 500);
+            });
+        }
+
+        function typeWriter(element, text, speed, callback) {
+            let i = 0;
+            element.innerHTML = ""; // Bersihkan teks awal
+            
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    // Efek Suara Keyboard (Randomize pitch/volume dikit biar natural opsional)
+                    keyboardSfx.currentTime = 0;
+                    keyboardSfx.play();
+
+                    setTimeout(type, speed);
+                } else {
+                    if (callback) callback();
+                }
+            }
+            type();
+        }
+
+        function showWinStats() {
+            // Set Waktu Selesai
+            const finalHour = gameHour.toString().padStart(2, '0');
+            const finalMinute = gameMinute.toString().padStart(2, '0');
+            winGameTime.innerText = `WAKTU GAME SELESAI: ${finalHour}:${finalMinute}`;
+
+            // Fade In Stats & Buttons
+            winningStats.style.opacity = 1;
+            winningButtons.style.opacity = 1;
+            winningButtons.style.pointerEvents = 'auto'; // Aktifkan klik
+        }
+
+        // --- EVENT LISTENERS TOMBOL WIN ---
+        winRetryBtn.addEventListener('click', () => {
+            location.reload();
+        });
+
+        winMenuBtn.addEventListener('click', () => {
+            window.location.href = "./lobby.html";
         });
 
 
