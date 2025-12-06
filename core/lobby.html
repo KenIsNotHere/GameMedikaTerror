@@ -116,6 +116,7 @@
     <audio id="bsfx" src="./assets/audio/beep.mp3"></audio>
     <audio id="csfx" src="./assets/audio/Click Sound Effect (HD).mp3"></audio>
     <audio id="Music" loop src="./assets/audio/Scary Horror Music  - Haunted (Copyright and Royalty Free).mp3"></audio>
+    <audio id="lethalSfx" src="./assets/audio/theJesterPursuing.mp3"></audio>
     <video autoplay loop muted src="./assets/video/lobbystart.mp4" id="mainvlob"></video>
     <div id="configEvent">
         <h1>ketuk untuk memulai</h1>
@@ -197,9 +198,9 @@
             }
             #myOC{
                 position: absolute;
-                width: 20vw; z-index: 4;
+                width: 10vw; z-index: 4;
                 margin-left: 47vw;
-                margin-top: -10vw;
+                margin-top: 0vw;
             }#lethalBtn{
                 padding: 0.8vw; cursor: pointer;
                 background-color: crimson;
@@ -267,45 +268,24 @@
                 <div id="TesterTeam">
                     <h1 id="testerList">
                         <div id="patchnote">
-                            patchnote 1.0v
+                            patchnote 1.6v (alpha)
                             <hr>
                             <ul>
                                 <li>kenny richie</li>
                             </ul>
                         </div>
                         <div id="patchnote">
-                            patchnote 1.1v
+                            patchnote 1.5v (pre-alpha)
                             <hr>
                             <ul>
                                 <li>kenny richie</li>
-                            </ul>
-                        </div>
-                        <div id="patchnote">
-                            patchnote 1.15v
-                            <hr>
-                            <ul>
-                                <li>kenny richie</li>
-                                <li>Fanly</li>
                                 <li>Angeline</li>
+                                <li>Fanly</li>
+                                <li>Kepdawg</li>
                             </ul>
                         </div>
                         <div id="patchnote">
-                            patchnote 1.2v
-                            <hr>
-                            <ul>
-                                <li>kenny richie</li>
-                                <li>/v/</li>
-                            </ul>
-                        </div>
-                        <div id="patchnote">
-                            patchnote 1.3v
-                            <hr>
-                            <ul>
-                                <li>kenny richie</li>
-                            </ul>
-                        </div>
-                        <div id="patchnote">
-                            patchnote 1.4v
+                            patchnote 1.45v (pre-alpha)
                             <hr>
                             <ul>
                                 <li>kenny richie</li>
@@ -314,21 +294,67 @@
                             </ul>
                         </div>
                         <div id="patchnote">
-                            patchnote 1.45v
+                            patchnote 1.4v (pre-alpha)
+                            <hr>
+                            <ul>
+                                <li>kenny richie</li>
+                                <li>Angeline</li>
+                                <li>Fanly</li>
+                            </ul>
+                        </div>
+                        <div id="patchnote">
+                            patchnote 1.3v (pre-alpha)
                             <hr>
                             <ul>
                                 <li>kenny richie</li>
                             </ul>
                         </div>
+                        <div id="patchnote">
+                            patchnote 1.2v (pre-alpha)
+                            <hr>
+                            <ul>
+                                <li>kenny richie</li>
+                                <li>Angeline</li>
+                                <li>Fanly</li>
+                            </ul>
+                        </div>
+                        <div id="patchnote">
+                            patchnote 1.15v (pre-alpha)
+                            <hr>
+                            <ul>
+                                <li>kenny richie</li>
+                                <li>Fanly</li>
+                                <li>Angeline</li>
+                            </ul>
+                        </div>
+                        <div id="patchnote">
+                            patchnote 1.1v (pre-alpha)
+                            <hr>
+                            <ul>
+                                <li>kenny richie</li>
+                            </ul>
+                        </div>
+                        <div id="patchnote">
+                            patchnote 1.0v (pre-alpha)
+                            <hr> 
+                            <ul> 
+                                <li>kenny richie</li>
+                            </ul>
+                        </div>
+
+
+
+       
                     </h1>
                 </div>
                 <div id="MemberList">
                     <h1>Member List</h1>
                     <ol>
-                        <li>Nishizumi Grave Laz</li>
-                        <li>Angeline</li>
-                        <li>Karamatsu</li>
-                        <li>Fanly</li>
+                        <li>@NishizumiGraveLaz</li>
+                        <li>@Angeline <span id="h"> -- Special Member --</span></li>
+                        <li>@Karamatsu</li>
+                        <li>@Fanly</li>
+                        <li>@DaySunday</li>
                     </ol>
                     <img src="../res/xenowoki.png" alt="" id="myOC">
                 </div>
@@ -340,9 +366,29 @@
             <div id="leaderboardTab">
                <table border="1">
                     <tr>
-                        <td>ha</td>
-                        <td>ha</td>
-                        <td>ha</td>
+                        <td>NO</td>
+                        <td>Player</td>
+                        <td>Record</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>xenowaskyy</td>
+                        <td>2:30:21</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>xenowaschoo</td>
+                        <td>2:43:58</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>xenowokii</td>
+                        <td>3:01:25</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>senowaskaii</td>
+                        <td>3:27:36</td>
                     </tr>
                </table>
             </div>
@@ -391,7 +437,7 @@
             cursor:ns-resize;
             width: 55vw;
             display: flex;
-            flex-direction: column-reverse;
+            flex-direction: column;
             overflow-y: scroll;
             scrollbar-width: thin;
             scrollbar-color: black;
@@ -546,6 +592,7 @@
     let leaderboardTab = document.getElementById('leaderboardTab');
     let guideCredit = document.getElementById('guideCredit');
     let lethalBtn = document.getElementById('lethalBtn');
+    let lethalSfx = document.getElementById('lethalSfx');
     let menulevelActive = 0
     let bisaMain = true
     let isLethalMode = false
@@ -654,6 +701,9 @@ startBtn.addEventListener("click",()=>{
             csfx.play()
             document.body.style.opacity="0"
                 gen.style.display = "none"
+                if(isLethalMode){
+                    lethalSfx.play()
+                }
             setTimeout(() => {
                 document.body.style.opacity="1"
                 mainvlob.src="./assets/video/OPnight1.mp4"

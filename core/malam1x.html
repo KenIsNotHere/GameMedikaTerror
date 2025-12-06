@@ -32,6 +32,12 @@
             transition: opacity 0.5s ease, visibility 0.5s ease;
         }
 
+        #preRenderingIMGwrapper{
+            z-index: 0;
+            opacity: 0.01;
+            position: absolute;
+        }
+
         .progress-container {
             width: 100%;
             height: 20%;
@@ -148,7 +154,7 @@
             color: rgba(255, 255, 255, 0.8); text-align: center; font-size: 1.2rem; font-weight: bold;
             cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: all 0.2s ease;
         }
-        #cctvBtn:hover { background-color: rgba(0, 128, 0, 0.5); }
+         #cctvBtn:hover { background-color: rgba(128, 0, 0, 0.5); }
         #cctvBtn.btn-red { background-color: rgba(200, 0, 0, 0.6) !important; border-color: red; color: white; }
         #cctvBtn.btn-red:hover { background-color: rgba(200, 0, 0, 0.9) !important; }
 
@@ -193,12 +199,12 @@
         }
 
         /* NAVBAR JAM */
-        #cctvNavbar{
+    #cctvNavbar{
             position: absolute; background-color: rgb(0, 0, 0); border-bottom: 0.3vw solid rgb(88, 13, 13);
-            width: 100%; height: 5%; top: -5%; font-size: 1rem; color: rgb(255, 79, 79);
+            width: 100%; height: 5%; top: -5%; font-size: 1.6vw; color: rgb(255, 79, 79);
             display: flex; align-items: center; padding-left: 2%; 
             font-family: 'Courier New', Courier, monospace; font-weight: bold;
-        }
+    }
 
         #mapContainer {
             position: absolute; bottom: 5%; right: 5%; width: 35%; height: auto;
@@ -222,10 +228,10 @@
 
         .floor-btn {
             background-color: rgba(255, 0, 0, 0.15);
-            border: 0.3vh solid rgba(255, 17, 0, 0.3);
+            border: 0.3vw solid rgba(255, 17, 0, 0.3);
             color: rgba(255, 255, 255, 0.9);
-            padding: 0.5% 1%; font-size: 0.6rem;
-            font-family: 'Courier New', Courier, monospace; font-weight: bold; font-size: 1em;
+            padding: 0.5vw 1vw; font-size: 3vw;
+            font-family: 'Courier New', Courier, monospace; font-weight: bold;
             cursor: pointer; text-align: center; width: 120%; transition: 0.2s;
         }
         .floor-btn:hover { background-color: rgba(255, 0, 0, 0.3); }
@@ -248,8 +254,8 @@
         }
         .cam-btn:hover { background-color: rgba(255, 255, 255, 0.3); }
         .cam-btn.active {
-            background-color: rgba(255, 0, 0, 0.3); border-color: rgba(255, 0, 0, 0.8);
-            color: #ff0000; text-shadow: 0 0 5px rgb(255, 0, 0); box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
+            background-color: rgba(255, 255, 0, 0.3); border-color: rgba(255, 255, 0, 0.8);
+            color: #ffff00; text-shadow: 0 0 5px yellow; box-shadow: 0 0 10px rgba(255, 255, 0, 0.2);
         }
 
         /* POSISI KAMERA LANTAI 3 */
@@ -290,7 +296,6 @@
 
         #jumpscareImg {
             position: absolute;
-            right: -100%; /* Mulai di luar layar kanan */
             height: 250%; /* Penuhi tinggi layar */
             width: auto;
             object-fit: cover;
@@ -310,14 +315,22 @@
             scale: 1.6;
             animation: 
             TheRuinSlideInRight 0.2s forwards ease-out, /* Muncul cepat 0.2 detik */
-            violentShake 0.3s infinite;         /* Gemetar terus menerus */
-        }
-        .jumpscare-active-TheJester #jumpscareImg {
-            bottom: -176%;
-            scale: 1.6;
+                violentShake 0.3s infinite;         /* Gemetar terus menerus */
+            }
+            .jumpscare-active-TheJester #jumpscareImg {
+                bottom: -176%;
+                scale: 1.6;
+                animation: 
+                TheJesterSlideInRight 0.2s forwards ease-out, /* Muncul cepat 0.2 detik */
+                violentShake 0.3s infinite;         /* Gemetar terus menerus */
+            }
+            .jumpscare-active-Rottenneck #jumpscareImg {
+                bottom: -200%;
+                right: 20%;
+                scale: 1.4;
             animation: 
-            TheJesterSlideInRight 0.2s forwards ease-out, /* Muncul cepat 0.2 detik */
-            violentShake 0.3s infinite;         /* Gemetar terus menerus */
+                RottenneckJumpscare 0.2s forwards ease-out, /* Muncul cepat 0.2 detik */
+                violentShake 0.3s infinite;         /* Gemetar terus menerus */
         }
 
         /* --- JUMPSCARE KEYFRAMES --- */
@@ -333,6 +346,23 @@
             0% { right: 150%; opacity: 0; }
             100% { right: -7%; opacity: 1; }
         }
+        
+        @keyframes RottenneckJumpscare {
+            0% { bottom: 80%; opacity: 0; }
+            100% { bottom: 0%; opacity: 1; }
+        }
+
+        @keyframes DevourerJumpscare {
+            0%{
+                transform: scale(0);
+                top: 50%;
+                filter: brightness(0);
+            }100%{
+                top: 50%;
+                transform: scale(2.0);
+                filter: brightness(1);
+            }
+        }
 
         @keyframes violentShake {
             0% { transform: translate(0, 0) rotate(0deg); }
@@ -346,6 +376,20 @@
             0% { filter: brightness(1) sepia(0) hue-rotate(0deg); }
             50% { filter: brightness(3) sepia(1) hue-rotate(-50deg) contrast(2); background-color: #300000; }
             100% { filter: brightness(0.5); }
+        }
+        /* enx5s */
+        #devourerEntity.death{
+            /* animation: DevourerJumpscare 2s forwards ease-out; */
+            bottom: auto !important; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0); /* Mulai dari kecil/jauh */
+            opacity: 1; 
+            animation: devourerJumpscareAnim 9s forwards ease-out !important;
+        }
+                @keyframes devourerJumpscareAnim {
+            0% { transform: translate(-50%, -90%) scale(0.1); filter: brightness(0); }
+            24% {  filter: brightness(1);}
+            70% { transform: translate(-50%, 1700%) scale(28.0); filter: brightness(1);}
+            100% { transform: translate(-50%, 3400%) scale(50.0); filter: brightness(1);}
         }
 
         /* --- THE RUIN ENTITY --- */
@@ -399,7 +443,7 @@
             100% { filter: brightness(0.8) hue-rotate(-20deg) ; }
         }
 
-        /* --- THE JESTER ELEMENTS (CCTV) --- */
+/* --- THE JESTER ELEMENTS (CCTV) --- */
         #cctvJesterWrapper {
             position: absolute;
             z-index: 4; 
@@ -437,12 +481,438 @@
         .filter-reset {
             filter: saturate(1) hue-rotate(0deg);
         }
+
+        /* --- ROTTENNECK ENTITY --- */
+        #rottenneckEntity {
+            position: absolute; 
+            z-index: 9; /* Di atas dinding panorama, di bawah UI navigasi */
+            width: 12%; /* Lebar relatif terhadap Main (300%), jadi sekitar 36% lebar layar viewport */
+            height: auto;
+            top: -120%; /* Posisi awal bersembunyi di atas plafon */
+            transition: top 1.5s cubic-bezier(0.19, 1, 0.22, 1); /* Efek slide turun yang berat/menakutkan */
+            pointer-events: none; display: none;
+        }
+
+        #rottenneckWrapper {
+            position: relative;
+            width: 100%;
+            filter: brightness(0.6);
+            animation: rottenneckIdle 1s infinite alternate;
+        }
+
+        #rottenneckHead {
+            width: 100%;
+            position: relative;
+            z-index: 2;
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.8));
+        }
+
+        #rottenneckJaw {
+            position: absolute;
+            width: 90%; 
+            left: 5%;
+            top: 24%; /* Sesuaikan agar pas di bawah kepala */
+            z-index: 1;
+            transform-origin: top center; /* Engsel rahang di atas */
+            animation: jawChatter 1s infinite alternate /* Animasi gigi gemeretuk */
+        }
+
+        /* Animasi Gigi Gemeretuk (Idle) */
+        @keyframes jawChatter {
+            0% { transform: translateY(1%) rotate(1deg); }
+            100% { transform: translateY(-11%) rotate(-2deg); }
+        }
+
+        @keyframes rottenneckIdle {
+            0%{
+                transform: translateY(-3%);
+            }
+            100%{
+                transform: translateY(2%);
+            }
+        }
+
+        /* Class saat Teriak (Rahang terbuka lebar) */
+        .jaw-scream {
+            animation: none !important; /* Hentikan gemeretuk */
+            transform: translateY(5%) rotate(0deg) !important; /* Buka lebar */
+            transition: transform 0.2s ease-out;
+        }
+
+        /* --- DEATH SCREEN --- */
+        #deathScreen {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: black;
+            z-index: 9999;
+            display: none; /* Hidden default */
+            flex-direction: row;
+            align-items: center;
+            justify-content: center; /* Default tengah */
+            overflow: hidden;
+            color: white;
+            transition: all 1s ease-in-out; /* Transisi layout */
+        }
+
+        /* Kilatan Merah */
+        #deathFlash {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10vw; height: 10vw;
+            border-radius: 50%;
+            box-shadow: 0 0 100vw 20vw rgba(255, 0, 0, 0);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .red-flash-anim {
+            animation: redFlash 0.6s ease-out forwards;
+        }
+
+        @keyframes redFlash {
+            0% { box-shadow: 0 0 50vw 10vw rgba(200, 0, 0, 0.8); background-color: rgba(100,0,0,0.5); }
+            100% { box-shadow: 0 0 100vw 20vw rgba(255, 0, 0, 0); background-color: transparent; }
+        }
+
+        /* Content Text */
+        #deathContent {
+            z-index: 10;
+            text-align: center;
+            opacity: 0; /* Muncul setelah flash */
+            transition: all 1s ease;
+            width: 80%;
+            max-width: 800px;
+        }
+
+        #deathTitle {
+            font-size: 5vw; color: #cc0000; text-shadow: 0 0 10px #550000; margin-bottom: 2vh;
+            text-transform: uppercase; letter-spacing: 5px;
+        }
+        #deathSubtitle {
+            font-size: 2.7vw; color: #ddd; margin-bottom: 3vh;
+        }
+        #deathTip {
+            font-size: 1.8vw; color: #888; font-style: italic; border-top: 1px solid #333; padding-top: 2vh;
+        }
+
+        /* Stats & Button (Hidden in Phase 1) */
+        #deathStats {
+            margin-top: 4vh; font-size: 2vw;
+            opacity: 0;
+            transition: opacity 1s ease;
+            pointer-events: none; /* Biar ga bisa diklik sblm muncul */
+        }
+
+        #retryBtn {
+            background: transparent; border: 0.4vw solid #cc0000; color: #cc0000;
+            padding: 5% 15%; font-size: 1.5rem; font-family: inherit; font-weight: bold;
+            cursor: pointer; transition: 0.3s; margin-top: 5%;
+        }
+        #retryBtn:hover { background: #cc0000; color: black; box-shadow: 0 0 20px red; }
+
+        /* Gambar Entitas (Kiri) */
+        #deathEntityBox {
+            position: absolute; left: 5%; bottom: 0; height: 90%;
+            opacity: 0; transform: translateX(-50px);
+            transition: all 1.5s ease;
+            z-index: 5;
+        }
+        #deathEntityImg {
+            height: auto; width: 60%; object-fit: contain; transform: translateY(-15%);
+            filter: drop-shadow(0 0 20px rgba(0,0,0,0.8));
+        }
+
+        /* --- PHASE 2 STATE (Rata Kanan) --- */
+        #deathScreen.phase-2 {
+            justify-content: flex-end; /* Pindah ke kanan */
+        }
+        
+        #deathScreen.phase-2 #deathContent {
+            text-align: right;
+            margin-right: 5%;
+            width: 45%; /* Sempitkan area teks */
+        }
+
+        #deathScreen.phase-2 #deathEntityBox {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        #deathScreen.phase-2 #deathStats {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        /* --- PANEL VIEW LAYER --- */
+        #panelViewLayer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 55; /* Di atas Main(0-10) & Nav(10), di bawah UI(60) */
+            background-color: #000;
+            display: none; /* Hidden default */
+        }
+
+        #panelViewImg {
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+
+        #panelControls {
+            position: absolute; width: 100%; height: 100%; top: 0; left: 0;
+            pointer-events: none; /* Container tembus klik */
+        }
+
+        .panel-hud-btn {
+            position: absolute; pointer-events: auto;
+            background: rgba(0, 0, 0, 0.6); border: 0.2vh solid white;
+            color: white; padding: 1% 2%; font-family: 'Courier New', Courier, monospace;
+            font-weight: bold; cursor: pointer; text-align: center;
+            transition: 0.2s;
+        }
+        .panel-hud-btn:hover { background: white; color: black; }
+
+        /* Posisi Tombol Kontrol */
+        #panelLeftBtn { bottom: 5%; left: 5%; width: 20%; }
+        #PanelActivationBtn { bottom: 15%; left: 5%; width: 20%; background-color: rgba(0, 149, 255, 0.459); border:  0.2vh solid rgba(0, 36, 62, 0.756);}
+        #PanelActivationBtn:hover { background: rgba(0, 36, 62, 0.756); color: white;}
+        #panelCenterBtn { bottom: 40%; left: 50%; transform: translateX(-50%); width: 20%; }
+
+        /* --- TOMBOL TRIGGER DI PANORAMA (Merah) --- */
+        .panel-trigger-btn {
+            background-color: rgba(200, 0, 0, 0.3) !important;
+            border-color: rgba(255, 0, 0, 0.5) !important;
+            color: #ffcccc !important;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.4) !important;
+        }
+        .panel-trigger-btn:hover {
+            background-color: rgba(255, 0, 0, 0.6) !important;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.8) !important;
+        }
+        /* --- MINIGAME LAYER --- */
+        #minigameLayer {
+            position: absolute;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 60%; height: 50%; /* Ukuran "jendela" minigame */
+            background-color: black;
+            border: 0.3vh solid white;
+            z-index: 58; /* Di atas Panel View (55), di bawah UI (60) */
+            display: none;
+            flex-direction: column;
+            padding: 2%;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        #minigameHeader {
+            display: flex; justify-content: space-between;
+            color: white; font-family: 'Courier New', Courier, monospace;
+            font-weight: bold; border-bottom: 1px solid #555;
+            padding-bottom: 1%; margin-bottom: 2%;
+            font-size: 2vh;
+        }
+
+        #minigameMessage {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: #00ff00; font-size: 4vh; font-weight: bold;
+            text-shadow: 0 0 10px #00ff00; display: none; z-index: 80;
+            font-family: 'Courier New', Courier, monospace;
+            background: rgba(0,0,0,0.9); padding: 10%; border: 1px solid #00ff00;
+        }
+
+        /* --- MEMORY CARD GRID --- */
+        #memoryBoard {
+            display: grid;
+            gap: 2%;
+            width: 100%; height: 100%;
+            justify-content: center; align-content: center;
+        }
+
+        .memory-card {
+            background-color: #111;
+            border: 0.2vh solid #0088ff; /* Border Biru sesuai request */
+            display: flex; justify-content: center; align-items: center;
+            font-size: 5vh; 
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.1s, background-color 0.2s;
+        }
+
+        .memory-card:hover { background-color: #222; }
+        
+        /* Kartu Terbuka */
+        .memory-card.flipped {
+            background-color: #ddd;
+            border-color: white;
+        }
+
+        /* Kartu Cocok (Matched) */
+        .memory-card.matched {
+            border-color: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+            opacity: 0.7; pointer-events: none;
+        }
+
+        /* --- TIMING GAME COMPONENTS --- */
+        #minigameArea {
+            width: 100%;
+            height: 90%; /* Mengisi sisa ruang setelah header */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        #timingBarContainer {
+            position: relative;
+            width: 90%;
+            height: 10vh; /* Tinggi bar yang responsif */
+            background-color: #333;
+            border: 2px solid #555;
+            margin-bottom: 5vh;
+            overflow: hidden;
+        }
+
+/* Garis Merah (Dinamis) */
+#redLine {
+    position: absolute;
+    top: 0; left: 0;
+    width: 1%; 
+    height: 100%;
+    background-color: red;
+    box-shadow: 0 0 5px red;
+    z-index: 5; 
+}
+
+        /* Zona Hit (Garis Kuning) */
+        #hitZones {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .hit-zone {
+            position: absolute;
+            height: 100%;
+            background-color: rgba(255, 255, 0, 0.4); /* Kuning transparan */
+            border-left: 1px solid yellow;
+            border-right: 1px solid yellow;
+        }
+
+      #timingHitBtn {
+    font-family: 'Courier New', Courier, monospace;
+    padding: 1.5vh 5vh;
+    font-size: 2.5vh;
+    background-color: #cc0000;
+    color: white;
+    border: 2px solid #ff5555;
+    cursor: pointer; display: none;
+    transition: background-color 0.2s;
+    margin-top: 3vh; /* Tambahkan jarak dari bar */
+    z-index: 10;     /* Pastikan bisa diklik */
+}
+
+        #timingHitBtn:hover {
+            background-color: #ff0000;
+            box-shadow: 0 0 10px red;
+        }
+
+        /* --- DISPLAY CONTEXT --- */
+        /* Pastikan hanya satu minigame yang tampil */
+        #minigameLayer[data-type="memory"] #timingBarContainer,
+        #minigameLayer[data-type="timing"] #memoryBoard {
+            display: none;
+        }
+        #minigameLayer[data-type="timing"] #timingBarContainer {
+            display: block;
+        }
+        #minigameLayer[data-type="memory"] #memoryBoard {
+            display: grid; /* Gunakan display Memory Card sebelumnya */
+        }
+        #notification{
+            pointer-events: none; position: absolute; left: 50%; transition: 1.2s;
+            transform: translateX(-50%); width: auto; padding: 0.5%; font-weight: 500;
+            background-color: rgba(10, 10, 10, 0.413); font-size: 1.6vw; z-index: 101;
+            color: rgba(255, 255, 255, 0.68); text-align: center; font-family:cursive,'Courier New', Courier, monospace;
+        }
+        #notification.note-active {top: 2%;}
+        #notification.note-inactive {top: -12%;}
+        /* --- DEVOURER ENTITY --- */
+        #devourerEntity {
+            position: absolute;
+            z-index: 1000; 
+            width: 20%; /* Sesuaikan ukuran */
+            height: auto;
+            pointer-events: none;
+            display: none; /* Sembunyi default */
+            transform-origin: center bottom;
+        }
+
+        #devourerWrapper {
+            position: relative; width: 100%; height: 100%;
+        }
+
+        #devourerHead {
+            position: absolute; top: -10%; left: 10%; width: 80%; z-index: 2;
+        }
+
+        #devourerBody {
+            position: relative; width: 100%; z-index: 1;
+            /* Animasi Getar Cepat (Lari/Agresif) */
+            animation: devourerShake 0.1s infinite alternate; 
+        }
+
+        @keyframes devourerShake {
+            0% { transform: translateY(5%); }
+            100% { transform: translateY(-5%); }
+        }
+
+        /* --- TOILET LAYER --- */
+        #toiletLayer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 56; /* Di atas Panel(55), di bawah Minigame(58) & UI(60) */
+            background: black;
+            display: none;
+        }
+        
+        #toiletViewImg {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: brightness(0.4); /* Gelap di dalam toilet */
+        }
+
+        #toiletControls {
+            position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%);
+            width: 100%; text-align: center;
+        }
+
+        #btnExitToilet {
+            display: inline-block; padding: 1% 3%;
+            background: rgba(0,0,0,0.7); border: 2px solid #555; color: #ddd;
+            cursor: pointer; font-family: 'Courier New', monospace; font-weight: bold;
+            transition: 0.3s;
+        }
+        #btnExitToilet:hover { background: #333; color: white; border-color: white; }
+
+        /* Tombol Masuk Toilet (di Panorama) */
+        .toilet-entry-btn {
+            background-color: rgba(0, 255, 100, 0.2) !important;
+            border-color: rgba(0, 255, 100, 0.5) !important;
+            color: #ccffcc !important;
+        }
+        .toilet-entry-btn:hover {
+            background-color: rgba(0, 255, 100, 0.5) !important;
+        }
+
+
+
+
     </style>
 </head>
+<!-- HTML: code: htmlx -->
 <body>
     <div id="loading-screen">
+        <div id="preRenderingIMGwrapper"></div>
          <div class="loader-content">
-            <h2>goodluck ya, lagi Memuat Aset...</h2>
+            <h2 id="loadingTitle">Santai ae dlu, lagi Memuat Aset...</h2>
             <div class="progress-container">
                 <div id="progress-bar"></div>
             </div>
@@ -460,11 +930,43 @@
     <audio id="cctvErrorSfx"><source src="./assets/audio/staticTV.mp3" type="audio/mpeg"></audio>
     <audio id="jumpscare1Sfx"><source src="./assets/audio/jumpscare1sfx.mp3" type="audio/mpeg"></audio>
     <audio id="theRuinSfx"><source src="./assets/audio/theRuinSfx.mp3" type="audio/mpeg"></audio>
+    <audio id="theRuinPreSfx"><source src="./assets/audio/randomHorrorSound.mp3" type="audio/mpeg"></audio>
     <audio id="thejesterMusicBoxSfx"><source src="./assets/audio/theJesterPassive.mp3" type="audio/mpeg"></audio>
     <audio id="thejesterHuntSfx"><source src="./assets/audio/theJesterHuntSFX.mp3" type="audio/mpeg"></audio>
     <audio id="thejesterScream"><source src="./assets/audio/theJesterScreamCaught.mp3" type="audio/mpeg"></audio>
     <audio id="thejesterPursuing"><source src="./assets/audio/theJesterPursuing.mp3" type="audio/mpeg"></audio>
     <audio id="thejesterRUN"><source src="./assets/audio/theJesterRUN.mp3" type="audio/mpeg"></audio>
+    <audio id="deathScreenMusic"><source src="./assets/audio/deathmusic.mp3" type="audio/mpeg"></audio>
+    <audio id="openElectricalPanel"><source src="./assets/audio/openElectricalPanelSFX.mp3" type="audio/mpeg"></audio>
+    <audio id="closeElectricalPanel"><source src="./assets/audio/closeElectricalPanelSFX.mp3" type="audio/mpeg"></audio>
+    <audio id="minigamePanelClickSfx"><source src="./assets/audio/beep-313342.mp3" type="audio/mpeg"></audio>
+    <audio id="correctSfx"><source src="./assets/audio/correct-356013.mp3" type="audio/mpeg"></audio>
+    <audio id="incorrectSfx"><source src="./assets/audio/incorrect-293358.mp3" type="audio/mpeg"></audio>
+    <audio id="completeSfx"><source src="./assets/audio/activationSucceed.mp3" type="audio/mpeg"></audio>
+    <audio id="rottenneckSFX"><source src="./assets/audio/rottenneckSFX.mp3" type="audio/mpeg"></audio>
+    <audio id="rottenneckScreamSFX"><source src="./assets/audio/rottenneckScreamSFX.mp3" type="audio/mpeg"></audio>
+    <audio id="devourerAppearanceSFX"><source src="./assets/audio/devourerAppearanceSFX.mp3" type="audio/mpeg"></audio>
+    <audio id="devourerAmbientSFX"><source src="./assets/audio/devourerAmbientSFX.mp3" type="audio/mpeg"></audio>
+    <audio id="devourerScreamSFX"><source src="./assets/audio/devourerScreamSFX.mp3" type="audio/mpeg"></audio>
+
+    <div id="deathScreen">
+        <div id="deathFlash"></div>
+
+        <div id="deathEntityBox">
+            <img src="" id="deathEntityImg" alt="Killer">
+        </div>
+
+        <div id="deathContent">
+            <h1 id="deathTitle">KAMU TEWAS</h1>
+            <h2 id="deathSubtitle">TERTANGKAP OLEH...</h2>
+            <p id="deathTip">Tips counter disini...</p>
+            
+            <div id="deathStats">
+                <p id="deathTime">SURVIVED UNTIL: 00:00</p>
+                <button id="retryBtn">ULANGI MALAM INI</button>
+            </div>
+        </div>
+    </div>
 
     <div id="viewport">
         <div id="transitionOverlay"></div>
@@ -476,10 +978,8 @@
             <img src="./assets/image/M1/panoramaSectionA1.png" id="mainImg1" class="main-img">
             <img src="./assets/image/M1/panoramaSectionA2.png" id="mainImg2" class="main-img">
             <img src="./assets/image/M1/panoramaSectionA3.png" id="mainImg3" class="main-img">
-            
-            <div id="navLayer" style="position: absolute; top:0; left:0; width: 100%; height: 100%; z-index: 10;">
-                </div>
-
+            <!-- tombol navigasi antartitik player-->
+            <div id="navLayer" style="position: absolute; top:0; left:0; width: 100%; height: 100%; z-index: 10;"></div>
                 
             <div id="theRuinEntity">
                 <div id="ruinWrapper">
@@ -488,12 +988,65 @@
                 </div>
             </div>
 
+            <!-- ENTITY 04: ROTTENNECK -->
+            <div id="rottenneckEntity">
+                <div id="rottenneckWrapper">
+                    <img src="./assets/image/M1/entity/rottenneckHEAD.png" id="rottenneckHead" alt="Head">
+                    <img src="./assets/image/M1/entity/rottenneckJAW.png" id="rottenneckJaw" alt="Jaw">
+                </div>
+            </div>
+
+            <div id="devourerEntity">
+                <div id="devourerWrapper">
+                    <img src="./assets/image/M1/entity/devourerBody.png" id="devourerBody" alt="Body">
+                    <img src="./assets/image/M1/entity/devourerHead.png" id="devourerHead" alt="Head">
+                </div>
+            </div>
+
         </div>
 
         <div id="viewLeftBox" class="viewSide"></div>
         <div id="viewRightBox" class="viewSide"></div>
+        <div id="panelViewLayer">
+           
+            <img src="" id="panelViewImg"> 
+            
+            <div id="panelControls">
+                <div id="panelLeftBtn" class="panel-hud-btn">KEMBALI</div>
+                <div id="panelCenterBtn" class="panel-hud-btn">BUKA PANEL</div>
+                <div id="PanelActivationBtn" class="panel-hud-btn">AKTIFASI PANEL</div>
+            </div>
+        </div>
+        <div id="minigameLayer">
+            <div id="minigameHeader">
+                <span id="minigameTitle">SYSTEM OVERRIDE</span>
+                <span id="minigameProgress">LEVEL 1/10</span>
+            </div>
+            
+            <div id="minigameArea">
+                <div id="timingBarContainer">
+                    <div id="redLine"></div>
+                    <div id="hitZones"></div>
+                </div>
+                
+                <button id="timingHitBtn">HIT</button>
+                
+                <div id="memoryBoard"></div>
+            </div>
+
+            <div id="minigameMessage">SYSTEM RESTORED</div>
+        </div>
+
+        <div id="toiletLayer">
+            <img src="./assets/image/M1/toilet.png" id="toiletViewImg" alt="Inside Toilet">
+            
+            <div id="toiletControls">
+                <div id="btnExitToilet">KELUAR</div>
+            </div>
+        </div>
 
         <div id="UI">
+            <div id="notification" class="note-inactive"></div>
             <div id="cctvContainer">
                 <div id="monitorWrapper" class="hideCctv">
                     <img src="./assets/image/komp.png" id="cctvFrame">
@@ -539,10 +1092,10 @@
             <div id="cctvBtn">▲</div>
         </div>
 
-        <div id="startBtn">Ketuk Untuk 💀</div>
+        <div id="startBtn">Ketuk Untuk Memulai</div>
     </div>
 
-<script>
+    <script>
         
         // --- ELEMENTS ---
         const startBtn = document.getElementById('startBtn');
@@ -578,6 +1131,60 @@
         const loadingScreen = document.getElementById('loading-screen');
         const progressBar = document.getElementById('progress-bar');
         const progressText = document.getElementById('progress-text');
+        const loadingTitle = document.getElementById('loadingTitle');
+        const preRenderingIMGwrapper = document.getElementById('preRenderingIMGwrapper');
+        
+
+        function renderDisplayNoneAssets(){
+            let preRenderingIMGfile =[
+                './assets/image/M1/cctv/cameraSectionA.png',
+                './assets/image/M1/cctv/cameraSectionB.png',
+                './assets/image/M1/cctv/cameraSectionC.png',
+                './assets/image/M1/cctv/cameraSectionD.png',
+                './assets/image/M1/cctv/cameraSectionE.png',
+                './assets/image/M1/cctv/cameraSectionF.png',
+                './assets/image/M1/cctv/cameraSectionG.png',
+                './assets/image/M1/cctv/cameraSectionH.png',
+                './assets/image/M1/cctv/cameraSectionI.png',
+                './assets/image/M1/cctv/cameraSectionJ.png',
+                './assets/image/M1/panoramaSectionA1.png',
+                './assets/image/M1/panoramaSectionA2.png',
+                './assets/image/M1/panoramaSectionA3.png',
+                './assets/image/M1/panoramaSectionB1.png',
+                './assets/image/M1/panoramaSectionB2.png',
+                './assets/image/M1/panoramaSectionB3.png',
+                './assets/image/M1/panoramaSectionC1.png',
+                './assets/image/M1/panoramaSectionC2.png',
+                './assets/image/M1/panoramaSectionC3.png',
+                './assets/image/M1/panoramaSectionD1.png',
+                './assets/image/M1/panoramaSectionD2.png',
+                './assets/image/M1/panoramaSectionD3.png',
+                './assets/image/M1/panoramaSectionE1.png',
+                './assets/image/M1/panoramaSectionE2.png',
+                './assets/image/M1/panoramaSectionE3.png',
+                './assets/image/M1/panoramaSectionF1.png',
+                './assets/image/M1/panoramaSectionF2.png',
+                './assets/image/M1/panoramaSectionF3.png',
+                './assets/image/M1/panoramaSectionG1.png',
+                './assets/image/M1/panoramaSectionG2.png',
+                './assets/image/M1/panoramaSectionG3.png',
+                './assets/image/M1/panoramaSectionH1.png',
+                './assets/image/M1/panoramaSectionH2.png',
+                './assets/image/M1/panoramaSectionH3.png',
+                './assets/image/M1/panoramaSectionI1.png',
+                './assets/image/M1/panoramaSectionI2.png',
+                './assets/image/M1/panoramaSectionI3.png',
+                './assets/image/M1/panoramaSectionJ1.png',
+                './assets/image/M1/panoramaSectionJ2.png',
+                './assets/image/M1/panoramaSectionJ3.png',
+            ]
+            preRenderingIMGfile.forEach(source => {
+                preRenderingIMGwrapper.innerHTML+=`<img src='${source}'>`
+            });
+        }
+
+        renderDisplayNoneAssets()
+
         const mediaAssets = document.querySelectorAll('img, video, audio');
         let totalAssets = mediaAssets.length;
         let assetsLoaded = 0;
@@ -588,15 +1195,21 @@
             progressBar.style.width = percent + '%';
             progressText.textContent = percent + '%';
 
-            if (assetsLoaded >= totalAssets) {
+            if(assetsLoaded >= totalAssets) {
                 finishLoading();
             }
+
         }
 
         function finishLoading() {
+            progressBar.style.background ="#73ff57"
+            progressText.style.color ='#73ff57'
+            loadingTitle.style.color ='#73ff57'
+            preRenderingIMGwrapper.remove()
+            loadingTitle.innerHTML =`sip, asset berhasil dimuat 🗿👍🏻`
             setTimeout(() => {
                 loadingScreen.classList.add('hide');
-            }, 500);
+            }, 1500);
         }
 
         if (totalAssets === 0) {
@@ -628,7 +1241,7 @@
         });
     });
 
-        // --- AUDIO ---
+        // --- AUDIO --- code: aux
         const bgAudio = document.getElementById('bgAudio');
         const btnSfx = document.getElementById('btnSfx');
         const cctvStatic = document.getElementById('cctvStatic');
@@ -639,17 +1252,33 @@
         const cctvErrorSfx = document.getElementById('cctvErrorSfx');
         const jumpscare1Sfx = document.getElementById('jumpscare1Sfx');
         const theRuinSfx = document.getElementById('theRuinSfx');
+        const theRuinPreSfx = document.getElementById('theRuinPreSfx');
         const thejesterMusicBoxSfx = document.getElementById('thejesterMusicBoxSfx');
         const thejesterHuntSfx = document.getElementById('thejesterHuntSfx');
         const thejesterScream = document.getElementById('thejesterScream');
         const thejesterPursuing = document.getElementById('thejesterPursuing');
         const thejesterRUN= document.getElementById('thejesterRUN');
+        const deathScreenMusic = document.getElementById('deathScreenMusic');
+        const openElectricalPanel= document.getElementById('openElectricalPanel');
+        const closeElectricalPanel = document.getElementById('closeElectricalPanel');
+        const correctSfx = document.getElementById('correctSfx');
+        const incorrectSfx = document.getElementById('incorrectSfx');
+        const completeSfx = document.getElementById('completeSfx');
+        const minigamePanelClickSfx = document.getElementById('minigamePanelClickSfx');
+        const rottenneckSFX = document.getElementById('rottenneckSFX');
+        const rottenneckScreamSFX = document.getElementById('rottenneckScreamSFX');
+        const devourerAppearanceSFX = document.getElementById('devourerAppearanceSFX');
+        const devourerAmbientSFX = document.getElementById('devourerAmbientSFX');
+        const devourerScreamSFX = document.getElementById('devourerScreamSFX');
 
-        bgAudio.volume = 0.8; btnSfx.volume = 0.8; cctvStatic.volume = 0.5; monitorOnSfx.volume = 1.0;
+        bgAudio.volume = 0.8; btnSfx.volume = 0.3; cctvStatic.volume = 0.5; monitorOnSfx.volume = 1.0;
         footstepPlayerSfx.volume = 1.0; newAreaSfx.volume = 1.0; camSwitchSfx.volume = 0.3;  
-        cctvErrorSfx.volume = 0.8; jumpscare1Sfx.volume = 0.8; theRuinSfx.volume = 0.7;
+        cctvErrorSfx.volume = 0.8; jumpscare1Sfx.volume = 0.8; theRuinSfx.volume = 1.0; theRuinPreSfx.volume = 1.0;
         thejesterHuntSfx.volume = 1.0; thejesterMusicBoxSfx.volume = 0.4; thejesterScream.volume = 0.9;
-        thejesterPursuing.volume = 1.0; thejesterRUN.volume = 0;
+        thejesterPursuing.volume = 1.0; thejesterRUN.volume = 0; deathScreenMusic.volume = 1.0; devourerAmbientSFX.volume =1.0;
+        openElectricalPanel.volume = 1.0; closeElectricalPanel.volume = 1.0; completeSfx.volume = 1.0;
+        minigamePanelClickSfx.volume = 1.0; correctSfx.volume = 1.0; incorrectSfx.volume = 1.0; devourerScreamSFX.volume = 1.0;
+        rottenneckSFX.volume = 1.0; rottenneckScreamSFX.volume = 1.0; devourerAppearanceSFX.volume = 1.0;
 
         // --- DATABASE CONFIG ---
         
@@ -664,6 +1293,8 @@
             'H': './assets/image/M1/cctv/cameraSectionH.png',
             'I': './assets/image/M1/cctv/cameraSectionI.png',
             'J': './assets/image/M1/cctv/cameraSectionJ.png'
+
+            
         };
 
         const floorData = {
@@ -672,7 +1303,7 @@
             1: './assets/image/M1/cctv/DenahLantai1.png'  
         };
 
-        // DATA PANORAMA (TITIK LOKASI)
+        // DATA PANORAMA (TITIK LOKASI) code: ldx
         const locationData = {
             // --- LANTAI 3 ---
             'A': {
@@ -685,6 +1316,15 @@
                     { target: 'B', text: 'AREA B', css: { left: '50.8%', top: '50%' } },
                     { target: 'C', text: 'AREA C', css: { left: '65.5%', top: '50%' } },
                     { target: 'D', text: 'TURUN KE LT.2 (AREA D)', css: { left: '80%', top: '80%' } }
+                ],
+                panels: [
+                    {
+                        id: 'panelA',
+                        text: 'PANEL A',
+                        css: { left: '20%', top: '25%' }, // Posisi di Panorama (Sesuaikan nanti)
+                        imgClosed: './assets/image/M1/panel/ClosedElectricalPanelSectionA.png',
+                        imgOpened: './assets/image/M1/panel/OpenedElectricalPanelSectionA.png'
+                    }
                 ],
                 playerData: { floor: 3, cam: 'A', mapCss: { top: '75%', left: '22%' } }
             },
@@ -699,6 +1339,11 @@
                     { target: 'C', text: 'AREA C', css: { left: '75%', top: '40%' } },
                     { target: 'E', text: 'TURUN KE LT.2 (AREA E)', css: { left: '32.5%', top: '80%' } }
                 ],
+                toilet: {
+                    id: 'toiletB',
+                    text: 'SEMBUNYI (TOILET)',
+                    css: { left: '20%', top: '70%' } // Sesuaikan posisi
+                },
                 playerData: { floor: 3, cam: 'B', mapCss: { top: '20%', left: '22%' } }
             },
             'C': {
@@ -728,6 +1373,20 @@
                     { target: 'F', text: 'AREA F', css: { left: '68%', top: '50%' } },
                     { target: 'G', text: 'TURUN KE LT.1 (AREA G)', css: { left: '80%', top: '78%' } }
                 ],
+                toilet: {
+                    id: 'toiletE',
+                    text: 'SEMBUNYI (TOILET)',
+                    css: { left: '20%', top: '70%' } // Sesuaikan posisi
+                },
+                panels: [
+                    {
+                        id: 'panelD',
+                        text: 'PANEL D',
+                        css: { left: '18%', top: '25%' }, 
+                        imgClosed: './assets/image/M1/panel/ClosedElectricalPanelSectionD.png',
+                        imgOpened: './assets/image/M1/panel/OpenedElectricalPanelSectionD.png'
+                    }
+                ],
                 playerData: { floor: 2, cam: 'D', mapCss: { top: '75%', left: '22%' } }
             },
             'E': {
@@ -753,6 +1412,7 @@
                 buttons: [
                     { target: 'E', text: 'AREA E', css: { left: '58%', top: '50%' } },
                     { target: 'C', text: 'NAIK KE LT.3 (AREA C)', css: { left: '60%', top: '20%' } },
+                    { target: 'I', text: 'TURUN KE LT.3 (AREA I)', css: { left: '60%', top: '70%' } },
                     { target: 'D', text: 'AREA D', css: { left: '88%', top: '50%' } }
                 ],
                 playerData: { floor: 2, cam: 'F', mapCss: { top: '25%', left: '77%' } }
@@ -768,6 +1428,7 @@
                 buttons: [
                     { target: 'D', text: 'NAIK KE LT.2 (AREA D)', css: { left: '55%', top: '20%' } },
                     { target: 'H', text: 'AREA H', css: { left: '15%', top: '50%' } },
+                    { target: 'J', text: 'AREA H', css: { left: '35%', top: '50%' } },
                 ],
                 playerData: { floor: 1, cam: 'G', mapCss: { top: '70%', left: '25%' } }
             },
@@ -780,8 +1441,18 @@
                 buttons: [
                     { target: 'E', text: 'NAIK KE LT.2 (AREA E)', css: { left: '77%', top: '20%' } },
                     { target: 'G', text: 'AREA G', css: { left: '67.3%', top: '50%' } },
+                    { target: 'I', text: 'AREA I', css: { left: '45%', top: '50%' } },
                 ],
-                playerData: { floor: 1, cam: 'H', mapCss: { top: '20%', left: '22%' } }
+                  panels: [
+                    {
+                        id: 'panelH',
+                        text: 'PANEL H',
+                        css: { left: '88%', top: '45%' }, // Posisi di Panorama (Sesuaikan nanti)
+                        imgClosed: './assets/image/M1/panel/ClosedElectricalPanelSectionH.png',
+                        imgOpened: './assets/image/M1/panel/OpenedElectricalPanelSectionH.png'
+                    }
+                ],
+                playerData: { floor: 1, cam: 'H', mapCss: { top: '50%', left: '82%' } }
             },
             'I': {
                 images: [
@@ -789,7 +1460,20 @@
                     './assets/image/M1/panoramaSectionI2.png',
                     './assets/image/M1/panoramaSectionI3.png'
                 ],
-                buttons: [],
+                buttons: [
+                    { target: 'F', text: 'NAIK KE LT.2 (AREA F)', css: { left: '65%', top: '12%' } },
+                    { target: 'H', text: 'AREA H', css: { left: '65%', top: '50%' } },
+                    { target: 'J', text: 'AREA J', css: { left: '45%', top: '50%' } },
+                ],
+                  panels: [
+                    {
+                        id: 'panelI',
+                        text: 'PANEL I',
+                        css: { left: '65%', top: '25%' }, 
+                        imgClosed: './assets/image/M1/panel/ClosedElectricalPanelSectionD.png',
+                        imgOpened: './assets/image/M1/panel/OpenedElectricalPanelSectionD.png'
+                    }
+                ],
                 playerData: { floor: 1, cam: 'I', mapCss: { top: '15%', left: '75%' } }
             },
             'J': {
@@ -798,7 +1482,10 @@
                     './assets/image/M1/panoramaSectionJ2.png',
                     './assets/image/M1/panoramaSectionJ3.png'
                 ],
-                buttons: [],
+                buttons: [
+                    { target: 'I', text: 'AREA I', css: { left: '60%', top: '50%' } },
+                    { target: 'G', text: 'AREA G', css: { left: '40%', top: '50%' } },
+                ],
                 playerData: { floor: 1, cam: 'J', mapCss: { top: '70%', left: '70%' } }
             }
         };
@@ -828,10 +1515,54 @@
             'J': { img: './assets/image/M1/entity/entityOnCCTVRustwalker.png', css: { top: '50%', left: '50%', scale: 0, brightness: 1 } }
         };
 
+        // --- NOTIFICATION --- code: NTX NOX
+        let notification = document.getElementById('notification');
+        let notificationData = [
+            {
+                message: "Carilah panel listrik di titik-titik tertentu dan aktivasikan",
+                timeAppear: 0.5,
+                timeDisappear: 12
+            },
+            {
+                message: "Cobalah untuk mengaktifkan semua panel listrik tersebut",
+                timeAppear: 14,
+                timeDisappear: 20
+            },
+            {
+                message: "Berhati-hati lah, karna kamu tidak sendirian disini",
+                timeAppear: 22,
+                timeDisappear: 26
+            },
+            {
+                message: "kamu di beri waktu hingga jam 00.00 sebelum waktu habis",
+                timeAppear: 28,
+                timeDisappear: 34
+            },
+            {
+                message: "terdapat monitor yang dapat kamu gunakan untuk melihat kondisi sekitar",
+                timeAppear: 36,
+                timeDisappear: 46
+            },
+            {
+                message: "Semoga beruntung",
+                timeAppear: 48,
+                timeDisappear: 59
+            },
+        ]
+        function gameNotification(index){
+            setTimeout(() => {
+                notification.innerHTML = `${notificationData[index].message}`
+                notification.classList.replace("note-inactive","note-active")
+            }, notificationData[index].timeAppear*1000);
+            setTimeout(() => {
+                notification.classList.replace("note-active","note-inactive")
+            }, notificationData[index].timeDisappear*1000);
+        }
+
         // --- TIME SYSTEM CONFIG ---
         let gameHour = 18;      // Mulai jam 18:00 (Default)
         let gameMinute = 0;
-        const realSecondsPerGameMinute = 4; // 1 menit game = 6 detik asli (Time Speed) code: tmx
+        let realSecondsPerGameMinute = 4; // 1 menit game = 6 detik asli (Time Speed) code: tmx
         let clockInterval; 
 
         // --- GAME STATE ---
@@ -839,7 +1570,7 @@
         let isScreenOn = false;  
         let isMoving = false; 
         let currentPan = 50;
-        let panSpeed = 0.9;
+        let panSpeed = 1.0;
         let moveDirection = 0;
         
         let currentLocation = 'A'; 
@@ -851,10 +1582,10 @@
 
         // -> ENTITY 01: "RUSTWALKER" code: enx1
         // --- ENTITY CONFIG (Rustwalker) ---
-        const RUSTWALKER_MIN_SPAWN_GAME_MINS = 2; // 18:08
-        const RUSTWALKER_MAX_SPAWN_GAME_MINS = 3; // 18:20
-        const RUSTWALKER_MIN_MOVE_INTERVAL_SEC = 2; //5
-        const RUSTWALKER_MAX_MOVE_INTERVAL_SEC = 3; //30
+        const RUSTWALKER_MIN_SPAWN_GAME_MINS = 8; // 18:08
+        const RUSTWALKER_MAX_SPAWN_GAME_MINS = 20; // 18:20
+        const RUSTWALKER_MIN_MOVE_INTERVAL_SEC = 5; //5
+        const RUSTWALKER_MAX_MOVE_INTERVAL_SEC = 27; //27
 
         let rustwalkerData = {
             name: 'Rustwalker',
@@ -947,8 +1678,6 @@
                         return chosenTarget;
                     }
                     
-                    // Jika tipe gerakan terpilih tapi tidak ada rute yang cocok dari lokasi ini, 
-                    // entitas akan tetap diam dan kita keluar dari loop roll.
                     return currentLocation; 
                 }
             }
@@ -960,6 +1689,14 @@
         const cctvRustwalkerEntityImg = document.getElementById('cctvEntityRustwalkerDisplay');
 
         function updateCctvEntityVisuals() {
+            // PRIORITY: Devourer Phase 2 = All Cameras Error
+    if (devourerData.active && devourerData.phase === 2) {
+        cctvScreen.src = "./assets/image/M1/cctv/cameraError.png";
+        // Sembunyikan semua entity cctv lain
+        cctvRustwalkerEntityImg.style.display = 'none';
+        jesterWrapper.style.display = 'none';
+        return; // Stop di sini
+    }
             updateJesterVisuals();
             // 1. Cek apakah Entity sudah Spawn
             if (!rustwalkerData.isSpawned) {
@@ -989,21 +1726,19 @@
                 // Jika Entity tidak di kamera ini, sembunyikan
                 cctvRustwalkerEntityImg.style.display = 'none';
             }
-
-            updateJesterVisuals();
         }
 
         // -> ENTITY 02: "THE RUIN"  code: enx2
         // --- THE RUIN CONFIGURATION ---
-        const THERUIN_MIN_SPAWN_GAME_MINS = 8; // 18:33
-        const THERUIN_MAX_SPAWN_GAME_MINS = 20; // 18:58
+        const THERUIN_MIN_SPAWN_GAME_MINS = 33; // 18:33
+        const THERUIN_MAX_SPAWN_GAME_MINS = 58; // 18:58
         
         // Timer Kematian (Toleransi)
-        const THERUIN_DEATH_TIMER_SEC = 5;  // 6
+        const THERUIN_DEATH_TIMER_SEC = 7;  // 7
         
         // Interval Muncul Kembali (Real Time: 2 - 7 Menit)
-        const THERUIN_RECURRENCE_MIN_SEC = 40; // 2.5 menit
-        const THERUIN_RECURRENCE_MAX_SEC = 60; // 7 menit
+        const THERUIN_RECURRENCE_MIN_SEC = 150; // 2.5 menit
+        const THERUIN_RECURRENCE_MAX_SEC = 420; // 7 menit
 
         let theRuinData = {
             isActive: false,
@@ -1034,33 +1769,33 @@
         // --- THE RUIN LOGIC ---
 
         function spawnTheRuin() {
-            if (theRuinData.isActive) return;
-            
-            // Cek apakah config lokasi ada
-            const config = ruinLocationConfig[currentLocation];
-            if (!config) return;
+                if (theRuinData.isActive) return;
+                
+                // Cek apakah config lokasi ada
+                const config = ruinLocationConfig[currentLocation];
+                if (!config) return;
 
-            console.log(`[THE RUIN] MUNCUL DI ${currentLocation}! PINDAH LANTAI SEKARANG!`);
+                console.log(`[THE RUIN] MUNCUL DI ${currentLocation}! PINDAH LANTAI SEKARANG!`);
 
-            theRuinData.isActive = true;
-            theRuinData.hasSpawnedOnce = true;
+                theRuinData.isActive = true;
+                theRuinData.hasSpawnedOnce = true;
 
-            // 1. Tampilkan Visual
-            ruinEntityDiv.style.display = 'block';
-            ruinEntityDiv.style.top = config.top;
-            ruinEntityDiv.style.left = config.left;
-            ruinEntityDiv.style.transform = `translate(-50%, -50%) scale(${config.scale})`;
-            ruinEntityDiv.style.filter = `brightness(${config.brightness})`;
+                // 1. Tampilkan Visual
+                ruinEntityDiv.style.display = 'block';
+                ruinEntityDiv.style.top = config.top;
+                ruinEntityDiv.style.left = config.left;
+                ruinEntityDiv.style.transform = `translate(-50%, -50%) scale(${config.scale})`;
+                ruinEntityDiv.style.filter = `brightness(${config.brightness})`;
 
-            // 2. Efek Audio & Viewport
-            theRuinSfx.currentTime = 0;
-            theRuinSfx.play();
-            viewport.classList.add('ruin-active-effect'); // Tambah animasi flickering
+                // 2. Efek Audio & Viewport
+                theRuinSfx.currentTime = 0;
+                theRuinSfx.play();
+                viewport.classList.add('ruin-active-effect'); // Tambah animasi flickering
 
-            // 3. Mulai Timer Kematian (5 Detik)
-            theRuinData.deathTimer = setTimeout(() => {
-                triggerRuinJumpscare("Waktu Habis");
-            }, THERUIN_DEATH_TIMER_SEC * 1000);
+                // 3. Mulai Timer Kematian (5 Detik)
+                theRuinData.deathTimer = setTimeout(() => {
+                    triggerRuinJumpscare("Waktu Habis");
+                }, THERUIN_DEATH_TIMER_SEC * 1000);
         }
 
         function resetTheRuin(success = false) {
@@ -1105,11 +1840,11 @@
         // -> ENTITY 03: "THE JESTER" code: enx3
         
         // --- JESTER CONFIG ---
-        const JESTER_MIN_SPAWN_GAME_MINS = 50; // 19:10 (1 Jam = 60 menit + 10)
-        const JESTER_MAX_SPAWN_GAME_MINS = 70; // 19:30 (1 Jam = 60 menit + 30)
+        const JESTER_MIN_SPAWN_GAME_MINS = 70; // 19:10 (1 Jam = 60 menit + 10)
+        const JESTER_MAX_SPAWN_GAME_MINS = 90; // 19:30 (1 Jam = 60 menit + 30)
         
-        const JESTER_RESPAWN_MIN_SEC = 240; // 4 Menit
-        const JESTER_RESPAWN_MAX_SEC = 330; // 5.5 Menit
+        const JESTER_RESPAWN_MIN_SEC = 300; // 5 Menit
+        const JESTER_RESPAWN_MAX_SEC = 540; // 9 Menit
 
         let jesterData = {
             state: 0, // 0: Inactive, 1: Passive, 2: Active (Hunt), 3: Aggressive
@@ -1188,7 +1923,7 @@ const jesterVisualConfig = {
             console.log("[JESTER] PHASE 2: HUNT STARTED");
             jesterData.state = 2;
             jesterData.catchCount = 0;
-            jesterData.targetCatchCount = 3
+            jesterData.targetCatchCount = Math.round(Math.random() * 1 + 2); // 2 - 3 kali
             console.log(`[JESTER] Player harus menemukan Jester ${jesterData.targetCatchCount} kali.`);
 
             // Audio Hunt
@@ -1198,8 +1933,6 @@ const jesterVisualConfig = {
         
             // Spawn Visual Pertama
             relocateJester();
-
-            // Mulai Loop Pengecekan "Stare" (Menatap)
             // Kita cek setiap 100ms apakah player melihat Jester
             if (jesterPhase2CheckInterval) clearInterval(jesterPhase2CheckInterval);
             jesterPhase2CheckInterval = setInterval(jesterPhase2Logic, 100);
@@ -1240,7 +1973,7 @@ function relocateJester() {
                 // Debug log (optional)
                 // console.log("Staring at Jester...", jesterData.stareTimer);
 
-                if (jesterData.stareTimer >= 3.0  ) { // 2 Detik
+                if (jesterData.stareTimer >= 2.0  ) { // 2 Detik
                     handleJesterCaught();
                 }
             } else {
@@ -1382,6 +2115,297 @@ function relocateJester() {
             }
         }
 
+        // -> ENTITY 04: "ROTTENNECK" code: enx4
+        
+        const ROTTENNECK_MIN_SPAWN_GAME_MINS = 110; // 19:50
+        const ROTTENNECK_MAX_SPAWN_GAME_MINS = 130; // 20:15
+        // const ROTTENNECK_MIN_SPAWN_GAME_MINS = 1; 
+        // const ROTTENNECK_MAX_SPAWN_GAME_MINS = 2; 
+        
+        const ROTTENNECK_RESPAWN_MIN_SEC = 30; // 30 Detik
+        const ROTTENNECK_RESPAWN_MAX_SEC = 300; // 5 Menit
+        
+        // Config Posisi (Left1 = Sisi Kiri Panorama, Left2 = Sisi Kanan Panorama)
+        // Top 30% agar terlihat menggantung dari langit-langit
+        const rottenneckLocationConfig = {
+            'A': { top: '-7%', left1: '14%', left2: '75%', scale: 1.2 },
+            'B': { top: '-7%', left1: '14%', left2: '75%', scale: 1.2 },
+            'C': { top: '-7%', left1: '14%', left2: '75%', scale: 1.2 },
+            'D': { top: '-7%', left1: '14%', left2: '75%', scale: 1.2 },
+            'E': { top: '-7%', left1: '14%', left2: '75%', scale: 1.2 },
+            'F': { top: '-7%', left1: '14%', left2: '75%', scale: 1.2 },
+            'G': { top: '-7%', left1: '14%', left2: '75%', scale: 1.2 },
+            'H': { top: '-7%', left1: '14%', left2: '75%', scale: 1.2 },
+            'I': { top: '-7%', left1: '14%', left2: '75%', scale: 1.2 },
+            'J': { top: '-7%', left1: '14%', left2: '75%', scale: 1.2 }
+        };
+
+        let rottenneckData = {
+            active: false,
+            phase: 0, // 0: Idle, 1: Audio Cue, 2: Visual (Attack)
+            spawnTimeGameMinute: 0,
+            nextSpawnRealTime: 0,
+            currentSide: 0, // 1: Kiri, 2: Kanan
+            stareTimer: 0,
+            failTimer: null
+        };
+
+        const rottenneckEntity = document.getElementById('rottenneckEntity');
+        const rottenneckJaw = document.getElementById('rottenneckJaw');
+        
+        let rottenneckStareInterval = null;
+
+        // --- PHASE 2: VISUAL ATTACK ---
+        function startRottenneckPhase2() {
+            if(isHiding){
+                    console.log("[ROTTENNECK] CAN'T FIND YOU");
+                    clearInterval(rottenneckStareInterval);
+                    clearTimeout(rottenneckData.failTimer);
+                    rottenneckEntity.style.display = 'none';
+                    rottenneckJaw.classList.remove('jaw-scream');
+                    rottenneckData.active = false;
+                    rottenneckData.phase = 0;
+                return}
+            console.log("[ROTTENNECK] PHASE 2: VISUAL APPEAR");
+            rottenneckData.phase = 2;
+            rottenneckData.stareTimer = 0;
+
+            // 1. Pilih Sisi (1: Kiri, 2: Kanan)
+            const side = Math.random() < 0.5 ? 1 : 2;
+            rottenneckData.currentSide = side;
+            
+            const config = rottenneckLocationConfig[currentLocation];
+            const targetLeft = side === 1 ? config.left1 : config.left2;
+            
+            // 2. Setup Posisi & Animasi Turun
+            rottenneckEntity.style.left = targetLeft;
+            switch (side) {
+                    case 1:
+                        rottenneckEntity.style.transform = `scale(${config.scale}) scaleX(1)`;
+                    break;
+                    default:
+                        rottenneckEntity.style.transform = `scale(${config.scale}) scaleX(-1)`;
+                    break;
+            }
+            rottenneckEntity.style.display = 'block';
+            
+            // Force reflow agar transisi CSS jalan
+            void rottenneckEntity.offsetWidth; 
+            
+            // Slide Turun
+            rottenneckEntity.style.top = config.top; 
+
+            // 3. Play SFX lagi (Gemeretak)
+            rottenneckSFX.currentTime = 0;
+            rottenneckSFX.play();
+
+            // 4. Mulai Timer Kematian (8 Detik)
+            rottenneckData.failTimer = setTimeout(() => {
+                if (rottenneckData.phase === 2) {
+                    // Jumpscare jika gagal menatap
+                    triggerJumpscare('Rottenneck'); // Pastikan tambah logic ini di triggerJumpscare
+                }
+            }, 8000);
+
+            // 5. Mulai Loop Cek Tatapan
+            if (rottenneckStareInterval) clearInterval(rottenneckStareInterval);
+            rottenneckStareInterval = setInterval(checkRottenneckStare, 100);
+        }
+
+        function checkRottenneckStare() {
+            if (rottenneckData.phase !== 2) return;
+            if (isMonitorUp) return; // Tidak bisa menatap jika buka monitor
+
+            // LOGIKA SUDUT PANDANG (FOV)
+            // #main lebar 300%. Viewport lebar 100% (sepertiga dari main).
+            // Posisi Viewport (Visible Area) dalam % terhadap #main:
+            // Start (Kiri) = (currentPan / 100) * 66.666
+            // End (Kanan)  = Start + 33.333
+            // Center View  = Start + 16.666
+            
+            const visibleStart = (currentPan / 100) * 66.666;
+            const viewCenter = visibleStart + 16.666;
+
+            // Ambil posisi entitas (misal 12% atau 88%)
+            const config = rottenneckLocationConfig[currentLocation];
+            const entityPosStr = rottenneckData.currentSide === 1 ? config.left1 : config.left2;
+            const entityPos = parseFloat(entityPosStr);
+
+            // Cek Jarak antara Tengah Layar dengan Posisi Entitas
+            // Toleransi 5% (cukup ketat, pemain harus benar-benar menoleh)
+            if (Math.abs(viewCenter - entityPos) < 12.0) {
+                rottenneckData.stareTimer += 0.1; // Tambah 100ms
+                // console.log("Staring at Rottenneck...", rottenneckData.stareTimer);
+                
+                if (rottenneckData.stareTimer >= 2.0) {
+                    rottenneckSuccess();
+                }
+            } else {
+                // Reset timer jika memalingkan muka (opsional, atau biarkan akumulatif?)
+                // Jika ingin sulit: reset. Jika ingin mudah: jangan reset.
+                // rottenneckData.stareTimer = 0; 
+            }
+        }
+
+        function rottenneckSuccess() {
+            console.log("[ROTTENNECK] REPELLED!");
+            clearInterval(rottenneckStareInterval);
+            clearTimeout(rottenneckData.failTimer);
+            rottenneckData.phase = 3; // Retreating
+
+            // 1. Animasi & Audio Teriak
+            rottenneckScreamSFX.currentTime = 0;
+            rottenneckScreamSFX.play();
+            
+            // Buka Mulut Lebar
+            rottenneckJaw.classList.add('jaw-scream');
+
+            // 2. Slide Naik (Kabur) setelah 1 detik
+            setTimeout(() => {
+                rottenneckEntity.style.top = '-120%'; // Naik ke atas
+                
+                // 3. Reset total setelah animasi selesai
+                setTimeout(() => {
+                    rottenneckEntity.style.display = 'none';
+                    rottenneckJaw.classList.remove('jaw-scream');
+                    rottenneckData.active = false;
+                    rottenneckData.phase = 0;
+                    
+                    // Jadwalkan Spawn Berikutnya
+                    const nextSec = Math.floor(Math.random() * (ROTTENNECK_RESPAWN_MAX_SEC - ROTTENNECK_RESPAWN_MIN_SEC + 1)) + ROTTENNECK_RESPAWN_MIN_SEC;
+                    rottenneckData.nextSpawnRealTime = Date.now() + (nextSec * 1000);
+                    console.log(`[ROTTENNECK] Gone. Back in ${nextSec}s.`);
+                }, 1500);
+
+            }, 1000);
+        }
+
+        // -> ENTITY 05: "DEVOURER" code: enx5
+        
+        const DEVOURER_MIN_SPAWN_GAME_MINS = 150; // 20:30 150
+        const DEVOURER_MAX_SPAWN_GAME_MINS = 190; // 21:10 190
+        const DEVOURER_MIN_MOVE_INTERVAL_SEC = 600; // 10 menit
+        const DEVOURER_MAX_MOVE_INTERVAL_SEC = 720; // 12 menit
+
+        // Config Posisi Devourer di Panorama
+        const devourerLocationConfig = {
+            'A': { top: '50%', left: '48%', scale: 1, forcedPanoramaView: 48},
+            'B': { top: '50%', left: '12.5%', scale: 1, forcedPanoramaView: 0},
+            'C': { top: '50%', left: '53%', scale: 1, forcedPanoramaView: 50},
+            'D': { top: '50%', left: '48%', scale: 1, forcedPanoramaView: 50},
+            'E': { top: '50%', left: '50%', scale: 1, forcedPanoramaView: 50},
+            'F': { top: '50%', left: '50%', scale: 1, forcedPanoramaView: 50},
+            'G': { top: '50%', left: '50%', scale: 1, forcedPanoramaView: 50},
+            'H': { top: '50%', left: '50%', scale: 1, forcedPanoramaView: 50},
+            'I': { top: '50%', left: '50%', scale: 1, forcedPanoramaView: 50},
+            'J': { top: '50%', left: '50%', scale: 1, forcedPanoramaView: 50}
+        };
+
+        let devourerData = {
+            active: false,
+            phase: 0, // 0: Idle, 1: AudioCue, 2: ErrorCCTV, 3: Attack
+            spawnTimeGameMinute: 0,
+            nextSpawnRealTime: 0
+        };
+
+        const devourerEntity = document.getElementById('devourerEntity');
+
+        function calculateDevourerFirstSpawn() {
+            const spawnMin = Math.floor(Math.random() * (DEVOURER_MAX_SPAWN_GAME_MINS - DEVOURER_MIN_SPAWN_GAME_MINS + 1)) + DEVOURER_MIN_SPAWN_GAME_MINS;
+            devourerData.spawnTimeGameMinute = spawnMin;
+            console.log(`[DEVOURER] Jadwal Fase 1 pada menit ke-${spawnMin} in-game`);
+        }
+
+        function checkDevourerSpawnStatus() {
+            if (devourerData.active) return;
+
+            let currentTotalMinutes = ((gameHour - 18) * 60) + gameMinute;
+
+            // Spawn Check
+            if ((devourerData.nextSpawnRealTime === 0 && currentTotalMinutes >= devourerData.spawnTimeGameMinute) ||
+                (devourerData.nextSpawnRealTime > 0 && Date.now() >= devourerData.nextSpawnRealTime)) {
+                
+                startDevourerPhase1();
+            }
+        }
+
+        // FASE 1: SUARA (15 Detik)
+        function startDevourerPhase1() {
+            console.log("[DEVOURER] PHASE 1");
+            devourerData.active = true;
+            devourerData.phase = 1;
+            
+            devourerAppearanceSFX.currentTime = 0;
+            devourerAppearanceSFX.play();
+
+            setTimeout(startDevourerPhase2, 15000);
+        }
+
+        // FASE 2: AMBIENT & CCTV ERROR (15 Detik)
+        function startDevourerPhase2() {
+            console.log("[DEVOURER] PHASE 2");
+            devourerData.phase = 2;
+
+            devourerAppearanceSFX.pause();
+            devourerAmbientSFX.currentTime = 0;
+            devourerAmbientSFX.play();
+            
+            // Efek Kedip Ringan
+            viewport.classList.add('ruin-active-effect'); // Pakai efek flicker yg ada tp durasi lambat? 
+            // Atau manual interval flicker ringan
+
+            // Force Update CCTV Error (Karena fase 2 aktif, fungsi updateCctvEntityVisuals akan handle gambar error)
+            updateCctvEntityVisuals(); 
+
+            setTimeout(startDevourerPhase3, 15000);
+        }
+
+        // FASE 3: AGGRESSIVE (Jumpscare Check)
+        function startDevourerPhase3() {
+            console.log("[DEVOURER] PHASE 3: CHECK KILL");
+            devourerData.phase = 3;
+            
+            // Reset Efek Fase 2
+            viewport.classList.remove('ruin-active-effect');
+            
+            // Audio Scream
+            devourerScreamSFX.currentTime = 0;
+            devourerScreamSFX.play();
+
+            // Efek Kedip Berat (Strobe)
+            viewport.style.animation = "strobeFlash 0.1s steps(2, start) infinite";
+
+
+
+            // Tunggu sebentar (misal 4 detik) sebelum Kill/Selamat
+            setTimeout(() => {
+                if (isHiding) {
+                    // SELAMAT
+                    console.log("[DEVOURER] Player Hiding. Safe.");
+                    devourerRetreat();
+                } else {
+                    // MATI
+                    triggerJumpscare('Devourer');
+                }
+            }, 4000);
+        }
+
+        function devourerRetreat() {
+            devourerEntity.style.display = 'none';
+            viewport.style.animation = "breathingView 4s infinite ease-in-out, animasiLampuRedup 5s infinite alternate"; // Stop strobe
+            devourerData.active = false;
+            devourerData.phase = 0;
+            devourerAmbientSFX.pause()
+
+            // Update CCTV kembali normal
+            updateCctvEntityVisuals();
+
+            // Jadwal Next Spawn
+            const nextSec = Math.floor(Math.random() * (DEVOURER_MAX_MOVE_INTERVAL_SEC - DEVOURER_MIN_MOVE_INTERVAL_SEC + 1)) + DEVOURER_MIN_MOVE_INTERVAL_SEC;
+            devourerData.nextSpawnRealTime = Date.now() + (nextSec * 1000);
+            console.log(`[DEVOURER] Retreat. Back in ${nextSec}s`);
+        }
+
         // --- CHECKER (Dipanggil di GameLoop/Timer) ---
         
         let ruinSpawnMinute = 0; // Waktu random pertama kali
@@ -1409,6 +2433,44 @@ function relocateJester() {
             }
         }
 
+        function calculateRottenneckFirstSpawn() {
+            // Random menit antara 19:50 - 20:15
+            const spawnMin = Math.floor(Math.random() * (ROTTENNECK_MAX_SPAWN_GAME_MINS - ROTTENNECK_MIN_SPAWN_GAME_MINS + 1)) + ROTTENNECK_MIN_SPAWN_GAME_MINS;
+            rottenneckData.spawnTimeGameMinute = spawnMin;
+            console.log(`[ROTTENNECK] Jadwal Fase 1 pada menit ke-${spawnMin} in-game`);
+        }
+
+        function checkRottenneckSpawnStatus() {
+            if (rottenneckData.active) return;
+
+            let currentTotalMinutes = ((gameHour - 18) * 60) + gameMinute;
+
+            // Spawn Pertama
+            if (rottenneckData.nextSpawnRealTime === 0 && currentTotalMinutes >= rottenneckData.spawnTimeGameMinute) {
+                startRottenneckPhase1();
+            }
+            // Respawn
+            else if (rottenneckData.nextSpawnRealTime > 0 && Date.now() >= rottenneckData.nextSpawnRealTime) {
+                startRottenneckPhase1();
+            }
+        }
+
+        // --- PHASE 1: AUDIO CUE ---
+        function startRottenneckPhase1() {
+            console.log("[ROTTENNECK] PHASE 1: AUDIO CUE");
+            rottenneckData.active = true;
+            rottenneckData.phase = 1;
+
+            rottenneckSFX.currentTime = 0;
+            rottenneckSFX.play();
+
+            // Setelah audio selesai (atau delay 5 detik), masuk Fase 2
+            // Kita pakai timeout 5 detik untuk simulasi durasi audio
+            setTimeout(() => {
+                startRottenneckPhase2();
+            }, 5000); 
+        }
+
  // --- JUMPSCARE LOGIC ---
         const jumpscareLayer = document.getElementById('jumpscareLayer');
         const viewport = document.getElementById('viewport');
@@ -1422,6 +2484,8 @@ function relocateJester() {
             clearInterval(jesterPhase2CheckInterval); // Stop Jester Loop
             clearTimeout(rustwalkerMoveTimer);
             clearTimeout(theRuinData.deathTimer);
+            clearTimeout(rottenneckData.failTimer); // Stop timer rottenneck
+            clearInterval(rottenneckStareInterval);
             
             isMoving = true; 
             navLayer.style.pointerEvents = "none"; 
@@ -1447,37 +2511,56 @@ function relocateJester() {
             else if (killerName === 'TheJester') {
                 jumpscareImg.src = "./assets/image/M1/entity/theJesterHead.png"; 
                 jumpscareLayer.classList.add('jumpscare-active-TheJester'); 
+            }else if (killerName === 'Rottenneck' || killerName ==="The Rottenneck") {
+                jumpscareImg.src = "./assets/image/M1/entity/rottenneckHEAD.png"; 
+                jumpscareLayer.classList.add('jumpscare-active-Rottenneck');
             }
-            else { // Default: Rustwalker
+            else { 
                 jumpscareImg.src = "./assets/image/M1/entity/RustwalkerStatic.png";
                 jumpscareLayer.classList.add('jumpscare-active-Rustwalker');
             }
 
-            // 4. EKSEKUSI VISUAL
-            jumpscareLayer.style.display = 'block'; 
             
             // Efek Strobe Layar
+            if (killerName !== 'Devourer') {
+            // 4. EKSEKUSI VISUAL
+            jumpscareLayer.style.display = 'block'; 
+
             viewport.style.animation = "none";
             setTimeout(() => {
                 viewport.style.animation = "strobeFlash 0.05s steps(2, start) infinite";
             }, 10);
 
-            // 5. AUDIO JUMPSCARE
+                // 5. AUDIO JUMPSCARE
             jumpscare1Sfx.currentTime = 0;
             jumpscare1Sfx.volume = 1.0;
             jumpscare1Sfx.play().catch(e => console.log("Audio fail:", e));
-
-            // 6. GAME OVER ALERT & RELOAD
+    
+            // 6. DEATH SCREEN SEQUENCE 
             setTimeout(() => {
-                let message = "";
-                if(killerName === "TheRuin") message = "KAMU MATI.\nThe Ruin menangkapmu (Kelamaan diam/Salah jalan).";
-                else if(killerName === "TheJester") message = "KAMU MATI.\nThe Jester menangkapmu (Habis waktu/Gagal cari).";
-                else message = `KAMU MATI.\nRustwalker menangkapmu di AREA ${currentLocation}.`;
+                showDeathScreen(killerName);
                 
-                alert(message);
-                // location.reload(); 
-            }, 3000); // Durasi sebelum reload
+            }, 4000); // Tunggu 4 Detik setelah jumpscare mulai
+        } 
+        else {
+             // Tampilkan Entity di Panorama (Visual Attack)
+            const config = devourerLocationConfig[currentLocation];
+            // Fallback config
+            const safeConfig = config 
+            
+            devourerEntity.style.display = 'block';
+            // devourerEntity.style.top = safeConfig.top;
+            devourerEntity.style.left = safeConfig.left;
+            currentPan = safeConfig.forcedPanoramaView
+            devourerEntity.classList.add("death")
+
+             setTimeout(() => {
+                showDeathScreen(killerName);
+                
+            }, 4000); // Tunggu 4 Detik setelah jumpscare mulai
         }
+        }
+
 
 // Update checkPlayerCollision agar menerima parameter 'killer'
      function checkPlayerCollision(forcedKiller = null) {
@@ -1486,9 +2569,8 @@ function relocateJester() {
                 triggerJumpscare(forcedKiller);
                 return;
             }
-
             // Deteksi Manual (Rustwalker)
-            if (rustwalkerData.location === currentLocation) {
+            if (rustwalkerData.location === currentLocation && !isHiding) {
                 triggerJumpscare('Rustwalker');
             }
         }
@@ -1591,30 +2673,685 @@ function relocateJester() {
         // --- MOVEMENT LOGIC TERBARU (MULTI TOMBOL) ---
 
         // Fungsi untuk merender tombol berdasarkan lokasi saat ini
-        function renderNavButtons() {
-            navLayer.innerHTML = ''; // Hapus tombol lama
+   function renderNavButtons() {
+            navLayer.innerHTML = ''; 
             const data = locationData[currentLocation];
 
+            // 1. Render Tombol Navigasi Biasa
             if (data && data.buttons) {
                 data.buttons.forEach(btnData => {
                     const btn = document.createElement('div');
-                    btn.className = 'nav-btn'; // Pakai class CSS baru
+                    btn.className = 'nav-btn'; 
                     btn.innerText = btnData.text;
                     btn.style.left = btnData.css.left;
                     btn.style.top = btnData.css.top;
                     
-                    // Event Klik Tombol
                     btn.addEventListener('click', (e) => {
-                        e.stopPropagation(); // Agar tidak tembus klik ke belakang
+                        e.stopPropagation(); 
                         if(isMoving || isMonitorUp) return;
-                        
                         startMovementSequence(btnData.target);
                     });
-
                     navLayer.appendChild(btn);
                 });
             }
+
+            // 2. Render Tombol Panel Listrik (Baru)
+            if (data && data.panels) {
+                data.panels.forEach(pnlData => {
+                    const btn = document.createElement('div');
+                    btn.className = 'nav-btn panel-trigger-btn'; // Tambah class merah
+                    btn.innerText = pnlData.text;
+                    btn.style.left = pnlData.css.left;
+                    btn.style.top = pnlData.css.top;
+                    
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if(isMoving || isMonitorUp) return;
+                        
+                        // Masuk ke Mode Panel
+                        enterPanelView(pnlData);
+                    });
+                    navLayer.appendChild(btn);
+                });
+            }
+
+            // 3. Render Tombol Toilet (Baru)
+            if (data && data.toilet) {
+                const toiletData = data.toilet;
+                const btn = document.createElement('div');
+                btn.className = 'nav-btn toilet-entry-btn'; // Class khusus hijau
+                btn.innerText = toiletData.text;
+                btn.style.left = toiletData.css.left;
+                btn.style.top = toiletData.css.top;
+                
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if(isMoving || isMonitorUp) return;
+                    
+                    // Masuk Toilet
+                    enterToilet();
+                });
+                navLayer.appendChild(btn);
+            }
         }
+
+        // --- TOILET / HIDEOUT SYSTEM ---
+        const toiletLayer = document.getElementById('toiletLayer');
+        const btnExitToilet = document.getElementById('btnExitToilet');
+        let isHiding = false;
+
+        function enterToilet() {
+            isHiding = true;
+            
+            // Efek Suara Pintu
+            // (Opsional: btnSfx.play() atau sfx pintu toilet)
+            btnSfx.currentTime = 0; btnSfx.play();
+
+            transitionOverlay.style.opacity = 1;
+
+            setTimeout(() => {
+                toiletLayer.style.display = 'block';
+                navLayer.style.display = 'none'; // Sembunyikan navigasi luar
+                
+                // Pastikan Entity Panorama (Devourer/Rottenneck/Ruin) tidak terlihat dari dalam toilet
+                // Tapi logika mereka tetap jalan di background
+                
+                transitionOverlay.style.opacity = 0;
+            }, 1000);
+        }
+
+        function exitToilet() {
+            // Cek The Ruin sebelum keluar (Jika The Ruin aktif, keluar = mati? 
+            // Sesuai prompt: "tidak aman dari the ruin", jadi Ruin bisa bunuh walau di dalam)
+            
+            isHiding = false;
+            btnSfx.currentTime = 0; btnSfx.play();
+
+            transitionOverlay.style.opacity = 1;
+
+            setTimeout(() => {
+                toiletLayer.style.display = 'none';
+                navLayer.style.display = 'block'; 
+                
+                transitionOverlay.style.opacity = 0;
+            }, 1000);
+        }
+
+        btnExitToilet.addEventListener('click', exitToilet);
+
+        // --- ELECTRICAL PANEL LOGIC ---
+        const panelViewLayer = document.getElementById('panelViewLayer');
+        const panelViewImg = document.getElementById('panelViewImg');
+        const panelLeftBtn = document.getElementById('panelLeftBtn');
+        const panelCenterBtn = document.getElementById('panelCenterBtn');
+        const PanelActivationBtn = document.getElementById('PanelActivationBtn');
+
+        let isFocusingPanel = false;
+        let isPanelOpen = false; // State panel saat ini
+        let currentPanelData = null;
+
+        function enterPanelView(pnlData) {
+            isFocusingPanel = true;
+            currentPanelData = pnlData;
+            isPanelOpen = false; // Reset state panel selalu tertutup saat datang
+
+            // 1. Transition Fade Out (Layar Hitam)
+            transitionOverlay.style.opacity = 1;
+
+            setTimeout(() => {
+                // 2. Setup Tampilan Panel
+                panelViewLayer.style.display = 'block';
+                panelViewImg.src = pnlData.imgClosed; // Gambar Tertutup Awal
+                navLayer.style.display = 'none'; // Sembunyikan tombol panorama
+                cctvBtn.style.display = "none";
+                
+                // Setup Tombol
+                updatePanelButtonsState();
+
+                // 3. Transition Fade In
+                transitionOverlay.style.opacity = 0;
+            }, 1000); // 1 Detik Transisi
+        }
+
+        function exitPanelView() {
+            if (isMinigameOpen) closeMinigame();
+
+            // 1. Transition Fade Out
+            transitionOverlay.style.opacity = 1;
+
+            setTimeout(() => {
+                // 2. Reset Tampilan ke Panorama
+                panelViewLayer.style.display = 'none';
+                navLayer.style.display = 'block'; // Munculkan tombol panorama lagi
+                cctvBtn.style.display = "block";
+
+                isFocusingPanel = false;
+                currentPanelData = null;
+
+                // 3. Transition Fade In
+                transitionOverlay.style.opacity = 0;
+            }, 1000);
+        }
+
+        function togglePanelDoor() {
+            if (isMinigameOpen) return;
+            if(!currentPanelData) return;
+
+            // Transisi Cepat (0.2s)
+            transitionOverlay.style.transition = "opacity 0.2s ease-in-out";
+            transitionOverlay.style.opacity = 1;
+
+            setTimeout(() => {
+                if (!isPanelOpen) {
+                    // AKSI: MEMBUKA
+                    isPanelOpen = true;
+                    panelViewImg.src = currentPanelData.imgOpened;
+                    openElectricalPanel.currentTime = 0;
+                    openElectricalPanel.play();
+                } else {
+                    // AKSI: MENUTUP
+                    isPanelOpen = false;
+                    panelViewImg.src = currentPanelData.imgClosed;
+                    closeElectricalPanel.currentTime = 0;
+                    closeElectricalPanel.play();
+                }
+                
+                updatePanelButtonsState();
+
+                // Buka Layar lagi
+                transitionOverlay.style.opacity = 0;
+                
+                // Kembalikan speed transisi ke default (1s) setelah selesai
+                setTimeout(() => {
+                    transitionOverlay.style.transition = "opacity 1s ease-in-out";
+                }, 200);
+
+            }, 200);
+        }
+
+       function updatePanelButtonsState() {
+            if (!isPanelOpen) {
+                // KONDISI TERTUTUP
+                panelLeftBtn.innerText = "KEMBALI";
+                panelCenterBtn.style.display = "block"; 
+                panelCenterBtn.innerText = "BUKA PANEL";
+                PanelActivationBtn.style.display = "none";
+                
+                panelLeftBtn.onclick = exitPanelView;
+                panelCenterBtn.onclick = togglePanelDoor;
+                
+                // Pastikan minigame tertutup jika panel ditutup paksa
+                if(isMinigameOpen) closeMinigame();
+
+            } else {
+                // KONDISI TERBUKA
+                panelLeftBtn.innerText = "TUTUP PANEL";
+                panelCenterBtn.style.display = "none"; 
+                
+                // Cek apakah Quest sudah selesai? Jika belum, tampilkan tombol
+                if (!questData[currentLocation] || !questData[currentLocation].isComplete) {
+                    PanelActivationBtn.style.display = "block";
+                } else {
+                    PanelActivationBtn.style.display = "none";
+                }
+
+                // Event Listener
+                panelLeftBtn.onclick = togglePanelDoor; 
+                
+                // --- SAMBUNGKAN TOMBOL INI KE LOGIC MINIGAME ---
+                PanelActivationBtn.onclick = togglePanelActivation;
+            }
+        }
+
+        // --- QUEST / PANEL SYSTEM DATA --- code: qdx
+        const questData = {
+            "A": {
+                isUnlocked: true, // Bisa diakses
+                progress: 1,      // Level saat ini (1, 2, 3, 4, 5)
+                maxProgress: 5,
+                type: "memory",
+                isComplete: false,
+                config: {
+                    1: { cols: 3, emojis: ["🍎","🍉","🍌"] },
+                    2: { cols: 5, emojis: ["🚗","🚌","🚋","🚚","🚀"] },
+                    3: { cols: 7, emojis: ["🎨","🎲","📖","💡","📁","⌛","🗿"] },
+                    4: { cols: 9, emojis: ["🚫","🔇","🔕","🚭","🚷",'🚯',"🚳",'🚱',"📵"] },
+                    5: { cols: 11, emojis: ["A","B","C","D","E","F","G","H","I","J","K"] },
+                }
+            },
+           "D": { // TIMING GAME
+                isUnlocked: true, 
+                progress: 1,
+                maxProgress: 10,
+                type: "timing",
+                isComplete: false,
+                // Konfigurasi level Timing Game (kecepatan bar, jumlah & lebar hitzone)
+                config: { 
+                    1: { speed: 1.0, zones: 1, width: 20.0 },  // Cepat, 1 zona lebar
+                    2: { speed: 1.1, zones: 1, width: 18.0 },
+                    3: { speed: 1.2, zones: 1, width: 16.0 },
+                    4: { speed: 1.3, zones: 1, width: 14.0 },  // 2 zona tipis
+                    5: { speed: 1.4, zones: 1, width: 13.0 },
+                    6: { speed: 1.5, zones: 1, width: 8.0 },  // 3 zona lebih cepat
+                    7: { speed: 1.6, zones: 1, width: 6.0 },
+                    8: { speed: 1.7, zones: 1, width: 5.0 }, // 4 zona paling sulit
+                    9: { speed: 1.8, zones: 1, width: 4.5 },
+                    10: { speed: 2.0, zones: 1, width: 3.0 } // Sangat cepat, 5 zona sangat tipis
+                }
+            },
+            "H": {
+                isUnlocked: true, 
+                progress: 1,      
+                maxProgress: 8,
+                type: "memory",
+                isComplete: false,
+                config: {
+                    1: { cols: 3, emojis: ["🎈","🎉","🎁"] },
+                    2: { cols: 5, emojis: ["⚽","⚾","🥎","🏀","🏐"] },
+                    3: { cols: 7, emojis: ["🌳","🌴","🌵","🌾","🌿","🍀","🌲"] },
+                    4: { cols: 9, emojis: ["🌑","🌒","🌓","🌔","🌕",'🌖',"🌗",'🌘',"🌙"] },
+                    5: { cols: 11, emojis: ["Z","Y","X","W","V","U","T","S","R","Q","P"] },
+                    6: { cols: 11, emojis: ["🏰","🏠","🏡","⛪","🏢","🏣","🏤","🏥","🏦","🏨","🏪"] },
+                    7: { cols: 11, emojis: ["🚮","🛂","🛃","🛄","🛅","♿","🚾","🚰","🚹","🚺","🚻"] },
+                    8: { cols: 13, emojis: ["!","@","#","$","%","^","&","*",":",";","?","<",">"] },
+                }
+             },
+             "I":{
+                isUnlocked: true, 
+                progress: 1,
+                maxProgress: 17,
+                type: "timing",
+                isComplete: false,
+                config: { 
+                    1: { speed: 1.0, zones: 1, width: 20.0 },  
+                    2: { speed: 1.0, zones: 1, width: 18.0 },
+                    3: { speed: 1.1, zones: 1, width: 18.0 },
+                    4: { speed: 1.2, zones: 1, width: 16.0 },
+                    5: { speed: 1.2, zones: 1, width: 15.0 },
+                    6: { speed: 1.3, zones: 1, width: 14.0 },  
+                    7: { speed: 1.4, zones: 1, width: 13.0 },
+                    8: { speed: 1.4, zones: 1, width: 10.0 },
+                    9: { speed: 1.5, zones: 1, width: 9.5 },
+                    10: { speed: 1.5, zones: 1, width: 8.0 }, 
+                    11: { speed: 1.6, zones: 1, width: 6.0 },
+                    12: { speed: 1.7, zones: 1, width: 6.0 },
+                    13: { speed: 1.7, zones: 1, width: 5.0 }, 
+                    14: { speed: 1.8, zones: 1, width: 4.5 },
+                    15: { speed: 1.9, zones: 1, width: 4.0 },
+                    16: { speed: 2.0, zones: 1, width: 3.0 },
+                    17: { speed: 2.0, zones: 1, width: 2.8 } 
+                }
+             }
+        };
+
+        // State Minigame Lokal
+        let isMinigameOpen = false;
+        let memoryBoardLocked = false;
+        let firstCard = null;
+        let secondCard = null;
+        let matchesFound = 0;
+        let minigameCompleteProgress = 0
+
+        // --- MINIGAME SYSTEM ---
+        const minigameLayer = document.getElementById('minigameLayer');
+        const memoryBoard = document.getElementById('memoryBoard');
+        const minigameProgress = document.getElementById('minigameProgress');
+        const minigameMessage = document.getElementById('minigameMessage');
+
+        // Fungsi Toggle (Dipanggil oleh Tombol Aktivasi)
+        function togglePanelActivation() {
+            if (!isMinigameOpen) {
+                openMinigame();
+            } else {
+                closeMinigame();
+            }
+        }
+
+       function openMinigame() {
+        const quest = questData[currentLocation];
+        if (!quest || quest.isComplete) return;
+
+        isMinigameOpen = true;
+        minigameLayer.style.display = 'flex';
+
+        // Set atribut data-type untuk CSS
+        minigameLayer.dataset.type = quest.type; 
+
+        // Ubah tampilan Tombol Aktivasi
+        PanelActivationBtn.innerText = "TUTUP AKTIVASI";
+        PanelActivationBtn.style.backgroundColor = "rgba(200, 0, 0, 0.6)";
+
+        // Inisialisasi Minigame sesuai tipe
+        if (quest.type === 'memory') {
+            initMemoryLevel(quest.progress);
+        } else if (quest.type === 'timing') {
+            initTimingLevel(quest.progress);
+        }
+    }
+
+      function closeMinigame() {
+        isMinigameOpen = false;
+        minigameLayer.style.display = 'none';
+        timingHitBtn.style.display ="none"
+
+        // Hentikan interval Timing Game jika sedang berjalan
+        if (timingGameInterval) {
+            clearInterval(timingGameInterval);
+        }
+
+        // Kembalikan Tombol Aktivasi
+        PanelActivationBtn.innerText = "AKTIFASI PANEL";
+        PanelActivationBtn.style.backgroundColor = "";
+
+        // Reset state memory board
+        resetBoard(); 
+    }
+
+        function initMemoryLevel(level) {
+            memoryBoard.innerHTML = ''; // Bersihkan board
+            const quest = questData[currentLocation];
+            const cfg = quest.config[level];
+
+            minigameProgress.innerText = `LEVEL ${level}/${quest.maxProgress}`;
+            
+            // 1. Siapkan Deck
+            let deck = [...cfg.emojis, ...cfg.emojis]; // Duplikasi untuk pasangan
+            deck.sort(() => 0.5 - Math.random()); // Shuffle
+
+            // 2. Setup Grid CSS secara dinamis
+            // Level 1 (6 kartu): 3 kolom
+            // Level 2 (10 kartu): 5 kolom
+            // Level 3 (14 kartu): 7 kolom
+            memoryBoard.style.gridTemplateColumns = `repeat(${cfg.cols}, 1fr)`;
+
+            // 3. Render Kartu
+            matchesFound = 0;
+            
+            deck.forEach(emoji => {
+                const card = document.createElement('div');
+                card.classList.add('memory-card');
+                card.dataset.emoji = emoji;
+                card.innerText = '❔'; // Awalnya kosong (tertutup)
+
+                card.addEventListener('click', () => flipCard(card));
+                memoryBoard.appendChild(card);
+            });
+        }
+
+        function flipCard(card) {
+            // Cegah klik jika board terkunci, kartu sama, atau sudah match
+            if (memoryBoardLocked) return;
+            if (card === firstCard) return;
+            if (card.classList.contains('matched')) return;
+
+            // Efek Suara & Visual
+            minigamePanelClickSfx.currentTime = 0;
+            minigamePanelClickSfx.play();
+            
+            card.classList.add('flipped');
+            card.innerText = card.dataset.emoji; // Tampilkan Emoji
+
+            if (!firstCard) {
+                // Kartu Pertama
+                firstCard = card;
+                return;
+            }
+
+            // Kartu Kedua
+            secondCard = card;
+            checkForMatch();
+        }
+
+        function checkForMatch() {
+            let isMatch = firstCard.dataset.emoji === secondCard.dataset.emoji;
+
+            if (isMatch) {
+                disableCards();
+            } else {
+                unflipCards();
+            }
+        }
+
+        function disableCards() {
+            // MATCH!
+            correctSfx.currentTime = 0;
+            correctSfx.play();
+
+            firstCard.classList.add('matched');
+            secondCard.classList.add('matched');
+            
+            matchesFound++;
+            resetBoard();
+
+            // Cek Win Condition per Level
+            const quest = questData[currentLocation];
+            const totalPairs = quest.config[quest.progress].emojis.length;
+
+            if (matchesFound === totalPairs) {
+                setTimeout(levelUp, 500);
+            }
+        }
+
+        function levelUp() {
+        const quest = questData[currentLocation];
+
+        if (quest.progress < quest.maxProgress) {
+            // NAIK LEVEL
+            quest.progress++;
+            initMemoryLevel(quest.progress);
+        } else {
+            // QUEST SELESAI
+            quest.isComplete = true;
+            minigameComplete(); 
+        }
+    }
+
+        function unflipCards() {
+            // TIDAK MATCH
+            incorrectSfx.currentTime = 0;
+            incorrectSfx.play();
+            
+            memoryBoardLocked = true; // Kunci board sebentar
+
+            setTimeout(() => {
+                firstCard.classList.remove('flipped');
+                firstCard.innerText = '❔';
+                
+                secondCard.classList.remove('flipped');
+                secondCard.innerText = '❔';
+                
+                resetBoard();
+            }, 800); // Tunggu 0.8 detik
+        }
+
+        function resetBoard() {
+            [memoryBoardLocked, firstCard, secondCard] = [false, null, null];
+        }
+
+        function levelUp() {
+            const quest = questData[currentLocation];
+            
+            if (quest.progress < quest.maxProgress) {
+                // NAIK LEVEL
+                quest.progress++;
+                initMemoryLevel(quest.progress);
+            } else {
+                // QUEST SELESAI
+                quest.isComplete = true;
+                minigameComplete()
+            }
+        }
+
+        // --- TIMING GAME SYSTEM ---
+        const timingBarContainer = document.getElementById('timingBarContainer');
+        const redLine = document.getElementById('redLine');
+        const hitZonesContainer = document.getElementById('hitZones');
+        const timingHitBtn = document.getElementById('timingHitBtn');
+
+        let timingGameInterval = null;
+        let linePosition = 0; // Posisi 0% sampai 100%
+        let lineDirection = 1; // 1 = Kanan, -1 = Kiri
+
+        // Fungsi yang dipanggil saat membuka minigame
+        function initTimingLevel(level) {
+            const quest = questData[currentLocation];
+            const cfg = quest.config[level];
+            timingHitBtn.style.display ="block"
+
+            minigameProgress.innerText = `LEVEL ${level}/${quest.maxProgress}`;
+
+            // Reset
+            hitZonesContainer.innerHTML = '';
+            clearInterval(timingGameInterval);
+            linePosition = 0;
+            lineDirection = 1;
+
+            // Pastikan transform di-reset manual
+            redLine.style.transform = `translateX(0%)`;
+
+            // 1. Buat Hit Zones (Garis Kuning)
+            const availableWidth = 100 - (cfg.zones * cfg.width);
+            let positions = [];
+            
+            // Generate posisi awal random
+            for (let i = 0; i < cfg.zones; i++) {
+                // Pilih posisi acak yang tidak tumpang tindih
+                let newPos;
+                let overlap;
+                do {
+                    overlap = false;
+                    // Pastikan ada ruang untuk zona dan lebar garis merah
+                    newPos = Math.random() * (100 - cfg.width - 0.5); 
+                    
+                    // Cek tumpang tindih dengan zona yang sudah ada
+                    for (let existingPos of positions) {
+                        if (Math.abs(newPos - existingPos) < (cfg.width + 1)) { // +1 untuk jarak aman
+                            overlap = true;
+                            break;
+                        }
+                    }
+                } while (overlap);
+                positions.push(newPos);
+            }
+            
+            positions.sort((a, b) => a - b);
+
+            positions.forEach(pos => {
+                const zone = document.createElement('div');
+                zone.classList.add('hit-zone');
+                zone.style.width = `${cfg.width}%`;
+                zone.style.left = `${pos}%`;
+                zone.dataset.start = pos;
+                zone.dataset.end = pos + cfg.width;
+                hitZonesContainer.appendChild(zone);
+            });
+            // 2. Mulai Pergerakan Bar
+                        timingGameInterval = setInterval(() => {
+                            // Kecepatan tergantung level (speed multiplier)
+                            const step = 0.5 * cfg.speed * lineDirection; 
+                            linePosition += step;
+            
+                            // Batas Balik Arah
+                            // UBAH 0.5 MENJADI 1.0 (Sesuai lebar CSS #redLine 1%)
+                            const maxPos = 100 - 1.0; 
+                            
+                            if (linePosition >= maxPos) {
+                                lineDirection = -1;
+                                linePosition = maxPos;
+                            } else if (linePosition <= 0) {
+                                lineDirection = 1;
+                                linePosition = 0;
+                            }
+            
+                            redLine.style.transform = `translateX(${linePosition*100}%)`;
+                        }, 20); // Update setiap 10ms
+        }
+
+        // Fungsi dipanggil saat tombol HIT ditekan
+        function checkTimingHit() {
+            if (!isMinigameOpen || questData[currentLocation].type !== 'timing') return;
+            
+            minigamePanelClickSfx.currentTime = 0;
+            minigamePanelClickSfx.play();
+
+            const hitZones = document.querySelectorAll('#hitZones .hit-zone');
+            let isHit = false;
+
+            // Cek apakah Garis Merah berada di dalam Garis Kuning
+            hitZones.forEach(zone => {
+                const start = parseFloat(zone.dataset.start);
+                const end = parseFloat(zone.dataset.end);
+
+                // Hit jika posisi garis merah berada di antara start dan end zone
+                if (linePosition >= start && linePosition <= end) {
+                    isHit = true;
+                }
+            });
+
+            if (isHit) {
+                timingGameSuccess();
+            } else {
+                timingGameFailure();
+            }
+        }
+
+        function timingGameSuccess() {
+            correctSfx.currentTime = 0;
+            correctSfx.play();
+            
+            const quest = questData[currentLocation];
+            
+            if (quest.progress < quest.maxProgress) {
+                // NAIK LEVEL
+                quest.progress++;
+                // Stop interval sebelum init level baru
+                clearInterval(timingGameInterval); 
+                initTimingLevel(quest.progress);
+            } else {
+                // QUEST SELESAI
+                clearInterval(timingGameInterval);
+                quest.isComplete = true;
+                minigameComplete(); // Panggil fungsi umum penyelesaian
+            }
+        }
+
+        // Fungsi Umum Saat Quest Selesai
+    function minigameComplete() {
+        minigameCompleteProgress++
+        minigameMessage.innerHTML = `SYSTEM RESTORED (${minigameCompleteProgress}/${Object.values(questData).length})`;
+        minigameMessage.style.display = 'block';
+        completeSfx.currentTime = 0; // Panggil SFX baru
+        completeSfx.play(); 
+
+        // Cek apakah semua panel selesai (Opsional: Kondisi Kemenangan Malam)
+        const allComplete = Object.values(questData).every(q => q.isComplete);
+
+        setTimeout(() => {
+            minigameMessage.style.display = 'none';
+            closeMinigame();
+            PanelActivationBtn.style.display = 'none'; 
+            if (allComplete) {
+                alert("SEMUA PANEL AKTIF! KAMU BERHASIL MELEWATI MALAM INI!");
+                // location.reload(); // Atau panggil fungsi End Game/Next Level
+            }
+        }, 2500);
+    }
+
+        function timingGameFailure() {
+            incorrectSfx.currentTime = 0;
+            incorrectSfx.play();
+            
+            // Hukuman: Mundur Level (atau tetap di level yang sama jika level 1)
+            const quest = questData[currentLocation];
+            quest.progress = Math.max(1, quest.progress - 1); 
+            
+            // Re-init level
+            clearInterval(timingGameInterval);
+            initTimingLevel(quest.progress);
+        }
+
+        // Tambahkan event listener ke tombol HIT
+        timingHitBtn.addEventListener('click', checkTimingHit);
 
 
         // --- TIME SYSTEM LOGIC ---
@@ -1633,20 +3370,22 @@ function relocateJester() {
             checkSpawnTime();       // Cek Rustwalker
             checkTheRuinStatus();   // cek The Ruin
             checkJesterSpawnStatus(); // <-- Tambahkan ini
+            checkRottenneckSpawnStatus();
+            checkDevourerSpawnStatus()
 
             // Format String: 00:00
             const formattedHour = gameHour.toString().padStart(2, '0');
             const formattedMinute = gameMinute.toString().padStart(2, '0');
             
             // Update UI
-            cctvNavbar.innerText = `${formattedHour}:${formattedMinute}`;
+            cctvNavbar.innerText = `${formattedHour}:${formattedMinute} --- 00:00`;
         }
 
         function startClock() {
             // Update tampilan awal
             const formattedHour = gameHour.toString().padStart(2, '0');
             const formattedMinute = gameMinute.toString().padStart(2, '0');
-            cctvNavbar.innerText = `${formattedHour}:${formattedMinute}`;
+            cctvNavbar.innerText = `${formattedHour}:${formattedMinute} --- 00:00`;
 
             // Jalankan timer
             clockInterval = setInterval(updateGameTime, realSecondsPerGameMinute * 1000);
@@ -1675,6 +3414,21 @@ function relocateJester() {
                     console.log("[THE RUIN] Pemain berhasil kabur ke lantai lain!");
                     resetTheRuin(true); // True = Selamat
                 }
+            }
+
+            if (rottenneckData.active && rottenneckData.phase === 2) {
+                // Rottenneck aktif dan sedang di Fase 2 (visual muncul)
+                console.log("[ROTTENNECK] Jumpscare! Player mencoba pindah area saat Rottenneck menyerang.");
+                
+                // Hentikan perpindahan area
+                // Bersihkan timer dan interval Rottenneck yang sedang berjalan
+                clearInterval(rottenneckStareInterval);
+                clearTimeout(rottenneckData.failTimer);
+                
+                // Panggil jumpscare
+                triggerJumpscare('The Rottenneck'); 
+
+                return; // Hentikan fungsi agar perpindahan tidak terjadi
             }
 
             // --- TAMBAHAN: JESTER DEADLY MISTAKE ---
@@ -1803,6 +3557,8 @@ function relocateJester() {
         });
 
         const handleCctvBtn = () => {
+            if (isFocusingPanel) return;
+
             btnSfx.currentTime = 0; btnSfx.play();
             if (isScreenOn) turnOffScreen();
             else toggleMonitorPosition();
@@ -1850,8 +3606,7 @@ function relocateJester() {
         cctvBtn.addEventListener("click", handleCctvBtn);
         monitorWrapper.addEventListener("click", turnOnScreen);
 
-        // --- INISIALISASI PERTAMA --- code: stx
-        // Panggil ini di dalam startBtn event listener agar tombol awal (A ke B/C) muncul
+// --- INISIALISASI PERTAMA --- code: stx
         startBtn.addEventListener('click', () => {
             if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
             startBtn.style.display = "none";
@@ -1868,13 +3623,30 @@ function relocateJester() {
             thejesterScream.play(); thejesterScream.pause()
             thejesterPursuing.play(); thejesterPursuing.pause()
             thejesterRUN.play(); thejesterRUN.pause()
+            deathScreenMusic.play(); deathScreenMusic.pause()
+            openElectricalPanel.play(); openElectricalPanel.pause()
+            closeElectricalPanel.play(); closeElectricalPanel.pause()
+            minigamePanelClickSfx.play(); minigamePanelClickSfx.pause()
+            correctSfx.play(); correctSfx.pause()
+            incorrectSfx.play(); incorrectSfx.pause()
+            completeSfx.play(); completeSfx.pause()
+            rottenneckSFX.play(); rottenneckSFX.pause()
+            rottenneckScreamSFX.play(); rottenneckScreamSFX.pause()
+            devourerAppearanceSFX.play(); devourerAppearanceSFX.pause()
+            devourerAmbientSFX.play(); devourerAmbientSFX.pause()
+            devourerScreamSFX.play(); devourerScreamSFX.pause()
             
-            calculateSpawnTime(); // <-- BARU: Tentukan kapan Rustwalker spawn
+            calculateSpawnTime(); 
             calculateRuinFirstSpawn();
-            calculateJesterFirstSpawn(); // <-- Tambahkan ini
+            calculateJesterFirstSpawn();
             renderNavButtons(); 
+            calculateRottenneckFirstSpawn();
+            calculateDevourerFirstSpawn()
             startClock(); 
             gameLoop();
+            notificationData.forEach((element,index) => {
+                gameNotification(index);
+            });
         });
 
         mainContainer.style.transform = `translateX(-33.333%)`; 
@@ -1889,6 +3661,115 @@ function relocateJester() {
             mainContainer.style.transform = `translateX(-${percentage}%)`;
             requestAnimationFrame(gameLoop);
         }
+
+        // --- DEATH SCREEN LOGIC ---
+        const deathScreen = document.getElementById('deathScreen');
+        const deathFlash = document.getElementById('deathFlash');
+        const deathContent = document.getElementById('deathContent');
+        const deathTitle = document.getElementById('deathTitle');
+        const deathSubtitle = document.getElementById('deathSubtitle');
+        const deathTip = document.getElementById('deathTip');
+        const deathEntityImg = document.getElementById('deathEntityImg');
+        const deathTime = document.getElementById('deathTime');
+        const retryBtn = document.getElementById('retryBtn');
+
+        // Config Data Kematian
+        const deathConfigData = {
+            'Rustwalker': {
+                img: './assets/image/deathscreen/death_rustwalker.png',
+                tip: '"Cobalah untuk lebih sering memantau CCTV. Jika dia mendekat, jangan lengah sedikitpun. Dan usahakan sebisa mungkin untuk berada di area yang paling jauh dari dia!, ia hanya sebuah boneka manekin berkarat, namun ketika kamu lengah, lehermu akan patah"'
+            },
+            'TheRuin': {
+                img: './assets/image/deathscreen/death_theruin.png',
+                tip: '"The Ruin sangat membenci mereka yang diam di satu lantai. Saat dia muncul, segera PINDAH LANTAI. Ingat, senyuman lebarnya memang menandakan ekspresi yang senang, bukan karna ia jatuh cinta padamu, melainkan rasa penasaran akan merobek perutmu"'
+            },
+            'TheJester': {
+                img: './assets/image/deathscreen/death_thejester.png',
+                tip: '"Jika mendengar suara music box, berhati-hatilah! dan bersiap memantau cctv, saat suara dari music box berubah, dia sedang memburu mu. Jangan biarkan dia bersembunyi. Cari dia di CCTV dan tatap matanya sampai dia pergi. Dia luar biasa agresif dan sangat amat membenci eksistensi-mu disini"'
+            },
+            'Rottenneck': {
+                img: './assets/image/deathscreen/death_rottenneck.png', 
+                tip: '"Dengarkan baik-baik suaranya yang khas sebelum dia turun untuk memangsamu, Dia merayap di langit-langit, di sudut matamu. Jangan hanya melihat ke depan. Periksa ujung kiri dan kanan ruangan. Tatap dia sampai dia benar-benar pergi. Dia memiliki tubuh yang lincah dan memiliki bau yang sangat busuk pada lehernya"'
+            },
+            'The Rottenneck': { 
+                img: './assets/image/deathscreen/death_rottenneck.png', 
+                tip: '"Melarikan diri saat dia sudah turun adalah sebuah kesalahan yang sangat fatal. Dengarkan suara khasnya sebelum ia turun, Kamu harus menghadapinya di tempat, atau kamu akan tertangkap di udara."'
+            },
+            'Devourer': {
+                img: './assets/image/deathscreen/death_devourer.png', 
+                tip: '"Saat layar berkedip dan CCTV mati total, dia datang. Satu-satunya tempat yang aman adalah di balik pintu tertutup (Toilet). Sembunyi sebelum dia berteriak!"'
+        }
+        };
+
+        // const deathTitles = ["KAMU TEWAS", "INVESTIGASI GAGAL", "MISI DIBERHENTIKAN"];
+        const deathTitles = ["KAMU TEWAS", "INVESTIGASI GAGAL", "LAH MOKAD?", "YAHAHAHAHA KOK TURU", "ANDA SKILL ISSUE","BOBOK JIR",'GITU DOANG?',"BANGUN WEI","BISA YOK",'BISA MENANG, MENANGIS',"LAH KALAH","ADUHAI TURU YE","ANJAY MATI","DUDUDUH KASIAN","AMBOI KAU TEPAR","YAH MASA TEPAR",'COBA LAGI LAH','ZZZ LAH UDH BERES?', "AH KOCAK WKWKWK",'AKWOOAKWOAKW','HAKAN TAH BEUNGEUT',"HATI HATI LAH","YAH MOKAD BRE?","HMMM???","ADUDUH TEPAR DEK",'CEMAS KAU DEK',"PANIK GA? ENGGAK LAH","TUTOR DEK"];
+
+        let deathPhase2Timer = null;
+
+        function showDeathScreen(killerName) {
+            console.log("Menampilkan Death Screen...");
+            deathScreenMusic.play()
+            // 1. Setup Data
+            const data = deathConfigData[killerName] || deathConfigData['Rustwalker']; // Fallback
+            const randomTitle = deathTitles[Math.floor(Math.random() * deathTitles.length)];
+            
+            deathTitle.innerText = randomTitle;
+            deathSubtitle.innerText = `KAMU TERTANGKAP OLEH ${killerName.toUpperCase()}`;
+            deathTip.innerText = data.tip;
+            deathEntityImg.src = data.img;
+
+            // Format Waktu Bertahan
+            const finalHour = gameHour.toString().padStart(2, '0');
+            const finalMinute = gameMinute.toString().padStart(2, '0');
+            deathTime.innerText = `SURVIVED UNTIL: ${finalHour}:${finalMinute}`;
+
+            // 2. Tampilkan Layar Hitam (Awal)
+            deathScreen.style.display = 'flex';
+            
+            // 3. (1 Detik kemudian) Kilatan Merah
+            setTimeout(() => {
+                deathFlash.classList.add('red-flash-anim');
+                viewport.style.display ="none"
+                
+                // 4. (0.6 Detik setelah kilatan) Teks Muncul
+                setTimeout(() => {
+                    deathContent.style.opacity = 1;
+
+                    // Setup Listener untuk Phase 2 (Klik atau Timeout 5 detik)
+                    deathScreen.style.cursor = "pointer";
+                    
+                    // Auto Phase 2 setelah 5 detik
+                    deathPhase2Timer = setTimeout(() => {
+                        triggerDeathPhase2();
+                    }, 5000);
+
+                    // Klik untuk mempercepat Phase 2
+                    deathScreen.onclick = () => {
+                        triggerDeathPhase2();
+                    };
+
+                }, 800); // 0.8s after flash starts
+
+            }, 1000); // 1s wait
+        }
+
+        function triggerDeathPhase2() {
+            if (deathScreen.classList.contains('phase-2')) return; 
+            
+            clearTimeout(deathPhase2Timer);
+            deathScreen.onclick = null; 
+            deathScreen.style.cursor = "default";
+
+            // Trigger CSS Class untuk transisi
+            deathScreen.classList.add('phase-2');
+        }
+
+        // Tombol Ulangi
+        retryBtn.addEventListener('click', () => {
+            location.reload();
+        });
+
+
     </script>
 </body>
 </html>
